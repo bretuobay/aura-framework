@@ -1,0 +1,37 @@
+{
+  "name": "@aura/react",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "package.json"],
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly --declarationDir ./dist",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@aura/protocol": "workspace:*",
+    "@aura/sdk": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "jsdom": "^26.1.0"
+  }
+}

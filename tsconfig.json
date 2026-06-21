@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "references": [
+    { "path": "packages/protocol" },
+    { "path": "packages/sdk" },
+    { "path": "packages/react" },
+    { "path": "packages/server" },
+    { "path": "packages/rules" },
+    { "path": "packages/devtools" }
+  ]
+}

@@ -46,3 +46,6 @@ vitest-results/
 
 # pnpm
 .pnpm-store/
+
+# Research PDFs (large binary assets, not source)
+product-docs/**/*.pdf
