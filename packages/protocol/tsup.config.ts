@@ -1,9 +1,12 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  dts: true,
+  entry: ["src/index.ts"],
+  format: ["cjs", "esm"],
+  tsconfig: "tsconfig.build.json",
+  dts: {
+    tsconfig: "tsconfig.build.json",
+  },
   clean: true,
-  sourcemap: true,
+  splitting: false,
 });

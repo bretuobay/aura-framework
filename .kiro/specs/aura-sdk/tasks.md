@@ -6,28 +6,28 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
 
 ## Tasks
 
-- [ ] 1. Set up project structure and foundational modules
-  - [ ] 1.1 Initialize project with package.json, tsconfig, and Vitest configuration
+- [x] 1. Set up project structure and foundational modules
+  - [x] 1.1 Initialize project with package.json, tsconfig, and Vitest configuration
     - Create `package.json` with `@aura/protocol` as sole dependency, `fast-check` and `vitest` as devDependencies
     - Create `tsconfig.json` targeting ES2020+ with strict mode, DOM lib, and ESNext module resolution
     - Create `vitest.config.ts` with browser-compatible test configuration
     - Create directory structure: `src/`, `src/__tests__/properties/`, `src/__tests__/unit/`, `src/__tests__/arbitraries/`
     - _Requirements: 1.8, 1.9_
 
-  - [ ] 1.2 Create `src/types.ts` with re-exports and internal SDK types
+  - [x] 1.2 Create `src/types.ts` with re-exports and internal SDK types
     - Re-export all protocol types from `@aura/protocol` (CapabilityManifest, ConsentProfile, ContextModel, AuraEvent, UIPrescription, FeedbackEvent, ExplanationRecord, ProfileSummary, ProfileCorrection, etc.)
     - Define internal types: `AuraClientOptions`, `SessionState`, `AuraLogEntry`, `PrescriptionListener`
     - Define the `AuraClient` interface with all public methods
     - _Requirements: 1.2, 15.4_
 
-  - [ ] 1.3 Create `src/errors.ts` with error class hierarchy
+  - [x] 1.3 Create `src/errors.ts` with error class hierarchy
     - Implement `AuraConfigError extends Error` with `field` property
     - Implement `AuraValidationError extends Error` with `issues` property (ZodIssue[])
     - Implement `AuraClientError extends Error` with `code` and `context` properties
     - Define error code constants enum/object matching the design error codes table
     - _Requirements: 17.1, 17.2, 17.5_
 
-  - [ ] 1.4 Create `src/log-buffer.ts` implementing circular buffer
+  - [x] 1.4 Create `src/log-buffer.ts` implementing circular buffer
     - Implement `LogBuffer` class with configurable `maxEntries` (default: 200)
     - `log(entry)` adds timestamped entry, evicts oldest when full
     - `getAll()` returns entries in chronological order (oldest-first)
@@ -39,8 +39,8 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - **Validates: Requirements 17.3, 17.4, 17.5**
     - For any number of entries n written, getLogs() returns at most 200 in chronological order
 
-- [ ] 2. Implement EventQueue module
-  - [ ] 2.1 Create `src/event-queue.ts` with bounded FIFO queue
+- [x] 2. Implement EventQueue module
+  - [x] 2.1 Create `src/event-queue.ts` with bounded FIFO queue
     - Implement `EventQueue` class with constructor accepting `{ maxCapacity, queueTTL }`
     - `enqueue(event)`: adds event with timestamp, evicts oldest if at capacity
     - `flush()`: returns and removes all non-expired events in FIFO order
@@ -71,8 +71,8 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Test TTL boundary (just under, exactly at, just over TTL)
     - _Requirements: 13.5_
 
-- [ ] 3. Implement PrescriptionStore module
-  - [ ] 3.1 Create `src/prescription-store.ts` with per-surface storage and listener dispatch
+- [x] 3. Implement PrescriptionStore module
+  - [x] 3.1 Create `src/prescription-store.ts` with per-surface storage and listener dispatch
     - Implement `PrescriptionStore` class with all methods from design
     - `store(prescription, currentSeqId, manifestVersion)`: validates admission (schema, expiry, contextLock, manifestVersion), stores per surfaceId, notifies listeners
     - `get(surfaceId, currentSeqId)`: returns prescription or undefined (checking expiry and context lock)
@@ -110,11 +110,11 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Test clearListeners stops all delivery
     - _Requirements: 14.2, 14.5, 14.7_
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement HTTP Transport and SSE Manager
-  - [ ] 5.1 Create `src/http-transport.ts` with fetch-based HTTP client
+- [x] 5. Implement HTTP Transport and SSE Manager
+  - [x] 5.1 Create `src/http-transport.ts` with fetch-based HTTP client
     - Implement `HttpTransport` class wrapping browser `fetch` API
     - `post<TReq, TRes>(path, body, requestSchema, responseSchema?, sessionId?)`: validates outbound body, sends POST, validates response
     - `get<TRes>(path, responseSchema, sessionId?)`: sends GET, validates response
@@ -125,7 +125,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Configurable request timeout
     - _Requirements: 12.1, 15.1, 15.2, 15.4_
 
-  - [ ] 5.2 Create `src/sse-manager.ts` with EventSource management and reconnection
+  - [x] 5.2 Create `src/sse-manager.ts` with EventSource management and reconnection
     - Implement `SSEManager` class with `connect()`, `disconnect()`, `isConnected()`
     - Manage EventSource or fetch-based SSE stream to `/aura/prescriptions/stream`
     - Parse incoming messages through `UIPrescriptionSchema`
@@ -156,8 +156,8 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Test onError invocation on connection drop
     - _Requirements: 5.7, 5.9, 16.1, 16.2_
 
-- [ ] 6. Implement Config validation module
-  - [ ] 6.1 Create `src/config.ts` with AuraClientConfig validation
+- [x] 6. Implement Config validation module
+  - [x] 6.1 Create `src/config.ts` with AuraClientConfig validation
     - Implement `validateConfig(config: AuraClientConfig): void` that throws `AuraConfigError` on invalid input
     - Validate `endpoint`: non-empty string
     - Validate `userId`: non-empty string
@@ -182,8 +182,8 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Test AuraConfigError includes correct field name
     - _Requirements: 1.3, 1.4, 1.5, 1.6, 1.7_
 
-- [ ] 7. Implement AuraClient core — lifecycle and state machine
-  - [ ] 7.1 Create `src/client.ts` with AuraClient class implementing state machine and public API
+- [x] 7. Implement AuraClient core — lifecycle and state machine
+  - [x] 7.1 Create `src/client.ts` with AuraClient class implementing state machine and public API
     - Implement `createAuraClient(config)` factory function that validates config and returns AuraClient in "idle" status
     - Implement state machine: idle → active (on init success), idle → degraded (on init failure)
     - Implement `init()`: POST /aura/session, store sessionId, pin manifestVersion, transition state, open SSE, flush queue
@@ -193,7 +193,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - init() never rejects — transitions to degraded on any failure
     - _Requirements: 1.1, 1.10, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 12.2, 12.3_
 
-  - [ ] 7.2 Implement `emit(event)` on AuraClient
+  - [x] 7.2 Implement `emit(event)` on AuraClient
     - Validate event against AuraEventSchema, reject with AuraValidationError on failure
     - When active: POST EventsRequest to /aura/events with sessionId, contextSequenceId, and event
     - When idle/degraded: enqueue event in EventQueue, resolve without network call
@@ -201,7 +201,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Return Promise<void> that never rejects under network failure
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.8, 3.9, 3.10, 12.4_
 
-  - [ ] 7.3 Implement `updateContext(contextPatch)` on AuraClient
+  - [x] 7.3 Implement `updateContext(contextPatch)` on AuraClient
     - Validate patch against partial ContextModelSchema, reject with AuraValidationError on failure
     - Increment contextSequenceId before sending (regardless of status)
     - When active: POST ContextRequest to /aura/context
@@ -210,7 +210,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Expose `getContextSequenceId()` method
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ] 7.4 Implement `feedback(feedbackEvent)` on AuraClient
+  - [x] 7.4 Implement `feedback(feedbackEvent)` on AuraClient
     - Validate against FeedbackEventSchema, reject with AuraValidationError on failure
     - When active: POST FeedbackRequest to /aura/feedback
     - When idle/degraded: resolve without network call
@@ -218,7 +218,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - On transient failure: log warning, resolve (no retry)
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
-  - [ ] 7.5 Implement `updateConsent(consentPatch)` on AuraClient
+  - [x] 7.5 Implement `updateConsent(consentPatch)` on AuraClient
     - Validate against ConsentProfileSchema, reject with AuraValidationError on failure
     - When active: POST ConsentRequest to /aura/consent
     - When idle/degraded: resolve without network call
@@ -227,7 +227,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Expose `getConsent()` method returning current in-memory ConsentProfile
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
 
-  - [ ] 7.6 Implement `explain(prescriptionId)` and profile methods on AuraClient
+  - [x] 7.6 Implement `explain(prescriptionId)` and profile methods on AuraClient
     - `explain(prescriptionId)`: GET /aura/explain/{prescriptionId}, return ExplanationRecord or null
     - Reject with AuraValidationError if prescriptionId is empty
     - When degraded/idle: resolve with null
@@ -235,7 +235,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - `correctProfile(correction)`: POST to /aura/profile/correction; validate against schema; when degraded: resolve without call
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-  - [ ] 7.7 Implement `disconnect()` and `onError()` on AuraClient
+  - [x] 7.7 Implement `disconnect()` and `onError()` on AuraClient
     - `disconnect()`: close SSE, cancel timers, clear listeners, clear PrescriptionStore, transition to degraded
     - Synchronous, void return, never throws, idempotent
     - Allow in-flight requests to complete, prevent new requests after disconnect
@@ -244,7 +244,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - `getLogs()`: return LogBuffer entries
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 11.5, 11.6, 11.7, 11.8_
 
-  - [ ] 7.8 Implement SSE prescription handling and periodic eviction in AuraClient
+  - [x] 7.8 Implement SSE prescription handling and periodic eviction in AuraClient
     - Wire SSEManager onMessage to PrescriptionStore.store with admission checks
     - Implement periodic eviction sweep (≤5s interval) via setInterval
     - On admission: check contextLock.sequenceId, manifestVersion, expiresAt
@@ -254,11 +254,11 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - `subscribe(surfaceId, listener)` and `getPrescription(surfaceId)` delegate to PrescriptionStore
     - _Requirements: 5.2, 5.3, 5.4, 5.5, 5.6, 5.12, 5.13, 5.14, 5.15, 12.5, 12.6_
 
-- [ ] 8. Checkpoint - Ensure all tests pass
+- [x] 8. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Create fast-check arbitraries and client-level property tests
-  - [ ] 9.1 Create `src/__tests__/arbitraries/` with custom fast-check generators
+- [x] 9. Create fast-check arbitraries and client-level property tests
+  - [x] 9.1 Create `src/__tests__/arbitraries/` with custom fast-check generators
     - `config.arbitrary.ts`: generators for valid/invalid AuraClientConfig
     - `aura-event.arbitrary.ts`: generator for valid AuraEvent values
     - `prescription.arbitrary.ts`: generator for valid/invalid UIPrescription values (with configurable expiry, contextLock, manifestVersion)
@@ -336,8 +336,8 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - **Validates: Requirements 10.3, 10.1**
     - After disconnect(), all subsequent method calls initiate no network requests
 
-- [ ] 10. Integration wiring and unit tests for AuraClient
-  - [ ] 10.1 Wire the module index — create `src/index.ts` exporting public API
+- [x] 10. Integration wiring and unit tests for AuraClient
+  - [x] 10.1 Wire the module index — create `src/index.ts` exporting public API
     - Export `createAuraClient` factory function
     - Export `AuraClient` interface type
     - Export `AuraClientConfig`, `AuraClientOptions` types
@@ -377,7 +377,7 @@ Implement the `@aura/sdk` TypeScript client SDK for browser environments followi
     - Test reconnection after SSE drop
     - _Requirements: 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.14_
 
-- [ ] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

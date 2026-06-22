@@ -6,8 +6,8 @@ Implement the `@aura/protocol` npm package — the single source of truth for al
 
 ## Tasks
 
-- [ ] 1. Set up project structure and build tooling
-  - [ ] 1.1 Initialize package and configure build
+- [x] 1. Set up project structure and build tooling
+  - [x] 1.1 Initialize package and configure build
     - Create `package.json` with name `@aura/protocol`, version `0.1.0`, type `module`, dual CJS/ESM exports, and dependencies (`zod ^3.23.0`) and devDependencies (`tsup ^8.0.0`, `typescript ^5.4.0`, `vitest ^2.0.0`, `fast-check ^3.19.0`)
     - Create `tsconfig.json` with strict mode, ESNext module, NodeNext module resolution, declaration output
     - Create `tsup.config.ts` with entry `src/index.ts`, formats `cjs` and `esm`, `dts: true`, `clean: true`, `splitting: false`
@@ -15,59 +15,59 @@ Implement the `@aura/protocol` npm package — the single source of truth for al
     - Create `src/` directory structure
     - _Requirements: 15.1, 15.2, 15.3, 15.4_
 
-- [ ] 2. Implement foundational modules (enums and common primitives)
-  - [ ] 2.1 Implement `src/enums.ts`
+- [x] 2. Implement foundational modules (enums and common primitives)
+  - [x] 2.1 Implement `src/enums.ts`
     - Define Zod enums and inferred types for: `RiskClass`, `PrescriptionMode`, `NetworkQuality`, `LatencyClass`, `LayoutStrategy`, `AdaptationType`, `FeedbackAction`, `ProfileProvenance`, `CorrectionAction`, `DataClass`, `AccessibilitySetting`, `LayoutType`
     - Export both schemas and inferred TypeScript types
     - _Requirements: 1.3, 1.4_
 
-  - [ ] 2.2 Implement `src/common.ts`
+  - [x] 2.2 Implement `src/common.ts`
     - Define `NonEmptyString` (`z.string().min(1)`), `ISOTimestamp` (refined string validating ISO 8601), `Confidence` (`z.number().min(0).max(1)`), `ContextSequenceId` (`z.number().int().nonneg()`), `SessionId` (alias for `NonEmptyString`)
     - Export all shared primitives
     - _Requirements: 1.2, 14.3_
 
-- [ ] 3. Implement domain schema modules (layer 1 — no cross-domain imports)
-  - [ ] 3.1 Implement `src/consent.ts`
+- [x] 3. Implement domain schema modules (layer 1 — no cross-domain imports)
+  - [x] 3.1 Implement `src/consent.ts`
     - Define `DataClassSchema` re-exporting the `DataClass` enum from enums
     - Define `ConsentProfileSchema` as a partial record of `DataClass` → `boolean`
     - Export `ConsentProfile` type and schema
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-  - [ ] 3.2 Implement `src/context.ts`
+  - [x] 3.2 Implement `src/context.ts`
     - Define `ContextModelSchema` with required `device` (non-empty string), `locale` (non-empty string, max 35 chars), optional `viewport` (width/height positive integers in [1, 32767]), optional `networkQuality` (enum), optional `sequenceId` (non-negative integer), optional `taskState` and `domain` (Record<string, unknown>)
     - Export `ContextModel` type and schema
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ] 3.3 Implement `src/event.ts`
+  - [x] 3.3 Implement `src/event.ts`
     - Define `AuraEventSchema` with `type` (non-empty string), `surfaceId` (non-empty string), `timestamp` (ISO timestamp), `payload` (JSON object), optional `dataClasses` (array of DataClass)
     - Export `MinimumEventVocabulary` constant with the 5 required event types
     - Export `AuraEvent` type and schema
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10_
 
-  - [ ] 3.4 Implement `src/explanation.ts`
+  - [x] 3.4 Implement `src/explanation.ts`
     - Define `ExplanationRecordSchema` with `id` (non-empty string), `summary` (non-empty string), `userVisible` (boolean), `factors` (string array, empty allowed), `confidence` ([0, 1])
     - Export `ExplanationRecord` type and schema
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-  - [ ] 3.5 Implement `src/feedback.ts`
+  - [x] 3.5 Implement `src/feedback.ts`
     - Define `FeedbackEventSchema` with `prescriptionId` (non-empty string), `action` (FeedbackAction enum), `timestamp` (ISO timestamp), optional `reason` (non-empty string when present), optional `contextSequenceId` (non-negative integer)
     - Export `FeedbackEvent` type and schema
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9_
 
-  - [ ] 3.6 Implement `src/adaptation.ts`
+  - [x] 3.6 Implement `src/adaptation.ts`
     - Define `AdaptationSchema` as a Zod discriminated union on `type` field with 6 members: `rank`, `componentVariant`, `layout`, `content`, `accessibility`, `filter`
     - Each variant requires `reasonCode` as non-empty string
     - Export `Adaptation` type and schema
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
-  - [ ] 3.7 Implement `src/profile.ts`
+  - [x] 3.7 Implement `src/profile.ts`
     - Define `ProfileAttributeSchema` with `id`, `key`, `value`, `provenance` (enum), `confidence` ([0, 1]), `dataClass` (DataClass enum), optional `expiresAt` (ISO timestamp)
     - Define `ProfileCorrectionSchema` as discriminated union on `action`: `remove` (requires `attributeId`) and `correct` (requires `attributeId` + non-empty `newValue`)
     - Export types and schemas
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 4. Implement domain schema modules (layer 2 — cross-domain imports)
-  - [ ] 4.1 Implement `src/manifest.ts`
+- [x] 4. Implement domain schema modules (layer 2 — cross-domain imports)
+  - [x] 4.1 Implement `src/manifest.ts`
     - Define `LayoutStabilitySchema` with `strategy` (LayoutStrategy enum) and conditional `maxDecisionWaitMs` (required for `reserve-space`/`skeleton`, non-negative integer ≤ 5000)
     - Define `ManifestComponentSchema` with `componentId`, `variants` (non-empty array), optional `adaptableProps`, `riskClass` (enum), optional `constraints` with `requiresConsent` (DataClass[]) and `reversible` (boolean)
     - Define `ManifestSurfaceSchema` with `surfaceId`, `components`, optional `layoutStability`, optional `consentRequirements`
@@ -75,51 +75,51 @@ Implement the `@aura/protocol` npm package — the single source of truth for al
     - Export all types and schemas
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
 
-  - [ ] 4.2 Implement `src/prescription.ts`
+  - [x] 4.2 Implement `src/prescription.ts`
     - Define `ContextLockSchema` with `sequenceId` (non-negative integer) and `capturedAt` (ISO timestamp)
     - Define `AdaptationGroupSchema` with `groupId` (non-empty), `adaptationIds` (non-empty string[]), `atomic` (boolean)
     - Define `UIPrescriptionSchema` with all required fields: `id`, `surfaceId`, `mode`, `latencyClass`, `contextLock`, `adaptations` (non-empty array of Adaptation), `constraints.expiresAt`, `manifestVersion`, `audit`, optional `explanation`, optional `adaptationGroups`
     - Export types and schemas
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 5.10, 5.11, 5.12, 5.13, 5.14, 5.15_
 
-- [ ] 5. Implement utility and error modules
-  - [ ] 5.1 Implement `src/errors.ts`
+- [x] 5. Implement utility and error modules
+  - [x] 5.1 Implement `src/errors.ts`
     - Define `ValidationErrorItem` interface with `path`, `message`, optional `code`
     - Define `ValidationResult<T>` discriminated union type
     - Implement `parseSchema<T>` function wrapping `schema.safeParse()` into structured result
     - Export all types and function
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
 
-  - [ ] 5.2 Implement `src/utils.ts`
+  - [x] 5.2 Implement `src/utils.ts`
     - Implement `isPrescriptionExpired(prescription, now)`: returns `true` if `expiresAt` is before `now`, missing, or invalid; never throws
     - Implement `isPrescriptionContextStale(prescription, currentContextSequenceId)`: returns `true` if sequenceIds differ or input is invalid; never throws
     - Export both functions
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 16.10_
 
-- [ ] 6. Implement endpoint schemas and barrel export
-  - [ ] 6.1 Implement `src/endpoints.ts`
+- [x] 6. Implement endpoint schemas and barrel export
+  - [x] 6.1 Implement `src/endpoints.ts`
     - Define all 9 request schemas: `SessionRequestSchema`, `EventsRequestSchema`, `ContextRequestSchema`, `PrescriptionsStreamRequestSchema`, `FeedbackRequestSchema`, `ExplainRequestSchema`, `ConsentRequestSchema`, `ProfileRequestSchema`, `ProfileCorrectionRequestSchema`
     - Define all 9 response schemas: `SessionResponseSchema`, `EventsResponseSchema`, `ContextResponseSchema`, `PrescriptionsStreamResponseSchema`, `FeedbackResponseSchema`, `ExplainResponseSchema`, `ConsentResponseSchema`, `ProfileResponseSchema`, `ProfileCorrectionResponseSchema`
     - Compose from core object schemas (e.g. `SessionRequestSchema` references `CapabilityManifestSchema`, `ConsentProfileSchema`, `ContextModelSchema`)
     - Export all schemas and inferred types
     - _Requirements: 1.5, 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 12.8, 12.9, 12.10, 12.11_
 
-  - [ ] 6.2 Implement `src/index.ts` barrel
+  - [x] 6.2 Implement `src/index.ts` barrel
     - Re-export all types, schemas, constants, and utility functions from all modules
     - Verify single entry point (no sub-path imports required)
     - _Requirements: 1.1, 1.6, 1.7, 1.8_
 
-- [ ] 7. Checkpoint - Verify build and no circular imports
+- [x] 7. Checkpoint - Verify build and no circular imports
   - Ensure `tsup` builds successfully producing dual CJS/ESM output with declarations
   - Verify no Node.js built-in imports in source modules
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement fast-check arbitraries (test generators)
-  - [ ] 8.1 Implement `src/__tests__/arbitraries/primitives.arb.ts`
+- [x] 8. Implement fast-check arbitraries (test generators)
+  - [x] 8.1 Implement `src/__tests__/arbitraries/primitives.arb.ts`
     - Create `arbISOTimestamp()`, `arbNonISOString()`, `arbNonEmptyString()`, `arbConfidence()`, `arbContextSequenceId()`, `arbInvalidEnumValue(validSet)`
     - _Requirements: 3.4, 5.4, 5.5, 9.3_
 
-  - [ ] 8.2 Implement `src/__tests__/arbitraries/` for domain objects
+  - [x] 8.2 Implement `src/__tests__/arbitraries/` for domain objects
     - Create `manifest.arb.ts` (`arbCapabilityManifest()`, `arbManifestSurface()`, `arbManifestComponent()`, `arbLayoutStability()`)
     - Create `event.arb.ts` (`arbAuraEvent()`)
     - Create `context.arb.ts` (`arbContextModel()`)
@@ -241,7 +241,7 @@ Implement the `@aura/protocol` npm package — the single source of truth for al
     - Test all 9 request schemas accept valid input, reject missing fields, and all 9 response schemas validate correctly
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 12.8, 12.9, 12.10_
 
-- [ ] 12. Final checkpoint - Verify full build and test suite
+- [x] 12. Final checkpoint - Verify full build and test suite
   - Run `tsup` build, verify dual CJS/ESM output with `.d.ts` declarations
   - Run `vitest --run` to ensure all tests pass
   - Verify no circular imports among source modules
