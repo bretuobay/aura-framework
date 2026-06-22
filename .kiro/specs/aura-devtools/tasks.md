@@ -6,21 +6,21 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
 
 ## Tasks
 
-- [ ] 1. Set up package structure and core dependencies
-  - [ ] 1.1 Create package directory structure and package.json
+- [x] 1. Set up package structure and core dependencies
+  - [x] 1.1 Create package directory structure and package.json
     - Create `packages/devtools/` with `src/`, `src/components/`, `tests/`, `tests/properties/`, `tests/unit/`, `tests/unit/components/`, `tests/integration/` directories
     - Create `package.json` with `@aura/protocol` as direct dependency, `react` as peer dependency, `vitest`, `fast-check`, `@testing-library/react`, `zod` as dev dependencies
     - Create `tsconfig.json` extending workspace config
     - Create `vitest.config.ts` with test configuration
     - _Requirements: 16.1, 16.2, 16.4_
 
-  - [ ] 1.2 Create barrel export file and error classes
+  - [x] 1.2 Create barrel export file and error classes
     - Create `src/index.ts` barrel exporting all public APIs (schema, client factory, route registration, DevtoolsPanel)
     - Create `src/errors.ts` with `DevtoolsSessionNotFoundError`, `DevtoolsRequestError`, `DevtoolsNetworkError`, and `DevtoolsValidationError` classes
     - _Requirements: 16.4, 14.3, 14.4, 14.5, 14.6_
 
-- [ ] 2. Implement DevtoolsState schema and validation
-  - [ ] 2.1 Implement DevtoolsState Zod schema (`src/schema.ts`)
+- [x] 2. Implement DevtoolsState schema and validation
+  - [x] 2.1 Implement DevtoolsState Zod schema (`src/schema.ts`)
     - Define all devtools-specific sub-schemas: `PrescriptionDispositionSchema`, `RuleConditionResultSchema`, `RuleMatchRecordSchema`, `ContextLockSnapshotSchema`, `PrescriptionAuditSchema`, `AdaptationSummarySchema`, `PrescriptionEntrySchema`, `SecurityAuditRecordSchema`, `OperationalAuditEntrySchema`, `SessionMetadataSchema`
     - Define the top-level `DevtoolsStateSchema` composing `@aura/protocol` schemas with devtools-specific schemas
     - Export the `DevtoolsState` TypeScript type inferred from the schema
@@ -40,8 +40,8 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Test edge cases: empty arrays, optional fields absent, boundary values
     - _Requirements: 1.5, 14.3_
 
-- [ ] 3. Implement DevtoolsClient data access layer
-  - [ ] 3.1 Implement createDevtoolsClient factory (`src/client.ts`)
+- [x] 3. Implement DevtoolsClient data access layer
+  - [x] 3.1 Implement createDevtoolsClient factory (`src/client.ts`)
     - Implement `createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClient`
     - Implement `fetchState()`: GET request, 404 → `DevtoolsSessionNotFoundError`, 400 → `DevtoolsRequestError`, network error → `DevtoolsNetworkError`, schema validation failure → `DevtoolsValidationError`, success → typed `DevtoolsState`
     - Implement `sendConsent(consentPatch)`: POST to `/aura/consent` with `sessionId` and `consentPatch`
@@ -70,11 +70,11 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Test AbortSignal cancellation
     - _Requirements: 14.1–14.10_
 
-- [ ] 4. Checkpoint - Ensure all data layer tests pass
+- [x] 4. Checkpoint - Ensure all data layer tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement server route handler
-  - [ ] 5.1 Implement registerDevtoolsRoute (`src/route.ts`)
+- [x] 5. Implement server route handler
+  - [x] 5.1 Implement registerDevtoolsRoute (`src/route.ts`)
     - Implement `registerDevtoolsRoute(options: RegisterDevtoolsRouteOptions): void`
     - Register `GET /aura/devtools/state` route on the Hono app
     - Validate `sessionId` query parameter presence (400 if missing)
@@ -107,21 +107,21 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Test parallel data fetching from all storage adapters
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.7_
 
-- [ ] 6. Implement inspector view components
-  - [ ] 6.1 Implement SessionSummaryView (`src/components/SessionSummaryView.tsx`)
+- [x] 6. Implement inspector view components
+  - [x] 6.1 Implement SessionSummaryView (`src/components/SessionSummaryView.tsx`)
     - Display sessionId, userId, status (active/rejected), manifestVersion (or "unversioned"), contextSequenceId, and createdAt timestamp
     - Visual indicator distinguishing active from rejected sessions
     - Error state display for session-not-found scenarios
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ] 6.2 Implement ManifestSummaryView (`src/components/ManifestSummaryView.tsx`)
+  - [x] 6.2 Implement ManifestSummaryView (`src/components/ManifestSummaryView.tsx`)
     - Display all surfaces with id, slots, layoutStability strategy, and maxDecisionWait
     - For each surface, list all ManifestComponent entries showing id, variants, riskClass, consent requirements
     - Display human-readable adaptable props constraints summary
     - Empty-state message when manifest has zero surfaces
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ] 6.3 Implement EventLogView (`src/components/EventLogView.tsx`)
+  - [x] 6.3 Implement EventLogView (`src/components/EventLogView.tsx`)
     - Display all AuraEvent records showing type, surfaceId, timestamp, and collapsible payload
     - Display total event count at top
     - Support replayed event distinction via `replayedEventIds` prop
@@ -129,7 +129,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Preserve server-provided ordering without modification
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-  - [ ] 6.4 Implement PrescriptionLogView (`src/components/PrescriptionLogView.tsx`)
+  - [x] 6.4 Implement PrescriptionLogView (`src/components/PrescriptionLogView.tsx`)
     - Display all prescription entries with id, surfaceId, mode, riskClass, manifestVersion, contextLock.sequenceId, disposition, and dispositionTimestamp
     - Visually distinguish accepted/rejected/dropped prescriptions
     - Show adaptation types for each prescription
@@ -138,13 +138,13 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Empty-state message when no prescriptions recorded
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
 
-  - [ ] 6.5 Implement ConsentStateView (`src/components/ConsentStateView.tsx`)
+  - [x] 6.5 Implement ConsentStateView (`src/components/ConsentStateView.tsx`)
     - Display all standard DataClass keys with on/off indicator
     - Visually highlight disabled (false) data classes
     - Treat missing DataClass keys as false
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 6.6 Implement ProfileAttributesView (`src/components/ProfileAttributesView.tsx`)
+  - [x] 6.6 Implement ProfileAttributesView (`src/components/ProfileAttributesView.tsx`)
     - Display all ProfileAttribute objects showing key, value, source/provenance, confidence, dataClass, expiresAt
     - Distinguish inferred from explicit attributes with label/icon
     - Low-confidence indicator for attributes with confidence < 0.5
@@ -153,7 +153,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Empty-state message when no attributes
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [ ] 6.7 Implement RuleMatchesView (`src/components/RuleMatchesView.tsx`)
+  - [x] 6.7 Implement RuleMatchesView (`src/components/RuleMatchesView.tsx`)
     - Display all RuleMatchRecord entries grouped by prescription
     - Show ruleId, matched boolean, per-condition breakdown (path, operator, expected, passed)
     - Display failureReason for non-matching rules
@@ -161,7 +161,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Navigation callback to PrescriptionLogView via prescription id
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-  - [ ] 6.8 Implement FeedbackHistoryView (`src/components/FeedbackHistoryView.tsx`)
+  - [x] 6.8 Implement FeedbackHistoryView (`src/components/FeedbackHistoryView.tsx`)
     - Display all FeedbackEvent records showing prescriptionId, action, timestamp, reason
     - Display in ascending timestamp order
     - Show total feedback count at top
@@ -169,7 +169,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Empty-state message when no feedback
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-  - [ ] 6.9 Implement OperationalAuditView (`src/components/OperationalAuditView.tsx`)
+  - [x] 6.9 Implement OperationalAuditView (`src/components/OperationalAuditView.tsx`)
     - Display one row per prescription attempt or security audit event
     - Show latencyClass, evaluationTime, decisionSource, policyVersion, manifestVersion, dataClassesUsed, disposition
     - Display LLM justification and cloudModelUse consent when decisionSource is "llm"
@@ -177,11 +177,11 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Display SecurityAuditRecord category and sanitized reason
     - _Requirements: 13a.1, 13a.2, 13a.3, 13a.4, 13a.5, 13a.6_
 
-- [ ] 7. Checkpoint - Ensure all inspector view tests pass
+- [x] 7. Checkpoint - Ensure all inspector view tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement simulation tool components
-  - [ ] 8.1 Implement ConsentEditor (`src/components/ConsentEditor.tsx`)
+- [x] 8. Implement simulation tool components
+  - [x] 8.1 Implement ConsentEditor (`src/components/ConsentEditor.tsx`)
     - Toggle UI for each standard DataClass between true/false
     - On toggle, call `DevtoolsClient.sendConsent()` with sessionId and consentPatch
     - Show inline error on failure without updating ConsentStateView
@@ -198,7 +198,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Toggling a DataClass to false then back to true restores original state
     - **Validates: Requirements 10.7**
 
-  - [ ] 8.4 Implement ProfileSimulator (`src/components/ProfileSimulator.tsx`)
+  - [x] 8.4 Implement ProfileSimulator (`src/components/ProfileSimulator.tsx`)
     - Form inputs for key, value, source/provenance, confidence, dataClass
     - Local-only scenario application (not submitted to server profile correction)
     - Validation: reject confidence outside [0,1] or unrecognized DataClass with field-level errors
@@ -210,7 +210,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - For any `ProfileAttribute` with confidence outside [0,1] or unrecognized DataClass, display field-level error and do not submit
     - **Validates: Requirements 11.6**
 
-  - [ ] 8.6 Implement EventReplayer (`src/components/EventReplayer.tsx`)
+  - [x] 8.6 Implement EventReplayer (`src/components/EventReplayer.tsx`)
     - Display fixture event list from props
     - Allow manual AuraEvent payload entry
     - On replay, POST EventsRequest via DevtoolsClient.sendEvent()
@@ -228,7 +228,7 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Replaying the same event twice against identical state produces same disposition and ruleId set
     - **Validates: Requirements 12.6, 17.8**
 
-  - [ ] 8.9 Implement PrescriptionInspector (`src/components/PrescriptionInspector.tsx`)
+  - [x] 8.9 Implement PrescriptionInspector (`src/components/PrescriptionInspector.tsx`)
     - Detail panel showing full prescription breakdown
     - For accepted: fetch and display ExplanationRecord (factors, summary, confidence, userVisible)
     - For rejected: display pipeline stages with first rejecting stage identified
@@ -241,8 +241,8 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Handle explanation 404 gracefully with "Explanation not available" message
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7, 13.7a, 13.8, 13.9, 13.10_
 
-- [ ] 9. Implement DevtoolsPanel container
-  - [ ] 9.1 Implement DevtoolsPanel (`src/components/DevtoolsPanel.tsx`)
+- [x] 9. Implement DevtoolsPanel container
+  - [x] 9.1 Implement DevtoolsPanel (`src/components/DevtoolsPanel.tsx`)
     - Accept props: endpoint, sessionId, fixtureEvents, className
     - On mount: create AbortController, create DevtoolsClient, fetch state
     - Tab-based navigation across all inspector views and simulation tools
@@ -287,10 +287,10 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Attributes rendered are structurally equal; low-confidence indicator for confidence < 0.5; expired indicator for past expiresAt
     - **Validates: Requirements 7.1, 7.3, 7.5, 7.6**
 
-- [ ] 11. Checkpoint - Ensure all component and property tests pass
+- [x] 11. Checkpoint - Ensure all component and property tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Integration tests and final wiring
+- [x] 12. Integration tests and final wiring
   - [ ]* 12.1 Write integration test for devtools endpoint round-trip
     - Create `tests/integration/devtools-endpoint.integration.test.ts`
     - Test full round-trip: registerDevtoolsRoute → HTTP GET → response validation through DevtoolsStateSchema
@@ -309,14 +309,14 @@ Implement the `@aura/devtools` package for the AURA adaptive UI framework. This 
     - Test replay failure error handling
     - _Requirements: 12.2, 12.3, 12.4, 12.5, 12.7_
 
-  - [ ] 12.4 Update barrel exports and verify package boundary
+  - [x] 12.4 Update barrel exports and verify package boundary
     - Verify `src/index.ts` exports all public APIs: `DevtoolsStateSchema`, `DevtoolsState`, `createDevtoolsClient`, `registerDevtoolsRoute`, `DevtoolsPanel`, error classes
     - Verify no imports from `@aura/sdk`, `@aura/react`, `@aura/server`, or `@aura/rules`
     - Verify `react` is peer dependency, not bundled
     - Verify no Node.js built-in imports in browser-targeted code paths
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
 
-- [ ] 13. Final checkpoint - Ensure all tests pass
+- [x] 13. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

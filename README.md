@@ -43,6 +43,229 @@ Run all packages in dev mode:
 pnpm dev
 ```
 
+## Integration Guide
+
+### 1. Set Up the Server
+
+Create a Hono server that mounts the AUIP endpoints and (optionally) the devtools route:
+
+```typescript
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { registerAuipRoutes, createInMemorySessionStore, createInMemoryContextStore, createInMemoryUserModelStore, createInMemoryFeedbackStore, createInMemoryExplanationStore, createInMemoryPrescriptionStore } from "@aura/server";
+import { registerDevtoolsRoute } from "@aura/devtools";
+
+const app = new Hono();
+
+// Create storage (swap for persistent implementations in production)
+const sessionStore = createInMemorySessionStore();
+const contextStore = createInMemoryContextStore();
+const userModelStore = createInMemoryUserModelStore();
+const feedbackStore = createInMemoryFeedbackStore();
+const explanationStore = createInMemoryExplanationStore();
+const prescriptionStore = createInMemoryPrescriptionStore();
+
+// Register AUIP v0 endpoints (9 routes)
+registerAuipRoutes(app, {
+  pipeline: myRulesPipeline, // your @aura/rules pipeline instance
+  sessionStore,
+  contextStore,
+  userModelStore,
+  feedbackStore,
+  explanationStore,
+  prescriptionStore,
+});
+
+// Optional: register devtools endpoint (dev/staging only)
+registerDevtoolsRoute({
+  app,
+  storage: {
+    sessions: sessionStore,
+    events: eventStore,
+    prescriptions: prescriptionStore,
+    consent: consentStore,
+    profile: userModelStore,
+    feedback: feedbackStore,
+    ruleMatches: ruleMatchStore,
+    audit: auditStore,
+    security: securityStore,
+  },
+});
+
+serve({ fetch: app.fetch, port: 3000 });
+```
+
+### 2. Define a Capability Manifest
+
+The manifest declares which surfaces, components, variants, and data classes your app supports:
+
+```typescript
+import type { CapabilityManifest } from "@aura/protocol";
+
+const manifest: CapabilityManifest = {
+  surfaces: [
+    {
+      surfaceId: "product-search",
+      components: [
+        {
+          componentId: "SearchResults",
+          variants: ["grid", "list", "compact"],
+          riskClass: "low",
+          constraints: {
+            requiresConsent: ["personalization"],
+          },
+        },
+        {
+          componentId: "FilterPanel",
+          variants: ["expanded", "collapsed"],
+          riskClass: "low",
+        },
+      ],
+      layoutStability: {
+        strategy: "reserved-space",
+        maxDecisionWaitMs: 200,
+      },
+    },
+  ],
+};
+```
+
+### 3. Integrate with React
+
+Wrap your app in `AuraProvider` and use hooks to consume adaptations:
+
+```tsx
+import { AuraProvider, useAura, usePrescription, useAuraEmit, useAuraFeedback } from "@aura/react";
+
+function App() {
+  return (
+    <AuraProvider
+      endpoint="http://localhost:3000"
+      manifest={manifest}
+      userId="user-123"
+      consentProfile={{ personalization: true, behavior: true }}
+      context={{ page: "search", locale: "en-US" }}
+    >
+      <SearchPage />
+    </AuraProvider>
+  );
+}
+
+function SearchPage() {
+  const { status } = useAura();
+  const emit = useAuraEmit();
+  const prescription = usePrescription("product-search");
+  const feedback = useAuraFeedback();
+
+  // Emit an event when the user interacts
+  const handleSearch = (query: string) => {
+    emit({ type: "search.executed", surfaceId: "product-search", payload: { query } });
+  };
+
+  // Apply the prescription's recommended variant
+  const variant = prescription?.adaptations.find(
+    a => a.type === "componentVariant" && a.componentId === "SearchResults"
+  )?.variant ?? "grid";
+
+  // Send feedback when the user accepts or dismisses
+  const handleAccept = () => {
+    if (prescription) feedback.accept(prescription.id);
+  };
+
+  return (
+    <div>
+      <p>SDK status: {status}</p>
+      <SearchResults variant={variant} onAccept={handleAccept} />
+    </div>
+  );
+}
+```
+
+### 4. Add Devtools (Development Only)
+
+Mount the devtools panel in your app for inspection and simulation:
+
+```tsx
+import { DevtoolsPanel } from "@aura/devtools";
+
+function DevtoolsRoute() {
+  return (
+    <DevtoolsPanel
+      endpoint="http://localhost:3000"
+      sessionId="current-session-id"
+      fixtureEvents={[
+        { name: "Search executed", event: { type: "search.executed", surfaceId: "product-search", timestamp: new Date().toISOString(), payload: { query: "laptop" } } },
+      ]}
+    />
+  );
+}
+```
+
+The devtools panel provides:
+- **Session inspector** — view session metadata, manifest, and context state
+- **Event log** — see all events received by the server in real time
+- **Prescription log** — trace accepted, rejected, and dropped prescriptions
+- **Rule matches** — debug which rules fired and why conditions passed/failed
+- **Consent viewer + editor** — inspect and toggle data-class consent to test gating
+- **Profile simulator** — test attribute scenarios without corrupting real profiles
+- **Event replayer** — replay fixture events to observe the full pipeline end-to-end
+
+### 5. Define Rules
+
+Use `@aura/rules` to define deterministic policies:
+
+```typescript
+import { createRule, createPipeline } from "@aura/rules";
+
+const darkModeRule = createRule({
+  id: "prefer-dark-mode",
+  conditions: [
+    { path: "profile.preferredTheme", operator: "equals", expected: "dark" },
+  ],
+  prescription: {
+    surfaceId: "product-search",
+    mode: "autonomous",
+    adaptations: [
+      { type: "componentVariant", componentId: "SearchResults", variant: "grid" },
+    ],
+  },
+});
+
+const pipeline = createPipeline({ rules: [darkModeRule] });
+```
+
+### Architecture Overview
+
+```
+┌─────────────────────────────────────────────────┐
+│                Host Application                  │
+│  ┌───────────────────────────────────────────┐  │
+│  │   AuraProvider (React context)            │  │
+│  │     ↕ useAura / usePrescription / emit    │  │
+│  └───────────────────────────────────────────┘  │
+└──────────────────────┬──────────────────────────┘
+                       │ HTTP + SSE
+┌──────────────────────▼──────────────────────────┐
+│              @aura/server (Hono)                 │
+│  ┌──────────┐ ┌──────────┐ ┌────────────────┐  │
+│  │ Sessions │ │ Events   │ │ Prescriptions  │  │
+│  │ Context  │ │ Consent  │ │ Stream (SSE)   │  │
+│  │ Profile  │ │ Feedback │ │ Explain        │  │
+│  └──────────┘ └──────────┘ └────────────────┘  │
+│                      ↓                           │
+│  ┌─────────────────────────────────────────────┐│
+│  │  @aura/rules — Policy Evaluation Pipeline  ││
+│  │  Manifest check → Consent gate → Rules     ││
+│  │  → Risk enforcement → Prescription emit    ││
+│  └─────────────────────────────────────────────┘│
+└──────────────────────┬──────────────────────────┘
+                       │ (optional, dev only)
+┌──────────────────────▼──────────────────────────┐
+│         @aura/devtools (React panel)            │
+│  Inspector views · Simulation tools · Audit     │
+└─────────────────────────────────────────────────┘
+```
+
 ## Repository Structure
 
 ```
@@ -63,6 +286,22 @@ pnpm dev
 ├── turbo.json
 ├── pnpm-workspace.yaml
 └── tsconfig.json
+```
+
+## Package Dependencies
+
+```
+@aura/protocol  ← shared types & schemas (no runtime deps)
+    ↑
+@aura/sdk  ← browser client (depends on protocol)
+    ↑
+@aura/react  ← React hooks & provider (depends on sdk + protocol)
+
+@aura/rules  ← policy engine (depends on protocol)
+    ↑
+@aura/server  ← Hono middleware (depends on protocol + rules)
+
+@aura/devtools  ← inspector panel (depends on protocol only)
 ```
 
 ## Status
