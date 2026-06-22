@@ -269,9 +269,7 @@ function SurfaceEntry({ surface }: { surface: ManifestSurface }): React.ReactEle
         )}
       </dl>
 
-      <div style={styles.componentsLabel}>
-        Components ({surface.components.length})
-      </div>
+      <div style={styles.componentsLabel}>Components ({surface.components.length})</div>
       <ul style={styles.componentsList} aria-label={`Components for surface ${surface.surfaceId}`}>
         {surface.components.map((comp) => (
           <ComponentEntry key={comp.componentId} component={comp} />
@@ -291,10 +289,7 @@ export function ManifestSummaryView({ manifest }: ManifestSummaryViewProps): Rea
     );
   }
 
-  const totalComponents = manifest.surfaces.reduce(
-    (sum, s) => sum + s.components.length,
-    0
-  );
+  const totalComponents = manifest.surfaces.reduce((sum, s) => sum + s.components.length, 0);
 
   return (
     <section style={styles.container} aria-label="Manifest summary">

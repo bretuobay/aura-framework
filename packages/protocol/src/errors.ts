@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { z } from "zod";
 
 /**
  * A structured validation error item with a field path and human-readable message.
@@ -29,10 +29,7 @@ export type ValidationResult<T> =
  * @param value - The unknown value to parse
  * @returns A ValidationResult with either the typed data or structured errors
  */
-export function parseSchema<T>(
-  schema: z.ZodType<T>,
-  value: unknown
-): ValidationResult<T> {
+export function parseSchema<T>(schema: z.ZodType<T>, value: unknown): ValidationResult<T> {
   const result = schema.safeParse(value);
   if (result.success) {
     return { success: true, data: result.data };

@@ -1,5 +1,5 @@
-import type { ZodSchema } from 'zod';
-import { AuraValidationError } from './errors.js';
+import type { ZodSchema } from "zod";
+import { AuraValidationError } from "./errors.js";
 
 /** Default request timeout in milliseconds. */
 const DEFAULT_REQUEST_TIMEOUT = 10_000;
@@ -52,10 +52,10 @@ export class HttpTransport {
     }
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (sessionId) {
-      headers['x-aura-session-id'] = sessionId;
+      headers["x-aura-session-id"] = sessionId;
     }
 
     const controller = new AbortController();
@@ -63,7 +63,7 @@ export class HttpTransport {
 
     try {
       const response = await fetch(`${this.endpoint}${path}`, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: JSON.stringify(parseResult.data),
         signal: controller.signal,
@@ -115,7 +115,7 @@ export class HttpTransport {
   ): Promise<TRes | null> {
     const headers: Record<string, string> = {};
     if (sessionId) {
-      headers['x-aura-session-id'] = sessionId;
+      headers["x-aura-session-id"] = sessionId;
     }
 
     const controller = new AbortController();
@@ -123,7 +123,7 @@ export class HttpTransport {
 
     try {
       const response = await fetch(`${this.endpoint}${path}`, {
-        method: 'GET',
+        method: "GET",
         headers,
         signal: controller.signal,
       });

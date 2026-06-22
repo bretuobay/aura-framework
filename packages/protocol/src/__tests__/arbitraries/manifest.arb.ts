@@ -8,12 +8,7 @@ import type {
 import { arbNonEmptyString } from "./primitives.arb.js";
 
 const RiskClasses = ["low", "medium", "high", "critical"] as const;
-const LayoutStrategies = [
-  "none",
-  "reserve-space",
-  "skeleton",
-  "host-default",
-] as const;
+const LayoutStrategies = ["none", "reserve-space", "skeleton", "host-default"] as const;
 
 const DataClassValues = [
   "behavior",
@@ -36,24 +31,18 @@ const DataClassValues = [
  * - strategy "none" or "host-default" may optionally have maxDecisionWaitMs
  */
 export function arbLayoutStability(): fc.Arbitrary<LayoutStability> {
-  return fc
-    .constantFrom(...LayoutStrategies)
-    .chain((strategy) => {
-      if (strategy === "reserve-space" || strategy === "skeleton") {
-        // maxDecisionWaitMs is required for these strategies
-        return fc
-          .integer({ min: 0, max: 5000 })
-          .map((ms) => ({ strategy, maxDecisionWaitMs: ms }));
-      }
-      // maxDecisionWaitMs is optional for "none" and "host-default"
-      return fc
-        .option(fc.integer({ min: 0, max: 5000 }), { nil: undefined })
-        .map((ms) => {
-          const result: LayoutStability = { strategy };
-          if (ms !== undefined) result.maxDecisionWaitMs = ms;
-          return result;
-        });
+  return fc.constantFrom(...LayoutStrategies).chain((strategy) => {
+    if (strategy === "reserve-space" || strategy === "skeleton") {
+      // maxDecisionWaitMs is required for these strategies
+      return fc.integer({ min: 0, max: 5000 }).map((ms) => ({ strategy, maxDecisionWaitMs: ms }));
+    }
+    // maxDecisionWaitMs is optional for "none" and "host-default"
+    return fc.option(fc.integer({ min: 0, max: 5000 }), { nil: undefined }).map((ms) => {
+      const result: LayoutStability = { strategy };
+      if (ms !== undefined) result.maxDecisionWaitMs = ms;
+      return result;
     });
+  });
 }
 
 /**
@@ -68,22 +57,18 @@ export function arbManifestComponent(): fc.Arbitrary<ManifestComponent> {
         .array(arbNonEmptyString(), { minLength: 1, maxLength: 4 })
         .map((arr) => arr as [string, ...string[]]),
       adaptableProps: fc.option(
-        fc.dictionary(
-          fc.string({ minLength: 1, maxLength: 20 }),
-          fc.jsonValue()
-        ),
-        { nil: undefined }
+        fc.dictionary(fc.string({ minLength: 1, maxLength: 20 }), fc.jsonValue()),
+        { nil: undefined },
       ),
       riskClass: fc.constantFrom(...RiskClasses),
       constraints: fc.option(
         fc.record({
-          requiresConsent: fc.option(
-            fc.subarray([...DataClassValues], { minLength: 1 }),
-            { nil: undefined }
-          ),
+          requiresConsent: fc.option(fc.subarray([...DataClassValues], { minLength: 1 }), {
+            nil: undefined,
+          }),
           reversible: fc.option(fc.boolean(), { nil: undefined }),
         }),
-        { nil: undefined }
+        { nil: undefined },
       ),
     })
     .map((obj) => {
@@ -92,8 +77,7 @@ export function arbManifestComponent(): fc.Arbitrary<ManifestComponent> {
         variants: obj.variants,
         riskClass: obj.riskClass,
       };
-      if (obj.adaptableProps !== undefined)
-        result.adaptableProps = obj.adaptableProps;
+      if (obj.adaptableProps !== undefined) result.adaptableProps = obj.adaptableProps;
       if (obj.constraints !== undefined) {
         const constraints: Record<string, unknown> = {};
         if (obj.constraints.requiresConsent !== undefined)
@@ -119,18 +103,16 @@ export function arbManifestSurface(): fc.Arbitrary<ManifestSurface> {
         maxLength: 3,
       }),
       layoutStability: fc.option(arbLayoutStability(), { nil: undefined }),
-      consentRequirements: fc.option(
-        fc.subarray([...DataClassValues], { minLength: 1 }),
-        { nil: undefined }
-      ),
+      consentRequirements: fc.option(fc.subarray([...DataClassValues], { minLength: 1 }), {
+        nil: undefined,
+      }),
     })
     .map((obj) => {
       const result: Record<string, unknown> = {
         surfaceId: obj.surfaceId,
         components: obj.components,
       };
-      if (obj.layoutStability !== undefined)
-        result.layoutStability = obj.layoutStability;
+      if (obj.layoutStability !== undefined) result.layoutStability = obj.layoutStability;
       if (obj.consentRequirements !== undefined)
         result.consentRequirements = obj.consentRequirements;
       return result as ManifestSurface;

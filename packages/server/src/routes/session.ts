@@ -25,10 +25,7 @@ export function createSessionHandler(deps: {
     try {
       body = await c.req.json();
     } catch {
-      return c.json(
-        { errors: [{ field: "body", message: "Invalid JSON" }] },
-        400
-      );
+      return c.json({ errors: [{ field: "body", message: "Invalid JSON" }] }, 400);
     }
 
     // 2. Validate with SessionRequestSchema

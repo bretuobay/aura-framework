@@ -93,7 +93,7 @@ export const arbInvalidProfileAttribute = fc.oneof(
     confidence: fc.double({ min: 0, max: 1, noNaN: true }),
     dataClass: fc.constantFrom(...dataClasses),
     expiresAt: fc.constant(undefined),
-  })
+  }),
 );
 
 /**
@@ -118,7 +118,7 @@ const arbProfileCorrectionCorrect = fc.record({
  */
 export const arbProfileCorrection: fc.Arbitrary<ProfileCorrection> = fc.oneof(
   arbProfileCorrectionRemove,
-  arbProfileCorrectionCorrect
+  arbProfileCorrectionCorrect,
 );
 
 /**
@@ -146,5 +146,5 @@ export const arbInvalidProfileCorrection = fc.oneof(
   fc.record({
     action: fc.constant("update" as unknown as "remove"),
     attributeId: fc.string({ minLength: 1, maxLength: 36 }),
-  })
+  }),
 );

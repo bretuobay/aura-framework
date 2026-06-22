@@ -1,19 +1,19 @@
 // Feature: aura-react, Property 5: Surface Isolation
 // **Validates: Requirements 5.10, 9.1, 9.2, 12.5**
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React, { useRef } from 'react';
-import { render, act, cleanup } from '@testing-library/react';
-import { arbUIPrescription } from '../arbitraries/prescription.arbitrary';
-import type { UIPrescription } from '@aura/protocol';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React, { useRef } from "react";
+import { render, act, cleanup } from "@testing-library/react";
+import { arbUIPrescription } from "../arbitraries/prescription.arbitrary";
+import type { UIPrescription } from "@aura/protocol";
 
 // Track subscriptions per surfaceId for controlled delivery
 const subscriptions = new Map<string, (p: UIPrescription | undefined) => void>();
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => ({
-    status: 'active',
+    status: "active",
     init: vi.fn(() => Promise.resolve()),
     disconnect: vi.fn(),
     emit: vi.fn(),
@@ -28,19 +28,19 @@ vi.mock('@aura/sdk', () => ({
   })),
 }));
 
-import { AuraProvider } from '../../src/AuraProvider';
-import { usePrescription } from '../../src/usePrescription';
+import { AuraProvider } from "../../src/AuraProvider";
+import { usePrescription } from "../../src/usePrescription";
 
 // Minimal valid provider props
 const defaultProps = {
-  endpoint: 'https://aura.test/api',
+  endpoint: "https://aura.test/api",
   manifest: {
-    appId: 'test-app',
-    version: '1.0.0',
-    surfaces: [{ surfaceId: 'test', components: [] }],
+    appId: "test-app",
+    version: "1.0.0",
+    surfaces: [{ surfaceId: "test", components: [] }],
   },
-  userId: 'user-1',
-  consentProfile: { level: 'full' as const },
+  userId: "user-1",
+  consentProfile: { level: "full" as const },
   context: {},
 };
 
@@ -67,19 +67,16 @@ function PrescriptionConsumer({
   return null;
 }
 
-describe('Property 5: Surface Isolation', () => {
+describe("Property 5: Surface Isolation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     subscriptions.clear();
   });
 
-  it('prescription delivery to s1 does not re-render component subscribed to s2', async () => {
+  it("prescription delivery to s1 does not re-render component subscribed to s2", async () => {
     // Generate pairs of distinct surfaceIds
     const arbDistinctSurfaceIds = fc
-      .tuple(
-        fc.string({ minLength: 1, maxLength: 20 }),
-        fc.string({ minLength: 1, maxLength: 20 }),
-      )
+      .tuple(fc.string({ minLength: 1, maxLength: 20 }), fc.string({ minLength: 1, maxLength: 20 }))
       .filter(([a, b]) => a !== b);
 
     await fc.assert(
@@ -104,13 +101,21 @@ describe('Property 5: Surface Isolation', () => {
                 defaultProps,
                 React.createElement(PrescriptionConsumer, {
                   surfaceId: s1,
-                  onRender: (count: number) => { s1RenderCount = count; },
-                  onPrescription: (p: UIPrescription | undefined) => { s1Prescription = p; },
+                  onRender: (count: number) => {
+                    s1RenderCount = count;
+                  },
+                  onPrescription: (p: UIPrescription | undefined) => {
+                    s1Prescription = p;
+                  },
                 }),
                 React.createElement(PrescriptionConsumer, {
                   surfaceId: s2,
-                  onRender: (count: number) => { s2RenderCount = count; },
-                  onPrescription: (p: UIPrescription | undefined) => { s2Prescription = p; },
+                  onRender: (count: number) => {
+                    s2RenderCount = count;
+                  },
+                  onPrescription: (p: UIPrescription | undefined) => {
+                    s2Prescription = p;
+                  },
                 }),
               ),
             );

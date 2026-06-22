@@ -4,9 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import { PrescriptionLogView } from "../../../src/components/PrescriptionLogView";
 import type { PrescriptionEntry } from "../../../src/schema";
 
-function makePrescription(
-  overrides: Partial<PrescriptionEntry> = {}
-): PrescriptionEntry {
+function makePrescription(overrides: Partial<PrescriptionEntry> = {}): PrescriptionEntry {
   return {
     id: "rx-001",
     surfaceId: "surface-main",
@@ -32,7 +30,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
     expect(screen.getByText("No prescriptions recorded")).toBeTruthy();
   });
@@ -54,7 +52,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     expect(screen.getByText("rx-test-123")).toBeTruthy();
@@ -71,7 +69,11 @@ describe("PrescriptionLogView", () => {
     const prescriptions = [
       makePrescription({ id: "rx-a", disposition: "accepted" }),
       makePrescription({ id: "rx-r", disposition: "rejected", rejectionReason: "consent revoked" }),
-      makePrescription({ id: "rx-d", disposition: "dropped", dropReason: "expired before delivery" }),
+      makePrescription({
+        id: "rx-d",
+        disposition: "dropped",
+        dropReason: "expired before delivery",
+      }),
     ];
     const onSelect = vi.fn();
     const { container } = render(
@@ -79,7 +81,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={prescriptions}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     const listItems = container.querySelectorAll("li");
@@ -105,7 +107,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     expect(screen.getByText("rank")).toBeTruthy();
@@ -124,7 +126,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     expect(screen.getByText("Rejected: consent revoked")).toBeTruthy();
@@ -142,15 +144,11 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     // Should show both sequence IDs
-    expect(
-      screen.getByText(
-        /prescription sequenceId:\s*3.*session sequenceId:\s*10/
-      )
-    ).toBeTruthy();
+    expect(screen.getByText(/prescription sequenceId:\s*3.*session sequenceId:\s*10/)).toBeTruthy();
   });
 
   it("displays manifest mismatch info for rejected prescriptions", () => {
@@ -165,12 +163,10 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
-    expect(
-      screen.getByText(/Manifest mismatch.*prescription version: 1\.0\.0/)
-    ).toBeTruthy();
+    expect(screen.getByText(/Manifest mismatch.*prescription version: 1\.0\.0/)).toBeTruthy();
   });
 
   it("calls onSelectPrescription with the prescription id when clicked", () => {
@@ -181,7 +177,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     const entry = screen.getByRole("button", {
@@ -199,7 +195,7 @@ describe("PrescriptionLogView", () => {
         prescriptions={[rx]}
         sessionContextSequenceId={10}
         onSelectPrescription={onSelect}
-      />
+      />,
     );
 
     const entry = screen.getByRole("button", {

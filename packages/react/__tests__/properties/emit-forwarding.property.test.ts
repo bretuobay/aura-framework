@@ -3,15 +3,15 @@
 //
 // For any valid AuraEvent, verify client.emit receives structurally equal event.
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React from 'react';
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { arbAuraEvent } from '../arbitraries/event.arbitrary';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React from "react";
+import { renderHook, act, waitFor } from "@testing-library/react";
+import { arbAuraEvent } from "../arbitraries/event.arbitrary";
 
 // ─── Mock client ───────────────────────────────────────────────────────────────
 const mockClient = {
-  status: 'active' as const,
+  status: "active" as const,
   init: vi.fn(() => Promise.resolve()),
   disconnect: vi.fn(),
   emit: vi.fn(() => Promise.resolve()),
@@ -30,33 +30,37 @@ const mockClient = {
 };
 
 // ─── Mock @aura/sdk ────────────────────────────────────────────────────────────
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => mockClient),
 }));
 
 // ─── Import components under test (after mock setup) ───────────────────────────
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAuraEmit } from '../../src/useAuraEmit';
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAuraEmit } from "../../src/useAuraEmit";
 
 // ─── Wrapper helper ────────────────────────────────────────────────────────────
 function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(AuraProvider, {
-      endpoint: 'https://aura.test/api',
-      manifest: { surfaces: [], capabilities: [] },
-      userId: 'test-user',
-      consentProfile: {},
-      context: {},
-    }, children);
+    return React.createElement(
+      AuraProvider,
+      {
+        endpoint: "https://aura.test/api",
+        manifest: { surfaces: [], capabilities: [] },
+        userId: "test-user",
+        consentProfile: {},
+        context: {},
+      },
+      children,
+    );
   };
 }
 
-describe('Property 2: Emit Forwarding', () => {
+describe("Property 2: Emit Forwarding", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('for any valid AuraEvent, client.emit receives a structurally equal event', async () => {
+  it("for any valid AuraEvent, client.emit receives a structurally equal event", async () => {
     // Render the hook once, wait for the provider to finish init and
     // re-render with the client available in context.
     const { result, unmount } = renderHook(() => useAuraEmit(), {
@@ -92,7 +96,7 @@ describe('Property 2: Emit Forwarding', () => {
         const receivedEvent = mockClient.emit.mock.calls[0][0];
         expect(receivedEvent).toEqual(event);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
 
     unmount();

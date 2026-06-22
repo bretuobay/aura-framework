@@ -29,14 +29,32 @@ export { createInMemoryExplanationStore } from "./storage/memory/explanation-sto
 export { createInMemoryPrescriptionStore } from "./storage/memory/prescription-store.js";
 
 // Configuration types
-export type { AuraServerConfig, LatencyBudgetConfig, SecurityPolicyConfig, IRulesPipeline } from "./types/config.types.js";
+export type {
+  AuraServerConfig,
+  LatencyBudgetConfig,
+  SecurityPolicyConfig,
+  IRulesPipeline,
+} from "./types/config.types.js";
 
 // Internal types (re-exported for consumer convenience)
 export type { SessionRecord, RulesPipelineInput } from "./types/internal.types.js";
 
 // Service interfaces (for advanced use cases)
-export type { ICapabilityRegistry, CapabilityValidationResult, CapabilityError } from "./services/capability-registry.js";
+export type {
+  ICapabilityRegistry,
+  CapabilityValidationResult,
+  CapabilityError,
+} from "./services/capability-registry.js";
 export type { IConsentEnforcer } from "./services/consent-enforcer.js";
 export type { IStreamRegistry, SSEConnection } from "./services/stream-registry.js";
-export type { IPrescriptionEmitter, EmissionContext, EmitResult, RejectionReason } from "./services/prescription-emitter.js";
-export type { ISecurityAuditor, SecurityScanResult, SecurityAuditRecord } from "./services/security-auditor.js";
+export type {
+  IPrescriptionEmitter,
+  EmissionContext,
+  EmitResult,
+  RejectionReason,
+} from "./services/prescription-emitter.js";
+export type {
+  ISecurityAuditor,
+  SecurityScanResult,
+  SecurityAuditRecord,
+} from "./services/security-auditor.js";

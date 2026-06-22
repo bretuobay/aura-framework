@@ -26,10 +26,7 @@ export function createCorrectionHandler(deps: {
     try {
       body = await c.req.json();
     } catch {
-      return c.json(
-        { errors: [{ field: "body", message: "Invalid JSON" }] },
-        400
-      );
+      return c.json({ errors: [{ field: "body", message: "Invalid JSON" }] }, 400);
     }
 
     // 2. Validate with ProfileCorrectionRequestSchema
@@ -53,7 +50,7 @@ export function createCorrectionHandler(deps: {
     // 4. Check correction eligibility via SecurityAuditor
     const eligible = securityAuditor.isCorrectionEligible(
       data.correction.attributeId,
-      securityPolicy
+      securityPolicy,
     );
     if (!eligible) {
       return c.json({ message: "Correction not permitted for this attribute" }, 403);
@@ -62,7 +59,7 @@ export function createCorrectionHandler(deps: {
     // 5. Get existing attribute
     const existingAttr = await userModelStore.getAttribute(
       session.userId,
-      data.correction.attributeId
+      data.correction.attributeId,
     );
     if (!existingAttr) {
       return c.json({ message: "Attribute not found" }, 404);

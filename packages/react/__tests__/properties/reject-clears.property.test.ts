@@ -1,19 +1,19 @@
 // Feature: aura-react, Property 7: Reject Clears Prescription
 // **Validates: Requirements 5.5, 12.9**
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React from 'react';
-import { render, act, cleanup } from '@testing-library/react';
-import { arbUIPrescription } from '../arbitraries/prescription.arbitrary';
-import type { UIPrescription } from '@aura/protocol';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React from "react";
+import { render, act, cleanup } from "@testing-library/react";
+import { arbUIPrescription } from "../arbitraries/prescription.arbitrary";
+import type { UIPrescription } from "@aura/protocol";
 
 // Track subscription listener for the surface under test
 let subscriptionListener: ((p: UIPrescription | undefined) => void) | null = null;
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => ({
-    status: 'active',
+    status: "active",
     init: vi.fn(() => Promise.resolve()),
     disconnect: vi.fn(),
     emit: vi.fn(),
@@ -28,19 +28,19 @@ vi.mock('@aura/sdk', () => ({
   })),
 }));
 
-import { AuraProvider } from '../../src/AuraProvider';
-import { usePrescription } from '../../src/usePrescription';
+import { AuraProvider } from "../../src/AuraProvider";
+import { usePrescription } from "../../src/usePrescription";
 
 // Minimal valid provider props
 const defaultProps = {
-  endpoint: 'https://aura.test/api',
+  endpoint: "https://aura.test/api",
   manifest: {
-    appId: 'test-app',
-    version: '1.0.0',
-    surfaces: [{ surfaceId: 'test-surface', components: [] }],
+    appId: "test-app",
+    version: "1.0.0",
+    surfaces: [{ surfaceId: "test-surface", components: [] }],
   },
-  userId: 'user-1',
-  consentProfile: { level: 'full' as const },
+  userId: "user-1",
+  consentProfile: { level: "full" as const },
   context: {},
 };
 
@@ -59,13 +59,13 @@ function PrescriptionConsumer({
   return null;
 }
 
-describe('Property 7: Reject Clears Prescription', () => {
+describe("Property 7: Reject Clears Prescription", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     subscriptionListener = null;
   });
 
-  it('after delivering undefined, hook returns undefined regardless of prior prescription sequence', async () => {
+  it("after delivering undefined, hook returns undefined regardless of prior prescription sequence", async () => {
     await fc.assert(
       fc.asyncProperty(
         // Generate a sequence of 1-5 prescriptions to deliver before the undefined
@@ -82,7 +82,7 @@ describe('Property 7: Reject Clears Prescription', () => {
                 AuraProvider,
                 defaultProps,
                 React.createElement(PrescriptionConsumer, {
-                  surfaceId: 'test-surface',
+                  surfaceId: "test-surface",
                   onPrescription: (p: UIPrescription | undefined) => {
                     currentPrescription = p;
                   },

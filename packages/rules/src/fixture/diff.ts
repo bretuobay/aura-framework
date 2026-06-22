@@ -12,10 +12,7 @@ import type { PrescriptionMatcher } from "../schema/fixture.schema.js";
  * Generates a diff string showing expected matchers and actual output prescriptions
  * for a failed fixture test.
  */
-export function generateDiff(
-  expected: PrescriptionMatcher[],
-  actual: UIPrescription[]
-): string {
+export function generateDiff(expected: PrescriptionMatcher[], actual: UIPrescription[]): string {
   const lines: string[] = [];
 
   lines.push("── Expected ──────────────────────────────────────────");
@@ -73,9 +70,7 @@ function formatExpectedMatcher(matcher: PrescriptionMatcher): string {
  * Formats a UIPrescription into a readable summary for diff output.
  */
 function formatActualPrescription(prescription: UIPrescription): string {
-  const adaptationTypes = prescription.adaptations
-    .map((a) => a.type)
-    .join(", ");
+  const adaptationTypes = prescription.adaptations.map((a) => a.type).join(", ");
 
   return (
     `{ id: "${prescription.id}", ` +

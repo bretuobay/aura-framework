@@ -2,7 +2,7 @@
  * Structured log entry for the SDK's internal circular log buffer.
  */
 export interface AuraLogEntry {
-  level: 'error' | 'warn';
+  level: "error" | "warn";
   timestamp: string; // ISO 8601
   code: string;
   message: string;
@@ -29,7 +29,7 @@ export class LogBuffer {
    * Adds a timestamped log entry to the buffer.
    * If the buffer is full, the oldest entry is evicted.
    */
-  log(entry: Omit<AuraLogEntry, 'timestamp'>): void {
+  log(entry: Omit<AuraLogEntry, "timestamp">): void {
     const timestampedEntry: AuraLogEntry = {
       ...entry,
       timestamp: new Date().toISOString(),

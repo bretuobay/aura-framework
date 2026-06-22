@@ -1,7 +1,19 @@
 // Barrel re-export of all arbitrary generators
 
-export { arbISOTimestamp, arbNonISOString, arbNonEmptyString, arbConfidence, arbContextSequenceId, arbInvalidEnumValue } from "./primitives.arb.js";
-export { arbCapabilityManifest, arbManifestSurface, arbManifestComponent, arbLayoutStability } from "./manifest.arb.js";
+export {
+  arbISOTimestamp,
+  arbNonISOString,
+  arbNonEmptyString,
+  arbConfidence,
+  arbContextSequenceId,
+  arbInvalidEnumValue,
+} from "./primitives.arb.js";
+export {
+  arbCapabilityManifest,
+  arbManifestSurface,
+  arbManifestComponent,
+  arbLayoutStability,
+} from "./manifest.arb.js";
 export { arbAuraEvent } from "./event.arb.js";
 export { arbContextModel } from "./context.arb.js";
 export { arbUIPrescription, arbContextLock, arbAdaptationGroup } from "./prescription.arb.js";

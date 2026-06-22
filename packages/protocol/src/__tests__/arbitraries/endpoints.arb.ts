@@ -47,8 +47,7 @@ function arbSessionRequest(): fc.Arbitrary<SessionRequest> {
         consentProfile: obj.consentProfile,
         context: obj.context,
       };
-      if (obj.contextSequenceId !== undefined)
-        result.contextSequenceId = obj.contextSequenceId;
+      if (obj.contextSequenceId !== undefined) result.contextSequenceId = obj.contextSequenceId;
       return result as SessionRequest;
     });
 }
@@ -67,8 +66,7 @@ function arbEventsRequest(): fc.Arbitrary<EventsRequest> {
         sessionId: obj.sessionId,
         events: obj.events,
       };
-      if (obj.contextSequenceId !== undefined)
-        result.contextSequenceId = obj.contextSequenceId;
+      if (obj.contextSequenceId !== undefined) result.contextSequenceId = obj.contextSequenceId;
       return result as EventsRequest;
     });
 }
@@ -139,9 +137,7 @@ function arbProfileCorrectionRequest(): fc.Arbitrary<ProfileCorrectionRequest> {
  * Generates a valid endpoint request based on the endpoint name.
  * Supports all 9 AUIP v0 endpoints.
  */
-export function arbEndpointRequest(
-  endpoint: EndpointName
-): fc.Arbitrary<unknown> {
+export function arbEndpointRequest(endpoint: EndpointName): fc.Arbitrary<unknown> {
   switch (endpoint) {
     case "session":
       return arbSessionRequest();

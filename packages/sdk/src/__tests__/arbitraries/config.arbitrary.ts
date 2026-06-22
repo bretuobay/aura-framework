@@ -3,19 +3,9 @@
  * Produces values conforming to (or intentionally violating) @aura/protocol schemas.
  */
 import fc from "fast-check";
-import type {
-  AuraClientConfig,
-  AuraClientOptions,
-} from "../../types.js";
-import type {
-  CapabilityManifest,
-  ConsentProfile,
-  ContextModel,
-} from "@aura/protocol";
-import {
-  arbCapabilityManifest,
-  arbManifestSurface,
-} from "./manifest.arbitrary.js";
+import type { AuraClientConfig, AuraClientOptions } from "../../types.js";
+import type { CapabilityManifest, ConsentProfile, ContextModel } from "@aura/protocol";
+import { arbCapabilityManifest, arbManifestSurface } from "./manifest.arbitrary.js";
 import { arbConsentProfile } from "./consent.arbitrary.js";
 import { arbContextModel } from "./context.arbitrary.js";
 
@@ -30,7 +20,7 @@ export const arbAuraClientOptions: fc.Arbitrary<AuraClientOptions> = fc.record(
     expiryCheckInterval: fc.integer({ min: 1000, max: 30000 }),
     requestTimeout: fc.integer({ min: 1000, max: 60000 }),
   },
-  { requiredKeys: [] }
+  { requiredKeys: [] },
 );
 
 // =============================================================================
@@ -41,21 +31,17 @@ export const arbValidEndpoint: fc.Arbitrary<string> = fc.oneof(
   fc
     .tuple(
       fc.stringMatching(/^[a-z][a-z0-9-]{0,20}$/),
-      fc.constantFrom(".example.com", ".aura.io", ".local.dev")
+      fc.constantFrom(".example.com", ".aura.io", ".local.dev"),
     )
     .map(([sub, domain]) => `https://${sub}${domain}`),
-  fc
-    .integer({ min: 3000, max: 9999 })
-    .map((port) => `http://localhost:${port}`)
+  fc.integer({ min: 3000, max: 9999 }).map((port) => `http://localhost:${port}`),
 );
 
 // =============================================================================
 // Valid userId strings
 // =============================================================================
 
-export const arbValidUserId: fc.Arbitrary<string> = fc.stringMatching(
-  /^[a-zA-Z0-9_-]{1,64}$/
-);
+export const arbValidUserId: fc.Arbitrary<string> = fc.stringMatching(/^[a-zA-Z0-9_-]{1,64}$/);
 
 // =============================================================================
 // Valid AuraClientConfig
@@ -68,7 +54,7 @@ export const arbValidAuraClientConfig: fc.Arbitrary<AuraClientConfig> = fc
     arbValidUserId,
     arbConsentProfile,
     arbContextModel,
-    fc.option(arbAuraClientOptions, { nil: undefined })
+    fc.option(arbAuraClientOptions, { nil: undefined }),
   )
   .map(([endpoint, manifest, userId, consentProfile, context, options]) => {
     const config: AuraClientConfig = {

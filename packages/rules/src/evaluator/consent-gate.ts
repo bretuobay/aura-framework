@@ -10,11 +10,7 @@
  * - 5.3: Empty ConsentProfile treats all DataClasses as unconsented
  */
 
-import type {
-  CandidatePrescription,
-  ConsentProfile,
-  DataClass,
-} from "../schema/types.js";
+import type { CandidatePrescription, ConsentProfile, DataClass } from "../schema/types.js";
 
 /**
  * Determines whether a candidate prescription has consent for all its
@@ -27,10 +23,7 @@ import type {
  * A candidate is blocked if:
  * - Any DataClass in audit.dataClassesUsed is `false` or absent in the consent profile
  */
-function hasConsent(
-  candidate: CandidatePrescription,
-  consent: ConsentProfile
-): boolean {
+function hasConsent(candidate: CandidatePrescription, consent: ConsentProfile): boolean {
   const requiredClasses = candidate.audit.dataClassesUsed;
 
   // No required consent — always passes (Req 5.2)
@@ -40,9 +33,7 @@ function hasConsent(
 
   // Check each required DataClass is explicitly true in the consent profile
   // If absent or false, consent is not granted (Req 5.1, 5.3)
-  return requiredClasses.every(
-    (dataClass: DataClass) => consent[dataClass] === true
-  );
+  return requiredClasses.every((dataClass: DataClass) => consent[dataClass] === true);
 }
 
 /**
@@ -59,7 +50,7 @@ function hasConsent(
  */
 export function filterByConsent(
   candidates: CandidatePrescription[],
-  consent: ConsentProfile
+  consent: ConsentProfile,
 ): CandidatePrescription[] {
   return candidates.filter((candidate) => hasConsent(candidate, consent));
 }

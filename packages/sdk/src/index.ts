@@ -6,7 +6,7 @@
  */
 
 // ─── Factory ─────────────────────────────────────────────────────────────────
-export { createAuraClient } from './client.js';
+export { createAuraClient } from "./client.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export type {
@@ -15,7 +15,7 @@ export type {
   AuraClientOptions,
   PrescriptionListener,
   AuraLogEntry,
-} from './types.js';
+} from "./types.js";
 
 // ─── Errors ──────────────────────────────────────────────────────────────────
 export {
@@ -24,4 +24,4 @@ export {
   AuraClientError,
   ErrorCodes,
   type ErrorCode,
-} from './errors.js';
+} from "./errors.js";

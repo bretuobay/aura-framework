@@ -6,9 +6,9 @@
  * no-op that resolves immediately). Never throws during the render phase.
  */
 
-import { useContext, useCallback } from 'react';
-import { AuraContext } from './AuraContext';
-import type { FeedbackEvent } from '@aura/protocol';
+import { useContext, useCallback } from "react";
+import { AuraContext } from "./AuraContext";
+import type { FeedbackEvent } from "@aura/protocol";
 
 /**
  * Get a stable feedback submission function from context.

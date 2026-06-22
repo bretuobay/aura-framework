@@ -16,9 +16,7 @@ export const Demo_Rules: Rule[] = [
     id: "demo-filter-highlight",
     priority: 10,
     riskClass: "low",
-    conditions: [
-      { path: "events.type", operator: "eq", value: "search.submitted" },
-    ],
+    conditions: [{ path: "events.type", operator: "eq", value: "search.submitted" }],
     actions: [
       {
         adaptationType: "filter",
@@ -33,8 +31,7 @@ export const Demo_Rules: Rule[] = [
     ],
     requiredConsent: ["behavior"],
     metadata: {
-      explanationSummary:
-        "Highlighting relevant filters based on your search behavior",
+      explanationSummary: "Highlighting relevant filters based on your search behavior",
       explanationFactors: ["search query", "category interest"],
       userVisible: true,
       decisionSource: "rules",
@@ -67,8 +64,7 @@ export const Demo_Rules: Rule[] = [
     ],
     requiredConsent: ["personalization"],
     metadata: {
-      explanationSummary:
-        "Switching to comparison view based on your browsing pattern",
+      explanationSummary: "Switching to comparison view based on your browsing pattern",
       explanationFactors: ["compare intent signal", "product views"],
       userVisible: true,
       decisionSource: "rules",
@@ -80,9 +76,7 @@ export const Demo_Rules: Rule[] = [
     id: "demo-passive-explanation",
     priority: 5,
     riskClass: "low",
-    conditions: [
-      { path: "events.type", operator: "eq", value: "surface.viewed" },
-    ],
+    conditions: [{ path: "events.type", operator: "eq", value: "surface.viewed" }],
     actions: [
       {
         adaptationType: "content",
@@ -95,13 +89,8 @@ export const Demo_Rules: Rule[] = [
       },
     ],
     metadata: {
-      explanationSummary:
-        "Showing a personalization notice to keep you informed",
-      explanationFactors: [
-        "active personalization rules",
-        "consent status",
-        "session behavior",
-      ],
+      explanationSummary: "Showing a personalization notice to keep you informed",
+      explanationFactors: ["active personalization rules", "consent status", "session behavior"],
       userVisible: true,
       decisionSource: "rules",
     },
@@ -112,9 +101,7 @@ export const Demo_Rules: Rule[] = [
     id: "demo-suppressible-recommendation",
     priority: 15,
     riskClass: "low",
-    conditions: [
-      { path: "events.type", operator: "eq", value: "search.submitted" },
-    ],
+    conditions: [{ path: "events.type", operator: "eq", value: "search.submitted" }],
     actions: [
       {
         adaptationType: "rank",
@@ -128,8 +115,7 @@ export const Demo_Rules: Rule[] = [
     ],
     requiredConsent: ["behavior"],
     metadata: {
-      explanationSummary:
-        "Boosting recently viewed items in your search results",
+      explanationSummary: "Boosting recently viewed items in your search results",
       explanationFactors: ["recently viewed products", "search relevance"],
       userVisible: true,
       decisionSource: "rules",

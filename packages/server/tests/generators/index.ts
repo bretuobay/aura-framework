@@ -1,7 +1,4 @@
-export {
-  arbSessionRequest,
-  arbInvalidSessionRequest,
-} from "./session.gen.js";
+export { arbSessionRequest, arbInvalidSessionRequest } from "./session.gen.js";
 
 export {
   arbAuraEvent,
@@ -24,15 +21,9 @@ export {
   arbInvalidConsentRequest,
 } from "./consent.gen.js";
 
-export {
-  arbUIPrescription,
-  arbInvalidUIPrescription,
-} from "./prescriptions.gen.js";
+export { arbUIPrescription, arbInvalidUIPrescription } from "./prescriptions.gen.js";
 
-export {
-  arbFeedbackEvent,
-  arbInvalidFeedbackEvent,
-} from "./feedback.gen.js";
+export { arbFeedbackEvent, arbInvalidFeedbackEvent } from "./feedback.gen.js";
 
 export {
   arbProfileAttribute,
@@ -41,7 +32,4 @@ export {
   arbInvalidProfileCorrection,
 } from "./profile.gen.js";
 
-export {
-  arbCapabilityManifest,
-  arbInvalidManifest,
-} from "./manifest.gen.js";
+export { arbCapabilityManifest, arbInvalidManifest } from "./manifest.gen.js";

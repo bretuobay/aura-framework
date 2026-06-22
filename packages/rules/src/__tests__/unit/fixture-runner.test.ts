@@ -49,9 +49,7 @@ function makeRule(overrides: Partial<Rule> = {}): Rule {
     id: "rule-filter-highlight",
     priority: 10,
     riskClass: "low",
-    conditions: [
-      { path: "events.type", operator: "eq", value: "surface.viewed" },
-    ],
+    conditions: [{ path: "events.type", operator: "eq", value: "surface.viewed" }],
     actions: [
       {
         adaptationType: "filter",
@@ -215,9 +213,7 @@ describe("matchPrescriptions", () => {
 
     it("fails when one of the combined fields does not match", () => {
       const output = [makePrescription({ surfaceId: "search-results", mode: "recommend" })];
-      const expected: PrescriptionMatcher[] = [
-        { surfaceId: "search-results", mode: "autoApply" },
-      ];
+      const expected: PrescriptionMatcher[] = [{ surfaceId: "search-results", mode: "autoApply" }];
       const result = matchPrescriptions(output, expected);
       expect(result.matched).toBe(false);
     });

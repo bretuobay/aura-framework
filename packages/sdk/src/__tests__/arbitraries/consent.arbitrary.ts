@@ -28,7 +28,7 @@ export const arbConsentProfile: fc.Arbitrary<ConsentProfile> = fc
           profile[key] = values[i];
         });
         return profile;
-      })
+      }),
   );
 
 /**
@@ -48,7 +48,7 @@ export const arbNonEmptyConsentProfile: fc.Arbitrary<ConsentProfile> = fc
           profile[key] = values[i];
         });
         return profile;
-      })
+      }),
   );
 
 /**
@@ -108,7 +108,7 @@ export const arbMixedConsentPatch: fc.Arbitrary<ConsentProfile> = fc
           patch[key] = values[i];
         });
         return patch;
-      })
+      }),
   );
 
 /**
@@ -119,9 +119,7 @@ export const arbMixedConsentPatch: fc.Arbitrary<ConsentProfile> = fc
 export const arbRevokedDataClassWithPatch: fc.Arbitrary<{
   revokedClass: DataClass;
   patch: ConsentProfile;
-}> = fc
-  .constantFrom(...DATA_CLASSES)
-  .map((revokedClass) => ({
-    revokedClass,
-    patch: { [revokedClass]: false } as ConsentProfile,
-  }));
+}> = fc.constantFrom(...DATA_CLASSES).map((revokedClass) => ({
+  revokedClass,
+  patch: { [revokedClass]: false } as ConsentProfile,
+}));

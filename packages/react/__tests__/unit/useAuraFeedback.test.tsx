@@ -11,13 +11,13 @@
  * - Works in degraded/idle state (delegates to client which handles gracefully)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
+import { renderHook, act } from "@testing-library/react";
 
 // ─── Mock client ───────────────────────────────────────────────────────────────
 const mockClient = {
-  status: 'active' as const,
+  status: "active" as const,
   init: vi.fn(() => Promise.resolve()),
   disconnect: vi.fn(),
   emit: vi.fn(() => Promise.resolve()),
@@ -36,46 +36,50 @@ const mockClient = {
 };
 
 // ─── Mock @aura/sdk ────────────────────────────────────────────────────────────
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => mockClient),
 }));
 
 // ─── Import after mock setup ──────────────────────────────────────────────────
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAuraFeedback } from '../../src/useAuraFeedback';
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAuraFeedback } from "../../src/useAuraFeedback";
 
 // ─── Wrapper that provides AuraProvider context ────────────────────────────────
 function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(AuraProvider, {
-      endpoint: 'https://aura.test/api',
-      manifest: { surfaces: [], capabilities: [] },
-      userId: 'test-user',
-      consentProfile: {},
-      context: {},
-    }, children);
+    return React.createElement(
+      AuraProvider,
+      {
+        endpoint: "https://aura.test/api",
+        manifest: { surfaces: [], capabilities: [] },
+        userId: "test-user",
+        consentProfile: {},
+        context: {},
+      },
+      children,
+    );
   };
 }
 
-describe('useAuraFeedback', () => {
+describe("useAuraFeedback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockClient.status = 'active' as any;
+    mockClient.status = "active" as any;
     mockClient.feedback.mockImplementation(() => Promise.resolve());
     mockClient.init.mockImplementation(() => Promise.resolve());
   });
 
   // ─── Requirement 6.1: Returns a function ─────────────────────────────────────
-  it('returns a function', () => {
+  it("returns a function", () => {
     const { result } = renderHook(() => useAuraFeedback(), {
       wrapper: createWrapper(),
     });
 
-    expect(typeof result.current).toBe('function');
+    expect(typeof result.current).toBe("function");
   });
 
   // ─── Requirement 6.2: Delegates to client.feedback ───────────────────────────
-  it('delegates to client.feedback when called with a valid FeedbackEvent', async () => {
+  it("delegates to client.feedback when called with a valid FeedbackEvent", async () => {
     const { result } = renderHook(() => useAuraFeedback(), {
       wrapper: createWrapper(),
     });
@@ -86,9 +90,9 @@ describe('useAuraFeedback', () => {
     });
 
     const feedbackEvent = {
-      action: 'accept',
-      surfaceId: 'hero-banner',
-      prescriptionId: 'rx-123',
+      action: "accept",
+      surfaceId: "hero-banner",
+      prescriptionId: "rx-123",
       timestamp: Date.now(),
     };
 
@@ -101,7 +105,7 @@ describe('useAuraFeedback', () => {
   });
 
   // ─── Requirement 6.2: Returns the promise from client.feedback ───────────────
-  it('returns the promise from client.feedback', async () => {
+  it("returns the promise from client.feedback", async () => {
     const { result } = renderHook(() => useAuraFeedback(), {
       wrapper: createWrapper(),
     });
@@ -111,9 +115,9 @@ describe('useAuraFeedback', () => {
     });
 
     const feedbackEvent = {
-      action: 'dismiss',
-      surfaceId: 'sidebar',
-      prescriptionId: 'rx-456',
+      action: "dismiss",
+      surfaceId: "sidebar",
+      prescriptionId: "rx-456",
     };
     mockClient.feedback.mockResolvedValueOnce(undefined);
 
@@ -126,7 +130,7 @@ describe('useAuraFeedback', () => {
   });
 
   // ─── Requirement 6.3: Propagates AuraValidationError rejection ───────────────
-  it('propagates AuraValidationError rejection from SDK', async () => {
+  it("propagates AuraValidationError rejection from SDK", async () => {
     const { result } = renderHook(() => useAuraFeedback(), {
       wrapper: createWrapper(),
     });
@@ -135,28 +139,28 @@ describe('useAuraFeedback', () => {
       await Promise.resolve();
     });
 
-    const validationError = new Error('Feedback validation failed');
-    validationError.name = 'AuraValidationError';
+    const validationError = new Error("Feedback validation failed");
+    validationError.name = "AuraValidationError";
     mockClient.feedback.mockRejectedValueOnce(validationError);
 
-    const invalidFeedback = { action: '', surfaceId: '', prescriptionId: '' };
+    const invalidFeedback = { action: "", surfaceId: "", prescriptionId: "" };
 
     await expect(
       act(async () => {
         await result.current(invalidFeedback as any);
       }),
-    ).rejects.toThrow('Feedback validation failed');
+    ).rejects.toThrow("Feedback validation failed");
   });
 
   // ─── Requirement 6.6: No-op outside provider ────────────────────────────────
-  it('outside provider: returns a no-op function that resolves to undefined', async () => {
+  it("outside provider: returns a no-op function that resolves to undefined", async () => {
     // Render without a wrapper (no AuraProvider)
     const { result } = renderHook(() => useAuraFeedback());
 
     const feedbackEvent = {
-      action: 'reject',
-      surfaceId: 'test-surface',
-      prescriptionId: 'rx-789',
+      action: "reject",
+      surfaceId: "test-surface",
+      prescriptionId: "rx-789",
     };
 
     let returnValue: any;
@@ -171,14 +175,14 @@ describe('useAuraFeedback', () => {
   });
 
   // ─── Requirement 6.6: No-op when client is null (degraded config error) ─────
-  it('returns no-op resolved promise when client is null (degraded config error)', async () => {
+  it("returns no-op resolved promise when client is null (degraded config error)", async () => {
     // Render without wrapper simulates client=null from default context
     const { result } = renderHook(() => useAuraFeedback());
 
     const feedbackEvent = {
-      action: 'accept',
-      surfaceId: 'nav',
-      prescriptionId: 'rx-000',
+      action: "accept",
+      surfaceId: "nav",
+      prescriptionId: "rx-000",
     };
 
     let returnValue: any;
@@ -191,7 +195,7 @@ describe('useAuraFeedback', () => {
   });
 
   // ─── Requirement 6.5: Stable reference across re-renders ─────────────────────
-  it('stable reference: same function identity across re-renders', async () => {
+  it("stable reference: same function identity across re-renders", async () => {
     const { result, rerender } = renderHook(() => useAuraFeedback(), {
       wrapper: createWrapper(),
     });
@@ -215,7 +219,7 @@ describe('useAuraFeedback', () => {
   });
 
   // ─── Requirement 6.7: Never throws during render phase ───────────────────────
-  it('never throws during render phase', () => {
+  it("never throws during render phase", () => {
     expect(() => {
       renderHook(() => useAuraFeedback(), {
         wrapper: createWrapper(),
@@ -223,16 +227,16 @@ describe('useAuraFeedback', () => {
     }).not.toThrow();
   });
 
-  it('never throws during render phase even outside provider', () => {
+  it("never throws during render phase even outside provider", () => {
     expect(() => {
       renderHook(() => useAuraFeedback());
     }).not.toThrow();
   });
 
   // ─── Requirement 6.4: Works in degraded/idle state ───────────────────────────
-  it('works in degraded/idle state (delegates to client which handles gracefully)', async () => {
+  it("works in degraded/idle state (delegates to client which handles gracefully)", async () => {
     // Simulate a client in idle state (before init resolves)
-    mockClient.status = 'idle' as any;
+    mockClient.status = "idle" as any;
     mockClient.feedback.mockResolvedValueOnce(undefined);
 
     const { result } = renderHook(() => useAuraFeedback(), {
@@ -245,10 +249,10 @@ describe('useAuraFeedback', () => {
     });
 
     const feedbackEvent = {
-      action: 'override',
-      surfaceId: 'sidebar',
-      prescriptionId: 'rx-101',
-      payload: { field: 'color', value: '#ff0000' },
+      action: "override",
+      surfaceId: "sidebar",
+      prescriptionId: "rx-101",
+      payload: { field: "color", value: "#ff0000" },
     };
 
     let returnValue: any;

@@ -6,11 +6,7 @@
  * Validates: Requirements 12.4, 12.5
  */
 import fc from "fast-check";
-import type {
-  UIPrescription,
-  Adaptation,
-  AdaptationGroup,
-} from "@aura/protocol";
+import type { UIPrescription, Adaptation, AdaptationGroup } from "@aura/protocol";
 
 // =============================================================================
 // Shared helpers
@@ -34,28 +30,13 @@ const arbFutureISOTimestamp: fc.Arbitrary<string> = fc
 // Enums (matching @aura/protocol)
 // =============================================================================
 
-const PRESCRIPTION_MODES = [
-  "recommend",
-  "autoApply",
-  "askUser",
-  "observeOnly",
-] as const;
+const PRESCRIPTION_MODES = ["recommend", "autoApply", "askUser", "observeOnly"] as const;
 
 const LATENCY_CLASSES = ["immediate", "fast", "deliberate"] as const;
 
-const LAYOUT_TYPES = [
-  "compact",
-  "expanded",
-  "step-by-step",
-  "accessible",
-] as const;
+const LAYOUT_TYPES = ["compact", "expanded", "step-by-step", "accessible"] as const;
 
-const ACCESSIBILITY_SETTINGS = [
-  "fontScale",
-  "contrast",
-  "motion",
-  "inputMode",
-] as const;
+const ACCESSIBILITY_SETTINGS = ["fontScale", "contrast", "motion", "inputMode"] as const;
 
 const DATA_CLASSES = [
   "behavior",
@@ -79,7 +60,7 @@ const DATA_CLASSES = [
 export const arbContextLock = fc
   .tuple(
     fc.integer({ min: 0, max: 10_000 }), // sequenceId: non-negative integer
-    arbISOTimestamp // capturedAt: valid ISO timestamp
+    arbISOTimestamp, // capturedAt: valid ISO timestamp
   )
   .map(([sequenceId, capturedAt]) => ({ sequenceId, capturedAt }));
 
@@ -88,10 +69,7 @@ export const arbContextLock = fc
 // =============================================================================
 
 const arbRankAdaptation: fc.Arbitrary<Adaptation> = fc
-  .tuple(
-    fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }),
-    arbNonEmptyString
-  )
+  .tuple(fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }), arbNonEmptyString)
   .map(([orderedIds, reasonCode]) => ({
     type: "rank" as const,
     orderedIds: orderedIds as [string, ...string[]],
@@ -132,9 +110,9 @@ const arbAccessibilityAdaptation: fc.Arbitrary<Adaptation> = fc
     fc.oneof(
       fc.string({ minLength: 1, maxLength: 10 }),
       fc.integer({ min: 1, max: 200 }),
-      fc.boolean()
+      fc.boolean(),
     ),
-    arbNonEmptyString
+    arbNonEmptyString,
   )
   .map(([setting, value, reasonCode]) => ({
     type: "accessibility" as const,
@@ -147,7 +125,7 @@ const arbFilterAdaptation: fc.Arbitrary<Adaptation> = fc
   .tuple(
     arbNonEmptyString,
     fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }),
-    arbNonEmptyString
+    arbNonEmptyString,
   )
   .map(([target, visibleFilters, reasonCode]) => ({
     type: "filter" as const,
@@ -163,7 +141,7 @@ export const arbAdaptation: fc.Arbitrary<Adaptation> = fc.oneof(
   arbLayoutAdaptation,
   arbContentAdaptation,
   arbAccessibilityAdaptation,
-  arbFilterAdaptation
+  arbFilterAdaptation,
 );
 
 // =============================================================================
@@ -174,7 +152,7 @@ export const arbAdaptationGroup: fc.Arbitrary<AdaptationGroup> = fc
   .tuple(
     arbNonEmptyString,
     fc.array(arbNonEmptyString, { minLength: 1, maxLength: 4 }),
-    fc.boolean()
+    fc.boolean(),
   )
   .map(([groupId, adaptationIds, atomic]) => ({
     groupId,
@@ -197,12 +175,11 @@ export const arbConstraints = arbFutureISOTimestamp.map((expiresAt) => ({
 
 export const arbAudit = fc
   .tuple(
-    fc.option(
-      fc.array(fc.constantFrom(...DATA_CLASSES), { minLength: 1, maxLength: 3 }),
-      { nil: undefined }
-    ),
+    fc.option(fc.array(fc.constantFrom(...DATA_CLASSES), { minLength: 1, maxLength: 3 }), {
+      nil: undefined,
+    }),
     fc.option(arbNonEmptyString, { nil: undefined }),
-    fc.option(arbNonEmptyString, { nil: undefined })
+    fc.option(arbNonEmptyString, { nil: undefined }),
   )
   .map(([dataClassesUsed, policyVersion, decisionSource]) => {
     const audit: Record<string, unknown> = {};
@@ -219,7 +196,7 @@ export const arbAudit = fc
 export const arbExplanation = fc
   .tuple(
     fc.double({ min: 0, max: 1, noNaN: true }), // confidence: 0-1
-    fc.option(fc.string({ maxLength: 100 }), { nil: undefined })
+    fc.option(fc.string({ maxLength: 100 }), { nil: undefined }),
   )
   .map(([confidence, summary]) => {
     const explanation: { confidence: number; summary?: string } = { confidence };
@@ -249,7 +226,7 @@ export interface PrescriptionArbOptions {
  * - valid audit, optional explanation, optional adaptationGroups
  */
 export const arbUIPrescription = (
-  options: PrescriptionArbOptions = {}
+  options: PrescriptionArbOptions = {},
 ): fc.Arbitrary<UIPrescription> => {
   const { surfaceId, expired = false } = options;
 
@@ -273,7 +250,7 @@ export const arbUIPrescription = (
       fc.option(arbExplanation, { nil: undefined }), // explanation (optional)
       fc.option(fc.array(arbAdaptationGroup, { minLength: 1, maxLength: 3 }), {
         nil: undefined,
-      }) // adaptationGroups (optional)
+      }), // adaptationGroups (optional)
     )
     .map(
       ([
@@ -310,19 +287,18 @@ export const arbUIPrescription = (
         }
 
         return prescription;
-      }
+      },
     );
 };
 
 /** Default valid prescription (non-expired, random surfaceId) */
-export const arbValidUIPrescription: fc.Arbitrary<UIPrescription> =
-  arbUIPrescription();
+export const arbValidUIPrescription: fc.Arbitrary<UIPrescription> = arbUIPrescription();
 
 /** Expired prescription (expiresAt in the past) */
-export const arbExpiredUIPrescription: fc.Arbitrary<UIPrescription> =
-  arbUIPrescription({ expired: true });
+export const arbExpiredUIPrescription: fc.Arbitrary<UIPrescription> = arbUIPrescription({
+  expired: true,
+});
 
 /** Prescription pinned to a specific surfaceId */
-export const arbPrescriptionForSurface = (
-  surfaceId: string
-): fc.Arbitrary<UIPrescription> => arbUIPrescription({ surfaceId });
+export const arbPrescriptionForSurface = (surfaceId: string): fc.Arbitrary<UIPrescription> =>
+  arbUIPrescription({ surfaceId });

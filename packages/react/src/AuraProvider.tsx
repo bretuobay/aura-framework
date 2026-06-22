@@ -6,12 +6,12 @@
  * Propagates client, status, and error to all descendant hooks via AuraContext.
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { createAuraClient } from '@aura/sdk';
-import type { AuraClient, AuraClientError } from '@aura/sdk';
-import type { CapabilityManifest, ConsentProfile, ContextModel } from '@aura/protocol';
-import { AuraContext } from './AuraContext';
-import type { SdkStatus, AuraContextValue } from './AuraContext';
+import { useEffect, useRef, useState } from "react";
+import { createAuraClient } from "@aura/sdk";
+import type { AuraClient, AuraClientError } from "@aura/sdk";
+import type { CapabilityManifest, ConsentProfile, ContextModel } from "@aura/protocol";
+import { AuraContext } from "./AuraContext";
+import type { SdkStatus, AuraContextValue } from "./AuraContext";
 
 /**
  * Props accepted by AuraProvider.
@@ -52,7 +52,7 @@ export function AuraProvider({
 
   // ─── State (render-triggering) ───────────────────────────────────────────────
   const [state, setState] = useState<{ status: SdkStatus; error: AuraClientError | null }>({
-    status: 'idle',
+    status: "idle",
     error: null,
   });
 
@@ -68,7 +68,7 @@ export function AuraProvider({
     } catch (err) {
       // Config error → enter degraded mode
       setState({
-        status: 'degraded',
+        status: "degraded",
         error: err instanceof Error ? (err as AuraClientError) : null,
       });
       return;
@@ -129,16 +129,15 @@ export function AuraProvider({
   // Reconstructed each render. The provider only re-renders when state changes
   // (status/error), at which point children need to see the update anyway.
   // clientRef.current is set once during the effect and nulled only on unmount.
+  // Reading ref.current during render to pass stable client instance to context is intentional.
+  // eslint-disable-next-line react-hooks/refs
+  const currentClient = clientRef.current;
   const contextValue: AuraContextValue = {
-    client: clientRef.current,
+    client: currentClient,
     status: state.status,
     error: state.error,
   };
 
   // ─── Render ──────────────────────────────────────────────────────────────────
-  return (
-    <AuraContext.Provider value={contextValue}>
-      {children}
-    </AuraContext.Provider>
-  );
+  return <AuraContext.Provider value={contextValue}>{children}</AuraContext.Provider>;
 }

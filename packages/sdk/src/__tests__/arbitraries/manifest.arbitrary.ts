@@ -32,12 +32,7 @@ const DATA_CLASSES: DataClass[] = [
   "aggregation",
   "retention",
 ];
-const LAYOUT_STRATEGIES: LayoutStrategy[] = [
-  "none",
-  "reserve-space",
-  "skeleton",
-  "host-default",
-];
+const LAYOUT_STRATEGIES: LayoutStrategy[] = ["none", "reserve-space", "skeleton", "host-default"];
 
 export { DATA_CLASSES };
 
@@ -46,7 +41,7 @@ export { DATA_CLASSES };
 // =============================================================================
 
 export const arbNonEmptyString: fc.Arbitrary<string> = fc.stringMatching(
-  /^[a-zA-Z][a-zA-Z0-9_-]{0,30}$/
+  /^[a-zA-Z][a-zA-Z0-9_-]{0,30}$/,
 );
 
 // =============================================================================
@@ -82,8 +77,8 @@ export const arbManifestComponent: fc.Arbitrary<ManifestComponent> = fc
         minLength: 1,
         maxLength: 3,
       }),
-      { nil: undefined }
-    ) // requiresConsent
+      { nil: undefined },
+    ), // requiresConsent
   )
   .map(([componentId, variants, riskClass, requiresConsent]) => {
     const component: ManifestComponent = {
@@ -111,8 +106,8 @@ export const arbManifestSurface: fc.Arbitrary<ManifestSurface> = fc
         minLength: 1,
         maxLength: 3,
       }),
-      { nil: undefined }
-    ) // consentRequirements
+      { nil: undefined },
+    ), // consentRequirements
   )
   .map(([surfaceId, components, layoutStability, consentRequirements]) => {
     const surface: ManifestSurface = {
@@ -135,7 +130,7 @@ export const arbManifestSurface: fc.Arbitrary<ManifestSurface> = fc
 export const arbCapabilityManifest: fc.Arbitrary<CapabilityManifest> = fc
   .tuple(
     fc.option(arbNonEmptyString, { nil: undefined }), // version (optional)
-    fc.array(arbManifestSurface, { minLength: 1, maxLength: 5 }) // surfaces
+    fc.array(arbManifestSurface, { minLength: 1, maxLength: 5 }), // surfaces
   )
   .map(([version, surfaces]) => {
     const manifest: CapabilityManifest = { surfaces };
@@ -146,19 +141,14 @@ export const arbCapabilityManifest: fc.Arbitrary<CapabilityManifest> = fc
   });
 
 /** Manifest with an explicit version string (useful for manifestVersion pinning tests) */
-export const arbCapabilityManifestWithVersion: fc.Arbitrary<CapabilityManifest> =
-  fc
-    .tuple(
-      arbNonEmptyString,
-      fc.array(arbManifestSurface, { minLength: 1, maxLength: 5 })
-    )
-    .map(([version, surfaces]) => ({
-      version,
-      surfaces,
-    }));
+export const arbCapabilityManifestWithVersion: fc.Arbitrary<CapabilityManifest> = fc
+  .tuple(arbNonEmptyString, fc.array(arbManifestSurface, { minLength: 1, maxLength: 5 }))
+  .map(([version, surfaces]) => ({
+    version,
+    surfaces,
+  }));
 
 /** Manifest without a version string (for testing "unversioned" fallback) */
-export const arbCapabilityManifestWithoutVersion: fc.Arbitrary<CapabilityManifest> =
-  fc
-    .array(arbManifestSurface, { minLength: 1, maxLength: 5 })
-    .map((surfaces) => ({ surfaces }));
+export const arbCapabilityManifestWithoutVersion: fc.Arbitrary<CapabilityManifest> = fc
+  .array(arbManifestSurface, { minLength: 1, maxLength: 5 })
+  .map((surfaces) => ({ surfaces }));

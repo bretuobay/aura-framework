@@ -9,11 +9,7 @@
 import type { Context } from "hono";
 import type { ConsentProfile, DataClass } from "@aura/protocol";
 import { ConsentRequestSchema } from "@aura/protocol";
-import type {
-  ISessionStore,
-  IUserModelStore,
-  IPrescriptionStore,
-} from "../storage/interfaces.js";
+import type { ISessionStore, IUserModelStore, IPrescriptionStore } from "../storage/interfaces.js";
 
 /**
  * Factory that creates the POST /aura/consent route handler.
@@ -38,10 +34,7 @@ export function createConsentHandler(deps: {
     try {
       body = await c.req.json();
     } catch {
-      return c.json(
-        { errors: [{ field: "body", message: "Invalid JSON" }] },
-        400
-      );
+      return c.json({ errors: [{ field: "body", message: "Invalid JSON" }] }, 400);
     }
 
     // 2. Validate with ConsentRequestSchema

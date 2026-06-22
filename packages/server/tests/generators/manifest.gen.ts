@@ -32,7 +32,7 @@ const arbLayoutStability = fc.oneof(
   fc.record({
     strategy: fc.constantFrom("reserve-space" as const, "skeleton" as const),
     maxDecisionWaitMs: fc.integer({ min: 0, max: 5000 }),
-  })
+  }),
 );
 
 /**
@@ -45,18 +45,18 @@ const arbManifestComponent = fc.record({
     .filter((arr) => arr.length >= 1) as fc.Arbitrary<[string, ...string[]]>,
   adaptableProps: fc.option(
     fc.dictionary(fc.string({ minLength: 1, maxLength: 10 }), fc.string({ maxLength: 20 })),
-    { nil: undefined }
+    { nil: undefined },
   ),
   riskClass: fc.constantFrom(...riskClasses),
   constraints: fc.option(
     fc.record({
       requiresConsent: fc.option(
         fc.array(fc.constantFrom(...dataClasses), { minLength: 0, maxLength: 3 }),
-        { nil: undefined }
+        { nil: undefined },
       ),
       reversible: fc.option(fc.boolean(), { nil: undefined }),
     }),
-    { nil: undefined }
+    { nil: undefined },
   ),
 });
 
@@ -69,7 +69,7 @@ const arbManifestSurface = fc.record({
   layoutStability: fc.option(arbLayoutStability, { nil: undefined }),
   consentRequirements: fc.option(
     fc.array(fc.constantFrom(...dataClasses), { minLength: 0, maxLength: 3 }),
-    { nil: undefined }
+    { nil: undefined },
   ),
 });
 
@@ -171,5 +171,5 @@ export const arbInvalidManifest = fc.oneof(
         },
       },
     ]),
-  })
+  }),
 );

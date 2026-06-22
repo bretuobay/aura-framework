@@ -14,18 +14,17 @@ import type {
   DataClass,
 } from "@aura/protocol";
 import { DATA_CLASSES, arbNonEmptyString } from "./manifest.arbitrary.js";
-import { arbFutureISOTimestamp, arbPastISOTimestamp, arbISOTimestamp } from "./aura-event.arbitrary.js";
+import {
+  arbFutureISOTimestamp,
+  arbPastISOTimestamp,
+  arbISOTimestamp,
+} from "./aura-event.arbitrary.js";
 
 // =============================================================================
 // Enums
 // =============================================================================
 
-const PRESCRIPTION_MODES: PrescriptionMode[] = [
-  "recommend",
-  "autoApply",
-  "askUser",
-  "observeOnly",
-];
+const PRESCRIPTION_MODES: PrescriptionMode[] = ["recommend", "autoApply", "askUser", "observeOnly"];
 const LATENCY_CLASSES: LatencyClass[] = ["immediate", "fast", "deliberate"];
 const LAYOUT_TYPES = ["compact", "expanded", "step-by-step", "accessible"] as const;
 const ACCESSIBILITY_SETTINGS = ["fontScale", "contrast", "motion", "inputMode"] as const;
@@ -37,10 +36,8 @@ const ACCESSIBILITY_SETTINGS = ["fontScale", "contrast", "motion", "inputMode"] 
 export const arbContextLock = (sequenceId?: number): fc.Arbitrary<ContextLock> =>
   fc
     .tuple(
-      sequenceId !== undefined
-        ? fc.constant(sequenceId)
-        : fc.integer({ min: 0, max: 10000 }),
-      arbISOTimestamp
+      sequenceId !== undefined ? fc.constant(sequenceId) : fc.integer({ min: 0, max: 10000 }),
+      arbISOTimestamp,
     )
     .map(([seqId, capturedAt]) => ({
       sequenceId: seqId,
@@ -52,10 +49,7 @@ export const arbContextLock = (sequenceId?: number): fc.Arbitrary<ContextLock> =
 // =============================================================================
 
 const arbRankAdaptation: fc.Arbitrary<Adaptation> = fc
-  .tuple(
-    fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }),
-    arbNonEmptyString
-  )
+  .tuple(fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }), arbNonEmptyString)
   .map(([orderedIds, reasonCode]) => ({
     type: "rank" as const,
     orderedIds: orderedIds as [string, ...string[]],
@@ -93,8 +87,12 @@ const arbContentAdaptation: fc.Arbitrary<Adaptation> = fc
 const arbAccessibilityAdaptation: fc.Arbitrary<Adaptation> = fc
   .tuple(
     fc.constantFrom(...ACCESSIBILITY_SETTINGS),
-    fc.oneof(fc.string({ minLength: 1, maxLength: 10 }), fc.integer({ min: 1, max: 200 }), fc.boolean()),
-    arbNonEmptyString
+    fc.oneof(
+      fc.string({ minLength: 1, maxLength: 10 }),
+      fc.integer({ min: 1, max: 200 }),
+      fc.boolean(),
+    ),
+    arbNonEmptyString,
   )
   .map(([setting, value, reasonCode]) => ({
     type: "accessibility" as const,
@@ -107,7 +105,7 @@ const arbFilterAdaptation: fc.Arbitrary<Adaptation> = fc
   .tuple(
     arbNonEmptyString,
     fc.array(arbNonEmptyString, { minLength: 1, maxLength: 5 }),
-    arbNonEmptyString
+    arbNonEmptyString,
   )
   .map(([target, visibleFilters, reasonCode]) => ({
     type: "filter" as const,
@@ -122,7 +120,7 @@ export const arbAdaptation: fc.Arbitrary<Adaptation> = fc.oneof(
   arbLayoutAdaptation,
   arbContentAdaptation,
   arbAccessibilityAdaptation,
-  arbFilterAdaptation
+  arbFilterAdaptation,
 );
 
 // =============================================================================
@@ -133,7 +131,7 @@ export const arbAdaptationGroup: fc.Arbitrary<AdaptationGroup> = fc
   .tuple(
     arbNonEmptyString,
     fc.array(arbNonEmptyString, { minLength: 1, maxLength: 4 }),
-    fc.boolean()
+    fc.boolean(),
   )
   .map(([groupId, adaptationIds, atomic]) => ({
     groupId,
@@ -159,30 +157,20 @@ export interface PrescriptionArbOptions {
 }
 
 export const arbUIPrescription = (
-  options: PrescriptionArbOptions = {}
+  options: PrescriptionArbOptions = {},
 ): fc.Arbitrary<UIPrescription> => {
-  const {
-    sequenceId,
-    manifestVersion,
-    surfaceId,
-    expired = false,
-    dataClassesUsed,
-  } = options;
+  const { sequenceId, manifestVersion, surfaceId, expired = false, dataClassesUsed } = options;
 
   return fc
     .tuple(
       arbNonEmptyString, // id
-      surfaceId !== undefined
-        ? fc.constant(surfaceId)
-        : arbNonEmptyString, // surfaceId
+      surfaceId !== undefined ? fc.constant(surfaceId) : arbNonEmptyString, // surfaceId
       fc.constantFrom(...PRESCRIPTION_MODES), // mode
       fc.constantFrom(...LATENCY_CLASSES), // latencyClass
       arbContextLock(sequenceId), // contextLock
       fc.array(arbAdaptation, { minLength: 1, maxLength: 4 }), // adaptations
       expired ? arbPastISOTimestamp : arbFutureISOTimestamp, // expiresAt
-      manifestVersion !== undefined
-        ? fc.constant(manifestVersion)
-        : arbNonEmptyString, // manifestVersion
+      manifestVersion !== undefined ? fc.constant(manifestVersion) : arbNonEmptyString, // manifestVersion
       dataClassesUsed !== undefined
         ? fc.constant(dataClassesUsed)
         : fc.option(
@@ -190,12 +178,12 @@ export const arbUIPrescription = (
               minLength: 1,
               maxLength: 3,
             }),
-            { nil: undefined }
+            { nil: undefined },
           ), // audit.dataClassesUsed
       fc.option(fc.double({ min: 0, max: 1, noNaN: true }), { nil: undefined }), // explanation.confidence
       fc.option(fc.array(arbAdaptationGroup, { minLength: 1, maxLength: 3 }), {
         nil: undefined,
-      }) // adaptationGroups
+      }), // adaptationGroups
     )
     .map(
       ([
@@ -236,38 +224,34 @@ export const arbUIPrescription = (
         }
 
         return prescription;
-      }
+      },
     );
 };
 
 /** Default valid prescription (non-expired, no pinned options) */
-export const arbValidUIPrescription: fc.Arbitrary<UIPrescription> =
-  arbUIPrescription();
+export const arbValidUIPrescription: fc.Arbitrary<UIPrescription> = arbUIPrescription();
 
 /** Expired prescription (expiresAt in the past) */
-export const arbExpiredUIPrescription: fc.Arbitrary<UIPrescription> =
-  arbUIPrescription({ expired: true });
+export const arbExpiredUIPrescription: fc.Arbitrary<UIPrescription> = arbUIPrescription({
+  expired: true,
+});
 
 /** Prescription with a specific contextLock sequenceId */
-export const arbPrescriptionWithSequenceId = (
-  seqId: number
-): fc.Arbitrary<UIPrescription> => arbUIPrescription({ sequenceId: seqId });
+export const arbPrescriptionWithSequenceId = (seqId: number): fc.Arbitrary<UIPrescription> =>
+  arbUIPrescription({ sequenceId: seqId });
 
 /** Prescription with a specific manifestVersion */
-export const arbPrescriptionWithManifestVersion = (
-  version: string
-): fc.Arbitrary<UIPrescription> => arbUIPrescription({ manifestVersion: version });
+export const arbPrescriptionWithManifestVersion = (version: string): fc.Arbitrary<UIPrescription> =>
+  arbUIPrescription({ manifestVersion: version });
 
 /** Prescription for a specific surfaceId */
-export const arbPrescriptionForSurface = (
-  surfaceId: string
-): fc.Arbitrary<UIPrescription> => arbUIPrescription({ surfaceId });
+export const arbPrescriptionForSurface = (surfaceId: string): fc.Arbitrary<UIPrescription> =>
+  arbUIPrescription({ surfaceId });
 
 /** Prescription with specific data classes in audit (for consent revocation tests) */
 export const arbPrescriptionWithDataClasses = (
-  dataClasses: DataClass[]
-): fc.Arbitrary<UIPrescription> =>
-  arbUIPrescription({ dataClassesUsed: dataClasses });
+  dataClasses: DataClass[],
+): fc.Arbitrary<UIPrescription> => arbUIPrescription({ dataClassesUsed: dataClasses });
 
 /**
  * A fully admissible prescription that would pass PrescriptionStore admission:
@@ -278,7 +262,7 @@ export const arbPrescriptionWithDataClasses = (
 export const arbAdmissiblePrescription = (
   sequenceId: number,
   manifestVersion: string,
-  surfaceId?: string
+  surfaceId?: string,
 ): fc.Arbitrary<UIPrescription> =>
   arbUIPrescription({
     sequenceId,

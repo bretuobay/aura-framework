@@ -119,7 +119,7 @@ const arbAdaptation = fc.oneof(
   arbLayoutAdaptation,
   arbContentAdaptation,
   arbAccessibilityAdaptation,
-  arbFilterAdaptation
+  arbFilterAdaptation,
 );
 
 /**
@@ -143,7 +143,7 @@ export const arbUIPrescription: fc.Arbitrary<UIPrescription> = fc.record({
   audit: fc.record({
     dataClassesUsed: fc.option(
       fc.array(fc.constantFrom(...dataClasses), { minLength: 0, maxLength: 4 }),
-      { nil: undefined }
+      { nil: undefined },
     ),
     policyVersion: fc.option(fc.string({ minLength: 1, maxLength: 20 }), { nil: undefined }),
     decisionSource: fc.option(fc.string({ minLength: 1, maxLength: 30 }), { nil: undefined }),
@@ -153,7 +153,7 @@ export const arbUIPrescription: fc.Arbitrary<UIPrescription> = fc.record({
       confidence: fc.double({ min: 0, max: 1, noNaN: true }),
       summary: fc.option(fc.string({ maxLength: 100 }), { nil: undefined }),
     }),
-    { nil: undefined }
+    { nil: undefined },
   ),
   adaptationGroups: fc.option(
     fc.array(
@@ -164,9 +164,9 @@ export const arbUIPrescription: fc.Arbitrary<UIPrescription> = fc.record({
           .filter((arr) => arr.length >= 1) as fc.Arbitrary<[string, ...string[]]>,
         atomic: fc.boolean(),
       }),
-      { minLength: 0, maxLength: 2 }
+      { minLength: 0, maxLength: 2 },
     ),
-    { nil: undefined }
+    { nil: undefined },
   ),
 });
 
@@ -221,5 +221,5 @@ export const arbInvalidUIPrescription = fc.oneof(
     constraints: fc.record({ expiresAt: arbISOTimestamp }),
     manifestVersion: fc.string({ minLength: 1, maxLength: 20 }),
     audit: fc.constant({}),
-  })
+  }),
 );

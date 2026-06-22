@@ -22,11 +22,11 @@ export const arbContextModel: fc.Arbitrary<ContextModel> = fc.record({
   sequenceId: fc.option(fc.nat(), { nil: undefined }),
   taskState: fc.option(
     fc.dictionary(fc.string({ minLength: 1, maxLength: 10 }), fc.string({ maxLength: 20 })),
-    { nil: undefined }
+    { nil: undefined },
   ),
   domain: fc.option(
     fc.dictionary(fc.string({ minLength: 1, maxLength: 10 }), fc.string({ maxLength: 20 })),
-    { nil: undefined }
+    { nil: undefined },
   ),
 });
 
@@ -89,7 +89,7 @@ export const arbInvalidContextModel = fc.oneof(
     sequenceId: fc.constant(undefined),
     taskState: fc.constant(undefined),
     domain: fc.constant(undefined),
-  })
+  }),
 );
 
 /**
@@ -105,11 +105,11 @@ export const arbContextRequest: fc.Arbitrary<ContextRequest> = fc.record({
     sequenceId: fc.option(fc.nat(), { nil: undefined }),
     taskState: fc.option(
       fc.dictionary(fc.string({ minLength: 1, maxLength: 10 }), fc.string({ maxLength: 20 })),
-      { nil: undefined }
+      { nil: undefined },
     ),
     domain: fc.option(
       fc.dictionary(fc.string({ minLength: 1, maxLength: 10 }), fc.string({ maxLength: 20 })),
-      { nil: undefined }
+      { nil: undefined },
     ),
   }),
   contextSequenceId: fc.nat(),
@@ -130,5 +130,5 @@ export const arbInvalidContextRequest = fc.oneof(
     sessionId: fc.string({ minLength: 1, maxLength: 36 }),
     contextPatch: fc.constant({}),
     contextSequenceId: fc.integer({ min: -1000, max: -1 }),
-  })
+  }),
 );

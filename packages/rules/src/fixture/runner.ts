@@ -38,10 +38,7 @@ export class FixtureRunner {
    * @param fixtures - Array of fixture objects to test
    * @returns Results array in the same order as input fixtures
    */
-  async run(
-    ruleSet: RuleSet,
-    fixtures: Fixture[]
-  ): Promise<FixtureRunResult[]> {
+  async run(ruleSet: RuleSet, fixtures: Fixture[]): Promise<FixtureRunResult[]> {
     const pipeline = new RulesPipeline({ ruleSet });
     const results: FixtureRunResult[] = [];
 
@@ -59,7 +56,7 @@ export class FixtureRunner {
    */
   private async runSingleFixture(
     pipeline: RulesPipeline,
-    fixture: Fixture
+    fixture: Fixture,
   ): Promise<FixtureRunResult> {
     // Validate the fixture input against the schema to catch invalid inputs
     const validation = FixtureSchema.safeParse(fixture);
@@ -100,8 +97,7 @@ export class FixtureRunner {
       };
     } catch (error) {
       // If setup/casting causes an error, mark as 'error' (not failure)
-      const message =
-        error instanceof Error ? error.message : String(error);
+      const message = error instanceof Error ? error.message : String(error);
       return {
         fixtureId: fixture.id,
         status: "error",

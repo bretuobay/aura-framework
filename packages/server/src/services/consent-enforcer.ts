@@ -5,12 +5,7 @@
  * event ingestion, pipeline input, prescription emission, and profile access.
  */
 
-import type {
-  AuraEvent,
-  ConsentProfile,
-  UIPrescription,
-  ProfileAttribute,
-} from "@aura/protocol";
+import type { AuraEvent, ConsentProfile, UIPrescription, ProfileAttribute } from "@aura/protocol";
 import type { DataClass } from "@aura/protocol";
 
 /**
@@ -23,22 +18,19 @@ export interface IConsentEnforcer {
   filterEvents(events: AuraEvent[], consentProfile: ConsentProfile): AuraEvent[];
 
   /** Check if a prescription's dataClassesUsed are all permitted */
-  isPrescriptionPermitted(
-    prescription: UIPrescription,
-    consentProfile: ConsentProfile
-  ): boolean;
+  isPrescriptionPermitted(prescription: UIPrescription, consentProfile: ConsentProfile): boolean;
 
   /** Filter profile attributes to only consent-permitted, non-expired ones */
   filterProfileAttributes(
     attributes: ProfileAttribute[],
     consentProfile: ConsentProfile,
-    asOf: string
+    asOf: string,
   ): ProfileAttribute[];
 
   /** Build pipeline input filtering: remove revoked-class attributes */
   filterPipelineAttributes(
     attributes: ProfileAttribute[],
-    consentProfile: ConsentProfile
+    consentProfile: ConsentProfile,
   ): ProfileAttribute[];
 }
 
@@ -56,52 +48,44 @@ function isRevoked(dataClass: DataClass, consentProfile: ConsentProfile): boolea
  */
 export function createConsentEnforcer(): IConsentEnforcer {
   return {
-    filterEvents(
-      events: AuraEvent[],
-      consentProfile: ConsentProfile
-    ): AuraEvent[] {
-      return events.map((event) => {
-        // Events without dataClasses pass through unchanged
-        if (!event.dataClasses || event.dataClasses.length === 0) {
-          return event;
-        }
+    filterEvents(events: AuraEvent[], consentProfile: ConsentProfile): AuraEvent[] {
+      return events
+        .map((event) => {
+          // Events without dataClasses pass through unchanged
+          if (!event.dataClasses || event.dataClasses.length === 0) {
+            return event;
+          }
 
-        // Check if ANY dataClass on the event is revoked
-        const hasRevokedClass = event.dataClasses.some((dc) =>
-          isRevoked(dc, consentProfile)
-        );
+          // Check if ANY dataClass on the event is revoked
+          const hasRevokedClass = event.dataClasses.some((dc) => isRevoked(dc, consentProfile));
 
-        if (!hasRevokedClass) {
-          // All data classes are permitted — event passes through unchanged
-          return event;
-        }
+          if (!hasRevokedClass) {
+            // All data classes are permitted — event passes through unchanged
+            return event;
+          }
 
-        // Check if ALL data classes are revoked — exclude entire event
-        const allRevoked = event.dataClasses.every((dc) =>
-          isRevoked(dc, consentProfile)
-        );
+          // Check if ALL data classes are revoked — exclude entire event
+          const allRevoked = event.dataClasses.every((dc) => isRevoked(dc, consentProfile));
 
-        if (allRevoked) {
-          // All data classes revoked — exclude entire event by stripping payload
-          // We still include the event but with empty payload to maintain event count semantics
-          // Actually per design: "If ALL data classes on the event are revoked, exclude the entire event"
-          // This means we filter it out completely
-          return null as unknown as AuraEvent;
-        }
+          if (allRevoked) {
+            // All data classes revoked — exclude entire event by stripping payload
+            // We still include the event but with empty payload to maintain event count semantics
+            // Actually per design: "If ALL data classes on the event are revoked, exclude the entire event"
+            // This means we filter it out completely
+            return null as unknown as AuraEvent;
+          }
 
-        // SOME are revoked — strip the entire payload (replace with empty object)
-        // since we can't determine which payload fields map to which classes
-        return {
-          ...event,
-          payload: {},
-        };
-      }).filter((event): event is AuraEvent => event !== null);
+          // SOME are revoked — strip the entire payload (replace with empty object)
+          // since we can't determine which payload fields map to which classes
+          return {
+            ...event,
+            payload: {},
+          };
+        })
+        .filter((event): event is AuraEvent => event !== null);
     },
 
-    isPrescriptionPermitted(
-      prescription: UIPrescription,
-      consentProfile: ConsentProfile
-    ): boolean {
+    isPrescriptionPermitted(prescription: UIPrescription, consentProfile: ConsentProfile): boolean {
       const dataClassesUsed = prescription.audit?.dataClassesUsed;
 
       // If dataClassesUsed is undefined or empty, the prescription is permitted
@@ -116,7 +100,7 @@ export function createConsentEnforcer(): IConsentEnforcer {
     filterProfileAttributes(
       attributes: ProfileAttribute[],
       consentProfile: ConsentProfile,
-      asOf: string
+      asOf: string,
     ): ProfileAttribute[] {
       return attributes.filter((attr) => {
         // Exclude if the attribute's dataClass is revoked
@@ -135,7 +119,7 @@ export function createConsentEnforcer(): IConsentEnforcer {
 
     filterPipelineAttributes(
       attributes: ProfileAttribute[],
-      consentProfile: ConsentProfile
+      consentProfile: ConsentProfile,
     ): ProfileAttribute[] {
       // Same as filterProfileAttributes but without expiry check
       return attributes.filter((attr) => {

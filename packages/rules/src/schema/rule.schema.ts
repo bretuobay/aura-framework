@@ -90,7 +90,10 @@ export const RuleMetadataSchema = z
     justification: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.decisionSource === "llm" && (!data.justification || data.justification.trim() === "")) {
+    if (
+      data.decisionSource === "llm" &&
+      (!data.justification || data.justification.trim() === "")
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `"justification" is required when decisionSource is "llm"`,

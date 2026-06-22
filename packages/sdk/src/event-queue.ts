@@ -1,4 +1,4 @@
-import type { AuraEvent } from './types.js';
+import type { AuraEvent } from "./types.js";
 
 /**
  * Internal wrapper that associates a queued event with its enqueue timestamp.
@@ -47,9 +47,7 @@ export class EventQueue {
    */
   flush(): AuraEvent[] {
     const now = Date.now();
-    const valid = this.queue.filter(
-      (entry) => now - entry.enqueuedAt < this.queueTTL,
-    );
+    const valid = this.queue.filter((entry) => now - entry.enqueuedAt < this.queueTTL);
 
     this.queue = [];
 

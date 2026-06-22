@@ -10,15 +10,8 @@
  */
 
 import { UIPrescriptionSchema } from "@aura/protocol";
-import type {
-  UIPrescription,
-  ConsentProfile,
-  ExplanationRecord,
-} from "@aura/protocol";
-import type {
-  ICapabilityRegistry,
-  CapabilityError,
-} from "./capability-registry.js";
+import type { UIPrescription, ConsentProfile, ExplanationRecord } from "@aura/protocol";
+import type { ICapabilityRegistry, CapabilityError } from "./capability-registry.js";
 import type { IConsentEnforcer } from "./consent-enforcer.js";
 import type { IStreamRegistry } from "./stream-registry.js";
 import type { IPrescriptionStore, IExplanationStore } from "../storage/interfaces.js";
@@ -38,7 +31,7 @@ export interface IPrescriptionEmitter {
   emit(
     candidate: UIPrescription,
     session: SessionRecord,
-    config: EmissionContext
+    config: EmissionContext,
   ): Promise<EmitResult>;
 }
 
@@ -85,7 +78,7 @@ export function createPrescriptionEmitter(deps: {
     async emit(
       candidate: UIPrescription,
       session: SessionRecord,
-      config: EmissionContext
+      config: EmissionContext,
     ): Promise<EmitResult> {
       // ─── Gate 1: Schema Validation ───────────────────────────────────────────
       const schemaResult = UIPrescriptionSchema.safeParse(candidate);
@@ -100,24 +93,18 @@ export function createPrescriptionEmitter(deps: {
       }
 
       // ─── Gate 2: Capability Validation ───────────────────────────────────────
-      const capResult = capabilityRegistry.validate(
-        session.sessionId,
-        candidate
-      );
+      const capResult = capabilityRegistry.validate(session.sessionId, candidate);
       if (!capResult.valid) {
         // Check if any error is a manifest-version-mismatch
         const hasManifestMismatch = capResult.errors.some(
-          (err: CapabilityError) => err.type === "manifest-version-mismatch"
+          (err: CapabilityError) => err.type === "manifest-version-mismatch",
         );
         if (hasManifestMismatch) {
           return {
             emitted: false,
             reason: "manifest-version-mismatch",
             detail: capResult.errors
-              .filter(
-                (err: CapabilityError) =>
-                  err.type === "manifest-version-mismatch"
-              )
+              .filter((err: CapabilityError) => err.type === "manifest-version-mismatch")
               .map((err: CapabilityError) => err.detail)
               .join("; "),
           };
@@ -132,10 +119,7 @@ export function createPrescriptionEmitter(deps: {
       }
 
       // ─── Gate 3: Consent Check ───────────────────────────────────────────────
-      const permitted = consentEnforcer.isPrescriptionPermitted(
-        candidate,
-        config.consentProfile
-      );
+      const permitted = consentEnforcer.isPrescriptionPermitted(candidate, config.consentProfile);
       if (!permitted) {
         return {
           emitted: false,
@@ -145,9 +129,7 @@ export function createPrescriptionEmitter(deps: {
       }
 
       // ─── Gate 4: Context-Lock Check ──────────────────────────────────────────
-      if (
-        candidate.contextLock.sequenceId !== config.currentContextSequenceId
-      ) {
+      if (candidate.contextLock.sequenceId !== config.currentContextSequenceId) {
         return {
           emitted: false,
           reason: "context-stale",
@@ -166,10 +148,7 @@ export function createPrescriptionEmitter(deps: {
 
       // ─── Gate 6: Latency Budget Check ────────────────────────────────────────
       const elapsed = performance.now() - config.evaluationStartTime;
-      const budget = getLatencyBudget(
-        candidate.latencyClass,
-        config.latencyBudgets
-      );
+      const budget = getLatencyBudget(candidate.latencyClass, config.latencyBudgets);
       if (elapsed > budget) {
         return {
           emitted: false,
@@ -201,10 +180,7 @@ export function createPrescriptionEmitter(deps: {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function getLatencyBudget(
-  latencyClass: string,
-  budgets: LatencyBudgetConfig
-): number {
+function getLatencyBudget(latencyClass: string, budgets: LatencyBudgetConfig): number {
   switch (latencyClass) {
     case "immediate":
       return budgets.immediateMs;

@@ -108,11 +108,7 @@ export interface Rule {
 
 // ─── RulesPipelineInput ───────────────────────────────────────────────────────
 
-import type {
-  AuraEvent,
-  CapabilityManifest,
-  ConsentProfile,
-} from "@aura/protocol";
+import type { AuraEvent, CapabilityManifest, ConsentProfile } from "@aura/protocol";
 
 /** Combined evaluation context passed to the Evaluator on each call. */
 export interface RulesPipelineInput {
@@ -138,11 +134,7 @@ export interface FeedbackContext {
 
 // ─── CandidatePrescription ────────────────────────────────────────────────────
 
-import type {
-  PrescriptionMode,
-  Adaptation,
-  ExplanationRecord,
-} from "@aura/protocol";
+import type { PrescriptionMode, Adaptation, ExplanationRecord } from "@aura/protocol";
 
 /** Intermediate prescription produced after a rule matches, before pipeline filtering. */
 export interface CandidatePrescription {
@@ -172,9 +164,7 @@ export interface CandidatePrescription {
 // ─── RuleSource ───────────────────────────────────────────────────────────────
 
 /** Input to the rule loader. */
-export type RuleSource =
-  | { type: "json"; data: unknown[] }
-  | { type: "module"; rules: Rule[] };
+export type RuleSource = { type: "json"; data: unknown[] } | { type: "module"; rules: Rule[] };
 
 // ─── RuleSet ──────────────────────────────────────────────────────────────────
 

@@ -32,13 +32,7 @@ export function EventLogView({ events, replayedEventIds }: EventLogViewProps): R
       <div style={styles.list}>
         {events.map((event, index) => {
           const isReplayed = replayedEventIds?.has(String(index)) ?? false;
-          return (
-            <EventEntry
-              key={index}
-              event={event}
-              isReplayed={isReplayed}
-            />
-          );
+          return <EventEntry key={index} event={event} isReplayed={isReplayed} />;
         })}
       </div>
     </div>
@@ -61,9 +55,7 @@ function EventEntry({ event, isReplayed }: EventEntryProps): React.ReactElement 
       </div>
       <details>
         <summary style={styles.payloadToggle}>Payload</summary>
-        <pre style={styles.payload}>
-          {JSON.stringify(event.payload, null, 2)}
-        </pre>
+        <pre style={styles.payload}>{JSON.stringify(event.payload, null, 2)}</pre>
       </details>
     </div>
   );

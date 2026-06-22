@@ -45,17 +45,10 @@ export interface ISecurityAuditor {
   scanForInjection(events: AuraEvent[], sessionId: string): SecurityScanResult;
 
   /** Detect replay attacks (duplicate event batches) */
-  detectReplay(
-    sessionId: string,
-    eventIds: string[],
-    timestamps: string[]
-  ): boolean;
+  detectReplay(sessionId: string, eventIds: string[], timestamps: string[]): boolean;
 
   /** Validate profile correction eligibility */
-  isCorrectionEligible(
-    attributeId: string,
-    policy: SecurityPolicyConfig
-  ): boolean;
+  isCorrectionEligible(attributeId: string, policy: SecurityPolicyConfig): boolean;
 
   /** Record a security audit event */
   record(entry: SecurityAuditRecord): void;
@@ -103,11 +96,7 @@ export function createSecurityAuditor(config: {
    * Compute a fingerprint for a batch of event IDs and timestamps.
    * Uses a simple string concatenation approach for deterministic hashing.
    */
-  function computeFingerprint(
-    sessionId: string,
-    eventIds: string[],
-    timestamps: string[]
-  ): string {
+  function computeFingerprint(sessionId: string, eventIds: string[], timestamps: string[]): string {
     return `${sessionId}:${eventIds.join(",")}:${timestamps.join(",")}`;
   }
 
@@ -132,10 +121,7 @@ export function createSecurityAuditor(config: {
   }
 
   return {
-    scanForInjection(
-      events: AuraEvent[],
-      _sessionId: string
-    ): SecurityScanResult {
+    scanForInjection(events: AuraEvent[], _sessionId: string): SecurityScanResult {
       const flaggedIndices: number[] = [];
       const indicators: string[] = [];
 
@@ -148,9 +134,7 @@ export function createSecurityAuditor(config: {
             if (!flaggedIndices.includes(i)) {
               flaggedIndices.push(i);
             }
-            indicators.push(
-              `Event[${i}] matched injection pattern: ${pattern.source}`
-            );
+            indicators.push(`Event[${i}] matched injection pattern: ${pattern.source}`);
           }
         }
       }
@@ -162,11 +146,7 @@ export function createSecurityAuditor(config: {
       };
     },
 
-    detectReplay(
-      sessionId: string,
-      eventIds: string[],
-      timestamps: string[]
-    ): boolean {
+    detectReplay(sessionId: string, eventIds: string[], timestamps: string[]): boolean {
       const now = Date.now();
 
       // Evict entries older than the replay window
@@ -184,10 +164,7 @@ export function createSecurityAuditor(config: {
       return false;
     },
 
-    isCorrectionEligible(
-      attributeId: string,
-      policy: SecurityPolicyConfig
-    ): boolean {
+    isCorrectionEligible(attributeId: string, policy: SecurityPolicyConfig): boolean {
       // Check against the configured protected attributes from the policy
       const policyProtected = new Set(policy.protectedAttributes ?? []);
 

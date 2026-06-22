@@ -15,10 +15,7 @@
  * - 6.5: Keep candidates where all references are valid in the manifest
  */
 
-import type {
-  CandidatePrescription,
-  CapabilityManifest,
-} from "../schema/types.js";
+import type { CandidatePrescription, CapabilityManifest } from "../schema/types.js";
 
 /**
  * Filters candidate prescriptions against the capability manifest.
@@ -36,12 +33,10 @@ import type {
  */
 export function filterByManifest(
   candidates: CandidatePrescription[],
-  manifest: CapabilityManifest
+  manifest: CapabilityManifest,
 ): CandidatePrescription[] {
   // Build lookup structures for efficient manifest querying
-  const surfaceMap = new Map(
-    manifest.surfaces.map((s) => [s.surfaceId, s])
-  );
+  const surfaceMap = new Map(manifest.surfaces.map((s) => [s.surfaceId, s]));
 
   // Build a set of all declared identifiers (surfaceIds + componentIds)
   // for filter target validation
@@ -61,9 +56,7 @@ export function filterByManifest(
     }
 
     // Build component lookup for this surface
-    const componentMap = new Map(
-      surface.components.map((c) => [c.componentId, c])
-    );
+    const componentMap = new Map(surface.components.map((c) => [c.componentId, c]));
 
     // Check each adaptation
     for (const adaptation of candidate.adaptations) {

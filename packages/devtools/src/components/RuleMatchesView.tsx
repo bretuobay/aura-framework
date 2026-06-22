@@ -193,9 +193,7 @@ export function RuleMatchesView({
               </button>
 
               {matches.length === 0 ? (
-                <p style={styles.noEvalPlaceholder}>
-                  No rule evaluation recorded
-                </p>
+                <p style={styles.noEvalPlaceholder}>No rule evaluation recorded</p>
               ) : (
                 <ul style={styles.ruleList}>
                   {matches.map((match) => {
@@ -208,9 +206,7 @@ export function RuleMatchesView({
                           <span
                             style={{
                               ...styles.matchedBadge,
-                              ...(match.matched
-                                ? styles.matchedTrue
-                                : styles.matchedFalse),
+                              ...(match.matched ? styles.matchedTrue : styles.matchedFalse),
                             }}
                           >
                             {match.matched ? "✓ matched" : "✗ not matched"}
@@ -242,12 +238,8 @@ export function RuleMatchesView({
                             <tbody>
                               {match.conditionResults.map((condition, idx) => (
                                 <tr key={idx}>
-                                  <td style={styles.conditionTd}>
-                                    {condition.path}
-                                  </td>
-                                  <td style={styles.conditionTd}>
-                                    {condition.operator}
-                                  </td>
+                                  <td style={styles.conditionTd}>{condition.path}</td>
+                                  <td style={styles.conditionTd}>{condition.operator}</td>
                                   <td style={styles.conditionTd}>
                                     {JSON.stringify(condition.expected)}
                                   </td>
@@ -255,9 +247,7 @@ export function RuleMatchesView({
                                     style={{
                                       ...styles.conditionTd,
                                       ...styles.passedCell,
-                                      color: condition.passed
-                                        ? "#1b7340"
-                                        : "#c5221f",
+                                      color: condition.passed ? "#1b7340" : "#c5221f",
                                     }}
                                   >
                                     {condition.passed ? "✓" : "✗"}
@@ -269,9 +259,7 @@ export function RuleMatchesView({
                         )}
 
                         {!match.matched && match.failureReason && (
-                          <div style={styles.failureReason}>
-                            Failure: {match.failureReason}
-                          </div>
+                          <div style={styles.failureReason}>Failure: {match.failureReason}</div>
                         )}
                       </li>
                     );

@@ -8,9 +8,9 @@
  * Requirements: 5.1–5.12, 9.1–9.6
  */
 
-import { useContext, useState, useEffect } from 'react';
-import { AuraContext } from './AuraContext';
-import type { UIPrescription } from '@aura/protocol';
+import { useContext, useState, useEffect } from "react";
+import { AuraContext } from "./AuraContext";
+import type { UIPrescription } from "@aura/protocol";
 
 /**
  * Subscribe to the current prescription for a given surface.
@@ -29,7 +29,7 @@ export function usePrescription(surfaceId: string): UIPrescription | undefined {
 
   useEffect(() => {
     // No client available (outside provider) or SDK is in degraded mode
-    if (!client || status === 'degraded') {
+    if (!client || status === "degraded") {
       setPrescription(undefined);
       return;
     }

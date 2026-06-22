@@ -90,11 +90,10 @@ export class SSEManager {
 
       // Notify about connection loss
       this.onError(
-        new AuraClientError(
-          "SSE connection lost",
-          ErrorCodes.SSE_CONNECTION_LOST,
-          { endpoint: this.endpoint, sessionId: this.sessionId },
-        ),
+        new AuraClientError("SSE connection lost", ErrorCodes.SSE_CONNECTION_LOST, {
+          endpoint: this.endpoint,
+          sessionId: this.sessionId,
+        }),
       );
 
       // Close the current EventSource

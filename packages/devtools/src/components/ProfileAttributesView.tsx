@@ -106,10 +106,7 @@ function AttributeCard({ attribute, simulated }: AttributeCardProps): React.Reac
               🧪 Simulated
             </span>
           )}
-          <span
-            style={getProvenanceBadgeStyle(provenance)}
-            data-testid="provenance-badge"
-          >
+          <span style={getProvenanceBadgeStyle(provenance)} data-testid="provenance-badge">
             {provenanceInfo.icon} {provenanceInfo.label}
           </span>
           {lowConfidence && (

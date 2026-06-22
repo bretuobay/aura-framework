@@ -80,8 +80,7 @@ class AuraClientImpl implements AuraClient {
   private readonly eventQueue: EventQueue;
   private readonly prescriptionStore: PrescriptionStore;
   private readonly logBuffer: LogBuffer;
-  private readonly errorHandlers: Set<(error: AuraClientError) => void> =
-    new Set();
+  private readonly errorHandlers: Set<(error: AuraClientError) => void> = new Set();
   private evictionInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(config: AuraClientConfig) {
@@ -170,8 +169,7 @@ class AuraClientImpl implements AuraClient {
       }
     } catch (error: unknown) {
       // Any failure: transition to degraded, never reject
-      const message =
-        error instanceof Error ? error.message : "Unknown error during init";
+      const message = error instanceof Error ? error.message : "Unknown error during init";
       const code =
         message.includes("status") || message.includes("failed")
           ? ErrorCodes.SESSION_INIT_FAILED
@@ -214,10 +212,7 @@ class AuraClientImpl implements AuraClient {
     // Validate event against AuraEventSchema
     const parseResult = AuraEventSchema.safeParse(event);
     if (!parseResult.success) {
-      throw new AuraValidationError(
-        "Event validation failed",
-        parseResult.error.issues,
-      );
+      throw new AuraValidationError("Event validation failed", parseResult.error.issues);
     }
 
     // After disconnect, do nothing (no network calls)
@@ -247,8 +242,7 @@ class AuraClientImpl implements AuraClient {
     } catch (_error: unknown) {
       // On transient failure: re-enqueue event, resolve without throwing
       this.eventQueue.enqueue(event);
-      const message =
-        _error instanceof Error ? _error.message : "Failed to emit event";
+      const message = _error instanceof Error ? _error.message : "Failed to emit event";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           eventType: event.type,
@@ -264,10 +258,7 @@ class AuraClientImpl implements AuraClient {
     // Validate patch against partial ContextModelSchema
     const parseResult = ContextModelSchema.partial().safeParse(contextPatch);
     if (!parseResult.success) {
-      throw new AuraValidationError(
-        "Context patch validation failed",
-        parseResult.error.issues,
-      );
+      throw new AuraValidationError("Context patch validation failed", parseResult.error.issues);
     }
 
     // Increment contextSequenceId before sending (regardless of status)
@@ -298,10 +289,7 @@ class AuraClientImpl implements AuraClient {
       );
     } catch (_error: unknown) {
       // On transient failure: log warning, resolve
-      const message =
-        _error instanceof Error
-          ? _error.message
-          : "Failed to update context";
+      const message = _error instanceof Error ? _error.message : "Failed to update context";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           contextSequenceId: this.contextSequenceId,
@@ -330,20 +318,12 @@ class AuraClientImpl implements AuraClient {
     // Validate against FeedbackEventSchema
     const parseResult = FeedbackEventSchema.safeParse(feedbackEvent);
     if (!parseResult.success) {
-      throw new AuraValidationError(
-        "Feedback event validation failed",
-        parseResult.error.issues,
-      );
+      throw new AuraValidationError("Feedback event validation failed", parseResult.error.issues);
     }
 
     // On undo/reject action: remove prescription and notify listeners
-    if (
-      feedbackEvent.action === "undo" ||
-      feedbackEvent.action === "reject"
-    ) {
-      const surfaceId = this.prescriptionStore.removeByPrescriptionId(
-        feedbackEvent.prescriptionId,
-      );
+    if (feedbackEvent.action === "undo" || feedbackEvent.action === "reject") {
+      const surfaceId = this.prescriptionStore.removeByPrescriptionId(feedbackEvent.prescriptionId);
       if (surfaceId) {
         this.prescriptionStore.notifyListeners(surfaceId, undefined);
       }
@@ -373,8 +353,7 @@ class AuraClientImpl implements AuraClient {
       );
     } catch (_error: unknown) {
       // On transient failure: log warning, resolve (no retry)
-      const message =
-        _error instanceof Error ? _error.message : "Failed to send feedback";
+      const message = _error instanceof Error ? _error.message : "Failed to send feedback";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           prescriptionId: feedbackEvent.prescriptionId,
@@ -390,10 +369,7 @@ class AuraClientImpl implements AuraClient {
     // Validate against ConsentProfileSchema (record schema is already partial-friendly)
     const parseResult = ConsentProfileSchema.safeParse(consentPatch);
     if (!parseResult.success) {
-      throw new AuraValidationError(
-        "Consent patch validation failed",
-        parseResult.error.issues,
-      );
+      throw new AuraValidationError("Consent patch validation failed", parseResult.error.issues);
     }
 
     // Update in-memory ConsentProfile immediately
@@ -403,8 +379,7 @@ class AuraClientImpl implements AuraClient {
     // Remove affected prescriptions and notify listeners
     for (const [key, value] of Object.entries(consentPatch)) {
       if (value === false) {
-        const affectedSurfaceIds =
-          this.prescriptionStore.removeByDataClass(key);
+        const affectedSurfaceIds = this.prescriptionStore.removeByDataClass(key);
         for (const surfaceId of affectedSurfaceIds) {
           this.prescriptionStore.notifyListeners(surfaceId, undefined);
         }
@@ -435,10 +410,7 @@ class AuraClientImpl implements AuraClient {
       );
     } catch (_error: unknown) {
       // On transient failure: log warning, resolve (local consent already updated)
-      const message =
-        _error instanceof Error
-          ? _error.message
-          : "Failed to update consent";
+      const message = _error instanceof Error ? _error.message : "Failed to update consent";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           patchKeys: Object.keys(consentPatch),
@@ -456,16 +428,13 @@ class AuraClientImpl implements AuraClient {
   async explain(prescriptionId: string): Promise<ExplanationRecord | null> {
     // Reject with AuraValidationError if prescriptionId is empty string
     if (!prescriptionId) {
-      throw new AuraValidationError(
-        "prescriptionId must be a non-empty string",
-        [
-          {
-            code: "custom" as const,
-            message: "prescriptionId must be a non-empty string",
-            path: ["prescriptionId"],
-          },
-        ],
-      );
+      throw new AuraValidationError("prescriptionId must be a non-empty string", [
+        {
+          code: "custom" as const,
+          message: "prescriptionId must be a non-empty string",
+          path: ["prescriptionId"],
+        },
+      ]);
     }
 
     // After disconnect, resolve with null
@@ -488,10 +457,7 @@ class AuraClientImpl implements AuraClient {
       return result ?? null;
     } catch (_error: unknown) {
       // On error: resolve with null, log warning
-      const message =
-        _error instanceof Error
-          ? _error.message
-          : "Failed to get explanation";
+      const message = _error instanceof Error ? _error.message : "Failed to get explanation";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           prescriptionId,
@@ -527,11 +493,8 @@ class AuraClientImpl implements AuraClient {
       return { attributes: [] };
     } catch (_error: unknown) {
       // On error: resolve with { attributes: [] }, log warning
-      const message =
-        _error instanceof Error ? _error.message : "Failed to get profile";
-      this.notifyError(
-        new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {}),
-      );
+      const message = _error instanceof Error ? _error.message : "Failed to get profile";
+      this.notifyError(new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {}));
       return { attributes: [] };
     }
   }
@@ -570,10 +533,7 @@ class AuraClientImpl implements AuraClient {
       );
     } catch (_error: unknown) {
       // On failure: log warning, resolve
-      const message =
-        _error instanceof Error
-          ? _error.message
-          : "Failed to correct profile";
+      const message = _error instanceof Error ? _error.message : "Failed to correct profile";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           action: correction.action,
@@ -659,8 +619,7 @@ class AuraClientImpl implements AuraClient {
         reason: "manifest-mismatch",
         timestamp: new Date().toISOString(),
       }).catch((err: unknown) => {
-        const msg =
-          err instanceof Error ? err.message : "Failed to send reject feedback";
+        const msg = err instanceof Error ? err.message : "Failed to send reject feedback";
         this.notifyError(
           new AuraClientError(msg, ErrorCodes.REQUEST_FAILED, {
             prescriptionId: prescription.id,
@@ -692,8 +651,7 @@ class AuraClientImpl implements AuraClient {
         reason: "stale-context",
         timestamp: new Date().toISOString(),
       }).catch((err: unknown) => {
-        const msg =
-          err instanceof Error ? err.message : "Failed to send reject feedback";
+        const msg = err instanceof Error ? err.message : "Failed to send reject feedback";
         this.notifyError(
           new AuraClientError(msg, ErrorCodes.REQUEST_FAILED, {
             prescriptionId: prescription.id,
@@ -722,19 +680,13 @@ class AuraClientImpl implements AuraClient {
     }
 
     // All admission checks passed — store in PrescriptionStore
-    this.prescriptionStore.store(
-      prescription,
-      this.contextSequenceId,
-      this.manifestVersion,
-    );
+    this.prescriptionStore.store(prescription, this.contextSequenceId, this.manifestVersion);
   }
 
   private startEvictionSweep(): void {
     const interval = this.config.options?.expiryCheckInterval ?? 5000;
     this.evictionInterval = setInterval(() => {
-      const evicted = this.prescriptionStore.evictExpiredAndStale(
-        this.contextSequenceId,
-      );
+      const evicted = this.prescriptionStore.evictExpiredAndStale(this.contextSequenceId);
       // Notify listeners for evicted surfaces
       for (const surfaceId of evicted) {
         this.prescriptionStore.notifyListeners(surfaceId, undefined);
@@ -754,8 +706,7 @@ class AuraClientImpl implements AuraClient {
       for (const event of events) {
         this.eventQueue.enqueue(event);
       }
-      const message =
-        error instanceof Error ? error.message : "Failed to flush events";
+      const message = error instanceof Error ? error.message : "Failed to flush events";
       this.notifyError(
         new AuraClientError(message, ErrorCodes.REQUEST_FAILED, {
           eventCount: events.length,

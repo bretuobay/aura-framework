@@ -26,7 +26,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       expect(screen.getByTestId("ps-key-input")).toBeDefined();
@@ -46,7 +46,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       const notice = screen.getByTestId("local-only-notice");
@@ -63,7 +63,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-key-input"), {
@@ -102,7 +102,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-key-input"), {
@@ -128,7 +128,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-confidence-input"), {
@@ -138,9 +138,7 @@ describe("ProfileSimulator", () => {
 
       expect(onApply).not.toHaveBeenCalled();
       expect(screen.getByTestId("ps-confidence-error")).toBeDefined();
-      expect(screen.getByTestId("ps-confidence-error").textContent).toContain(
-        "between 0 and 1"
-      );
+      expect(screen.getByTestId("ps-confidence-error").textContent).toContain("between 0 and 1");
     });
 
     it("shows field-level error when confidence < 0", () => {
@@ -151,7 +149,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-confidence-input"), {
@@ -171,7 +169,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-confidence-input"), {
@@ -193,7 +191,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       // Manually set an unrecognized value via the select
@@ -205,7 +203,7 @@ describe("ProfileSimulator", () => {
       expect(onApply).not.toHaveBeenCalled();
       expect(screen.getByTestId("ps-dataclass-error")).toBeDefined();
       expect(screen.getByTestId("ps-dataclass-error").textContent).toContain(
-        "Unrecognized data class"
+        "Unrecognized data class",
       );
     });
   });
@@ -219,7 +217,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.click(screen.getByTestId("ps-clear-button"));
@@ -241,7 +239,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={simulated}
-        />
+        />,
       );
 
       const list = screen.getByTestId("ps-simulated-list");
@@ -258,7 +256,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       expect(screen.queryByTestId("ps-simulated-list")).toBeNull();
@@ -274,7 +272,7 @@ describe("ProfileSimulator", () => {
           onApplyScenario={onApply}
           onClearScenario={onClear}
           simulatedAttributes={[]}
-        />
+        />,
       );
 
       fireEvent.change(screen.getByTestId("ps-key-input"), {

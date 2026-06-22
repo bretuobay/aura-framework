@@ -6,10 +6,10 @@
  * Never throws during the render phase.
  */
 
-import { useContext } from 'react';
-import { AuraContext } from './AuraContext';
-import type { SdkStatus } from './AuraContext';
-import type { AuraClientError } from '@aura/sdk';
+import { useContext } from "react";
+import { AuraContext } from "./AuraContext";
+import type { SdkStatus } from "./AuraContext";
+import type { AuraClientError } from "@aura/sdk";
 
 /**
  * Read the current AURA SDK status and error from context.

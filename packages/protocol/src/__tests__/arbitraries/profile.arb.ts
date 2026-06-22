@@ -1,10 +1,6 @@
 import * as fc from "fast-check";
 import type { ProfileAttribute } from "../../profile.js";
-import {
-  arbNonEmptyString,
-  arbConfidence,
-  arbISOTimestamp,
-} from "./primitives.arb.js";
+import { arbNonEmptyString, arbConfidence, arbISOTimestamp } from "./primitives.arb.js";
 
 const ProfileProvenances = ["explicit", "inferred", "imported"] as const;
 

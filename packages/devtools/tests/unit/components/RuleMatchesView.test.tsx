@@ -4,9 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import { RuleMatchesView } from "../../../src/components/RuleMatchesView";
 import type { RuleMatchRecord, PrescriptionEntry } from "../../../src/schema";
 
-function makePrescription(
-  overrides: Partial<PrescriptionEntry> = {}
-): PrescriptionEntry {
+function makePrescription(overrides: Partial<PrescriptionEntry> = {}): PrescriptionEntry {
   return {
     id: "rx-001",
     surfaceId: "surface-main",
@@ -24,9 +22,7 @@ function makePrescription(
   };
 }
 
-function makeRuleMatch(
-  overrides: Partial<RuleMatchRecord> = {}
-): RuleMatchRecord {
+function makeRuleMatch(overrides: Partial<RuleMatchRecord> = {}): RuleMatchRecord {
   return {
     ruleId: "rule-001",
     prescriptionId: "rx-001",
@@ -45,10 +41,7 @@ function makeRuleMatch(
 
 describe("RuleMatchesView", () => {
   it("renders all rule match entries grouped by prescription", () => {
-    const prescriptions = [
-      makePrescription({ id: "rx-001" }),
-      makePrescription({ id: "rx-002" }),
-    ];
+    const prescriptions = [makePrescription({ id: "rx-001" }), makePrescription({ id: "rx-002" })];
     const ruleMatches = [
       makeRuleMatch({ ruleId: "rule-a", prescriptionId: "rx-001" }),
       makeRuleMatch({ ruleId: "rule-b", prescriptionId: "rx-001" }),
@@ -60,7 +53,7 @@ describe("RuleMatchesView", () => {
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     expect(screen.getByText("Prescription: rx-001")).toBeTruthy();
@@ -82,7 +75,7 @@ describe("RuleMatchesView", () => {
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     expect(screen.getByText("rule-pass")).toBeTruthy();
@@ -109,7 +102,7 @@ describe("RuleMatchesView", () => {
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     // Conditions table should not be visible before expanding
@@ -144,12 +137,10 @@ describe("RuleMatchesView", () => {
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
-    expect(
-      screen.getByText("Failure: Context attribute missing: profile.theme")
-    ).toBeTruthy();
+    expect(screen.getByText("Failure: Context attribute missing: profile.theme")).toBeTruthy();
   });
 
   it("shows placeholder for prescriptions with no rule evaluation", () => {
@@ -157,16 +148,14 @@ describe("RuleMatchesView", () => {
       makePrescription({ id: "rx-001" }),
       makePrescription({ id: "rx-no-rules" }),
     ];
-    const ruleMatches = [
-      makeRuleMatch({ ruleId: "rule-a", prescriptionId: "rx-001" }),
-    ];
+    const ruleMatches = [makeRuleMatch({ ruleId: "rule-a", prescriptionId: "rx-001" })];
     const onNav = vi.fn();
     render(
       <RuleMatchesView
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     expect(screen.getByText("No rule evaluation recorded")).toBeTruthy();
@@ -174,16 +163,14 @@ describe("RuleMatchesView", () => {
 
   it("calls onNavigateToPrescription when prescription header is clicked", () => {
     const prescriptions = [makePrescription({ id: "rx-nav-test" })];
-    const ruleMatches = [
-      makeRuleMatch({ prescriptionId: "rx-nav-test" }),
-    ];
+    const ruleMatches = [makeRuleMatch({ prescriptionId: "rx-nav-test" })];
     const onNav = vi.fn();
     render(
       <RuleMatchesView
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     const header = screen.getByText("Prescription: rx-nav-test");
@@ -207,7 +194,7 @@ describe("RuleMatchesView", () => {
         ruleMatches={ruleMatches}
         prescriptions={prescriptions}
         onNavigateToPrescription={onNav}
-      />
+      />,
     );
 
     expect(screen.queryByText("Failure: Should not show")).toBeNull();

@@ -56,10 +56,7 @@ export function createEventsHandler(deps: {
     try {
       body = await c.req.json();
     } catch {
-      return c.json(
-        { errors: [{ field: "body", message: "Invalid JSON" }] },
-        400
-      );
+      return c.json({ errors: [{ field: "body", message: "Invalid JSON" }] }, 400);
     }
 
     const parseResult = EventsRequestSchema.safeParse(body);
@@ -80,10 +77,7 @@ export function createEventsHandler(deps: {
     }
 
     // 3. Filter events through consent enforcer
-    const filteredEvents = consentEnforcer.filterEvents(
-      events,
-      session.consentProfile
-    );
+    const filteredEvents = consentEnforcer.filterEvents(events, session.consentProfile);
 
     // 4. Scan filtered events via security auditor — log if not clean but don't block
     const scanResult = securityAuditor.scanForInjection(filteredEvents, sessionId);
@@ -108,7 +102,7 @@ export function createEventsHandler(deps: {
     const attributes = await userModelStore.getAttributes(session.userId);
     const filteredAttributes = consentEnforcer.filterPipelineAttributes(
       attributes,
-      session.consentProfile
+      session.consentProfile,
     );
 
     // 7. Build RulesPipelineInput
@@ -128,10 +122,7 @@ export function createEventsHandler(deps: {
       candidates = await Promise.race([
         pipeline.evaluate(pipelineInput),
         new Promise<never>((_, reject) =>
-          setTimeout(
-            () => reject(new Error("Pipeline timeout")),
-            config.pipelineTimeoutMs
-          )
+          setTimeout(() => reject(new Error("Pipeline timeout")), config.pipelineTimeoutMs),
         ),
       ]);
     } catch {
@@ -148,14 +139,8 @@ export function createEventsHandler(deps: {
       evaluationStartTime,
     };
 
-    let emittedCount = 0;
     for (const candidate of candidates) {
-      const result = await prescriptionEmitter.emit(
-        candidate,
-        session,
-        emissionContext
-      );
-      if (result.emitted) emittedCount++;
+      await prescriptionEmitter.emit(candidate, session, emissionContext);
     }
 
     // 10. Return 200 with accepted status and event count

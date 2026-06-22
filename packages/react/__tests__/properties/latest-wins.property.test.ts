@@ -1,19 +1,19 @@
 // Feature: aura-react, Property 6: Latest-Wins Prescription Delivery
 // **Validates: Requirements 5.4, 5.11, 12.4**
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React from 'react';
-import { render, act, cleanup } from '@testing-library/react';
-import { arbPrescriptionForSurface } from '../arbitraries/prescription.arbitrary';
-import type { UIPrescription } from '@aura/protocol';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React from "react";
+import { render, act, cleanup } from "@testing-library/react";
+import { arbPrescriptionForSurface } from "../arbitraries/prescription.arbitrary";
+import type { UIPrescription } from "@aura/protocol";
 
 // Track the subscription listener for the test surface
 let capturedListener: ((p: UIPrescription | undefined) => void) | null = null;
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => ({
-    status: 'active',
+    status: "active",
     init: vi.fn(() => Promise.resolve()),
     disconnect: vi.fn(),
     emit: vi.fn(),
@@ -28,23 +28,23 @@ vi.mock('@aura/sdk', () => ({
   })),
 }));
 
-import { AuraProvider } from '../../src/AuraProvider';
-import { usePrescription } from '../../src/usePrescription';
+import { AuraProvider } from "../../src/AuraProvider";
+import { usePrescription } from "../../src/usePrescription";
 
 // Minimal valid provider props
 const defaultProps = {
-  endpoint: 'https://aura.test/api',
+  endpoint: "https://aura.test/api",
   manifest: {
-    appId: 'test-app',
-    version: '1.0.0',
-    surfaces: [{ surfaceId: 'test-surface', components: [] }],
+    appId: "test-app",
+    version: "1.0.0",
+    surfaces: [{ surfaceId: "test-surface", components: [] }],
   },
-  userId: 'user-1',
-  consentProfile: { level: 'full' as const },
+  userId: "user-1",
+  consentProfile: { level: "full" as const },
   context: {},
 };
 
-const TEST_SURFACE_ID = 'test-surface';
+const TEST_SURFACE_ID = "test-surface";
 
 /**
  * A component that consumes usePrescription and exposes the current value.
@@ -61,13 +61,13 @@ function PrescriptionConsumer({
   return null;
 }
 
-describe('Property 6: Latest-Wins Prescription Delivery', () => {
+describe("Property 6: Latest-Wins Prescription Delivery", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     capturedListener = null;
   });
 
-  it('for any sequence of prescriptions delivered to a surface, hook returns the most recently delivered prescription', async () => {
+  it("for any sequence of prescriptions delivered to a surface, hook returns the most recently delivered prescription", async () => {
     await fc.assert(
       fc.asyncProperty(
         fc.array(arbPrescriptionForSurface(TEST_SURFACE_ID), { minLength: 1, maxLength: 10 }),

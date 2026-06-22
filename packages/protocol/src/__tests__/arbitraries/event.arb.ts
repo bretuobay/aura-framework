@@ -26,14 +26,10 @@ export function arbAuraEvent(): fc.Arbitrary<AuraEvent> {
       type: arbNonEmptyString(),
       surfaceId: arbNonEmptyString(),
       timestamp: arbISOTimestamp(),
-      payload: fc.dictionary(
-        fc.string({ minLength: 1, maxLength: 20 }),
-        fc.jsonValue()
-      ),
-      dataClasses: fc.option(
-        fc.subarray([...DataClassValues], { minLength: 0 }),
-        { nil: undefined }
-      ),
+      payload: fc.dictionary(fc.string({ minLength: 1, maxLength: 20 }), fc.jsonValue()),
+      dataClasses: fc.option(fc.subarray([...DataClassValues], { minLength: 0 }), {
+        nil: undefined,
+      }),
     })
     .map((obj) => {
       const result: Record<string, unknown> = {

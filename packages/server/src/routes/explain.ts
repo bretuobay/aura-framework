@@ -24,10 +24,7 @@ export function createExplainHandler(deps: {
     // 1. Get prescription ID from route param
     const prescriptionId = c.req.param("id");
     if (!prescriptionId) {
-      return c.json(
-        { errors: [{ field: "id", message: "Prescription ID is required" }] },
-        400
-      );
+      return c.json({ errors: [{ field: "id", message: "Prescription ID is required" }] }, 400);
     }
 
     // 2. Get sessionId from query parameter
@@ -35,7 +32,7 @@ export function createExplainHandler(deps: {
     if (!sessionId) {
       return c.json(
         { errors: [{ field: "sessionId", message: "sessionId query parameter is required" }] },
-        400
+        400,
       );
     }
 

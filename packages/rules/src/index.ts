@@ -29,15 +29,9 @@ export type {
 
 // ─── Fixture Schema ───────────────────────────────────────────────────────────
 
-export {
-  FixtureSchema,
-  PrescriptionMatcherSchema,
-} from "./schema/fixture.schema.js";
+export { FixtureSchema, PrescriptionMatcherSchema } from "./schema/fixture.schema.js";
 
-export type {
-  Fixture,
-  PrescriptionMatcher,
-} from "./schema/fixture.schema.js";
+export type { Fixture, PrescriptionMatcher } from "./schema/fixture.schema.js";
 
 // ─── Rule Loader ──────────────────────────────────────────────────────────────
 
@@ -65,10 +59,7 @@ export { sortByPriority } from "./evaluator/priority-sort.js";
 export { FixtureRunner } from "./fixture/runner.js";
 export type { FixtureRunResult } from "./fixture/runner.js";
 export { runFixtures } from "./fixture/run-fixtures.js";
-export type {
-  RunFixturesOptions,
-  FixtureSummary,
-} from "./fixture/run-fixtures.js";
+export type { RunFixturesOptions, FixtureSummary } from "./fixture/run-fixtures.js";
 export { matchPrescriptions } from "./fixture/matcher.js";
 export type { MatchResult } from "./fixture/matcher.js";
 export { generateDiff } from "./fixture/diff.js";

@@ -16,8 +16,7 @@ export const LayoutStabilitySchema = z
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          "Required when strategy is 'reserve-space' or 'skeleton'",
+        message: "Required when strategy is 'reserve-space' or 'skeleton'",
         path: ["maxDecisionWaitMs"],
       });
     }

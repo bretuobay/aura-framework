@@ -11,13 +11,13 @@
  * - Works in degraded/idle state (delegates to client which handles enqueuing)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
+import { renderHook, act } from "@testing-library/react";
 
 // ─── Mock client ───────────────────────────────────────────────────────────────
 const mockClient = {
-  status: 'active' as const,
+  status: "active" as const,
   init: vi.fn(() => Promise.resolve()),
   disconnect: vi.fn(),
   emit: vi.fn(() => Promise.resolve()),
@@ -36,37 +36,41 @@ const mockClient = {
 };
 
 // ─── Mock @aura/sdk ────────────────────────────────────────────────────────────
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => mockClient),
 }));
 
 // ─── Import after mock setup ──────────────────────────────────────────────────
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAuraEmit } from '../../src/useAuraEmit';
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAuraEmit } from "../../src/useAuraEmit";
 
 // ─── Wrapper that provides AuraProvider context ────────────────────────────────
 function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
-    return React.createElement(AuraProvider, {
-      endpoint: 'https://aura.test/api',
-      manifest: { surfaces: [], capabilities: [] },
-      userId: 'test-user',
-      consentProfile: {},
-      context: {},
-    }, children);
+    return React.createElement(
+      AuraProvider,
+      {
+        endpoint: "https://aura.test/api",
+        manifest: { surfaces: [], capabilities: [] },
+        userId: "test-user",
+        consentProfile: {},
+        context: {},
+      },
+      children,
+    );
   };
 }
 
-describe('useAuraEmit', () => {
+describe("useAuraEmit", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockClient.status = 'active' as any;
+    mockClient.status = "active" as any;
     mockClient.emit.mockImplementation(() => Promise.resolve());
     mockClient.init.mockImplementation(() => Promise.resolve());
   });
 
   // ─── Requirement 4.1, 4.2: Delegates to client.emit ─────────────────────────
-  it('delegates to client.emit when called with a valid event', async () => {
+  it("delegates to client.emit when called with a valid event", async () => {
     const { result } = renderHook(() => useAuraEmit(), {
       wrapper: createWrapper(),
     });
@@ -76,7 +80,7 @@ describe('useAuraEmit', () => {
       await Promise.resolve();
     });
 
-    const event = { type: 'click', surface: 'hero-banner', payload: { x: 10 } };
+    const event = { type: "click", surface: "hero-banner", payload: { x: 10 } };
 
     await act(async () => {
       await result.current(event as any);
@@ -87,7 +91,7 @@ describe('useAuraEmit', () => {
   });
 
   // ─── Requirement 4.2: Returns the promise from client.emit ───────────────────
-  it('returns the promise from client.emit', async () => {
+  it("returns the promise from client.emit", async () => {
     const { result } = renderHook(() => useAuraEmit(), {
       wrapper: createWrapper(),
     });
@@ -96,7 +100,7 @@ describe('useAuraEmit', () => {
       await Promise.resolve();
     });
 
-    const event = { type: 'interaction', surface: 'nav', payload: {} };
+    const event = { type: "interaction", surface: "nav", payload: {} };
     mockClient.emit.mockResolvedValueOnce(undefined);
 
     let returnValue: any;
@@ -108,7 +112,7 @@ describe('useAuraEmit', () => {
   });
 
   // ─── Requirement 4.4: Propagates AuraValidationError rejection ───────────────
-  it('propagates AuraValidationError rejection from SDK', async () => {
+  it("propagates AuraValidationError rejection from SDK", async () => {
     const { result } = renderHook(() => useAuraEmit(), {
       wrapper: createWrapper(),
     });
@@ -117,25 +121,25 @@ describe('useAuraEmit', () => {
       await Promise.resolve();
     });
 
-    const validationError = new Error('Event validation failed');
-    validationError.name = 'AuraValidationError';
+    const validationError = new Error("Event validation failed");
+    validationError.name = "AuraValidationError";
     mockClient.emit.mockRejectedValueOnce(validationError);
 
-    const invalidEvent = { type: '', surface: '', payload: null };
+    const invalidEvent = { type: "", surface: "", payload: null };
 
     await expect(
       act(async () => {
         await result.current(invalidEvent as any);
       }),
-    ).rejects.toThrow('Event validation failed');
+    ).rejects.toThrow("Event validation failed");
   });
 
   // ─── Requirement 4.6: No-op outside provider ────────────────────────────────
-  it('outside provider: returns a no-op function that resolves to undefined', async () => {
+  it("outside provider: returns a no-op function that resolves to undefined", async () => {
     // Render without a wrapper (no AuraProvider)
     const { result } = renderHook(() => useAuraEmit());
 
-    const event = { type: 'click', surface: 'test', payload: {} };
+    const event = { type: "click", surface: "test", payload: {} };
 
     let returnValue: any;
     await act(async () => {
@@ -149,7 +153,7 @@ describe('useAuraEmit', () => {
   });
 
   // ─── Requirement 4.5: Stable reference across re-renders ─────────────────────
-  it('stable reference: same function identity across re-renders', async () => {
+  it("stable reference: same function identity across re-renders", async () => {
     const { result, rerender } = renderHook(() => useAuraEmit(), {
       wrapper: createWrapper(),
     });
@@ -173,7 +177,7 @@ describe('useAuraEmit', () => {
   });
 
   // ─── Requirement 4.7: Never throws during render phase ───────────────────────
-  it('never throws during render phase', () => {
+  it("never throws during render phase", () => {
     // Should not throw regardless of what happens
     expect(() => {
       renderHook(() => useAuraEmit(), {
@@ -182,16 +186,16 @@ describe('useAuraEmit', () => {
     }).not.toThrow();
   });
 
-  it('never throws during render phase even outside provider', () => {
+  it("never throws during render phase even outside provider", () => {
     expect(() => {
       renderHook(() => useAuraEmit());
     }).not.toThrow();
   });
 
   // ─── Requirement 4.3: Works in degraded/idle state ───────────────────────────
-  it('works in degraded/idle state (delegates to client which handles enqueuing)', async () => {
+  it("works in degraded/idle state (delegates to client which handles enqueuing)", async () => {
     // Simulate a client in idle state (before init resolves)
-    mockClient.status = 'idle' as any;
+    mockClient.status = "idle" as any;
     mockClient.emit.mockResolvedValueOnce(undefined);
 
     const { result } = renderHook(() => useAuraEmit(), {
@@ -203,7 +207,7 @@ describe('useAuraEmit', () => {
       await Promise.resolve();
     });
 
-    const event = { type: 'interaction', surface: 'sidebar', payload: { action: 'expand' } };
+    const event = { type: "interaction", surface: "sidebar", payload: { action: "expand" } };
 
     let returnValue: any;
     await act(async () => {

@@ -65,5 +65,5 @@ export const arbInvalidSessionRequest = fc.oneof(
     consentProfile: arbConsentProfile,
     context: arbContextModel,
     contextSequenceId: fc.integer({ min: -1000, max: -1 }),
-  })
+  }),
 );

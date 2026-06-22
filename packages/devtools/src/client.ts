@@ -1,4 +1,9 @@
-import type { ConsentProfile, AuraEvent, ExplanationRecord, ProfileCorrection } from "@aura/protocol";
+import type {
+  ConsentProfile,
+  AuraEvent,
+  ExplanationRecord,
+  ProfileCorrection,
+} from "@aura/protocol";
 import { DevtoolsStateSchema } from "./schema";
 import type { DevtoolsState } from "./schema";
 import {
@@ -44,12 +49,12 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     try {
       response = await fetch(
         `${endpoint}/aura/devtools/state?sessionId=${encodeURIComponent(sessionId)}`,
-        { signal }
+        { signal },
       );
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Network error while fetching devtools state: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -85,7 +90,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Failed to parse response body as JSON: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -97,7 +102,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
       }));
       throw new DevtoolsValidationError(
         "Server response failed schema validation",
-        validationErrors
+        validationErrors,
       );
     }
 
@@ -116,7 +121,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Network error while sending consent: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -144,7 +149,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Network error while sending event: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -172,7 +177,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Network error while sending profile correction: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -191,14 +196,13 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
   async function fetchExplanation(prescriptionId: string): Promise<ExplanationRecord | null> {
     let response: Response;
     try {
-      response = await fetch(
-        `${endpoint}/aura/explain/${encodeURIComponent(prescriptionId)}`,
-        { signal }
-      );
+      response = await fetch(`${endpoint}/aura/explain/${encodeURIComponent(prescriptionId)}`, {
+        signal,
+      });
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Network error while fetching explanation: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -223,7 +227,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
     } catch (error: unknown) {
       throw new DevtoolsNetworkError(
         `Failed to parse explanation response as JSON: ${error instanceof Error ? error.message : String(error)}`,
-        error
+        error,
       );
     }
 
@@ -239,7 +243,7 @@ export function createDevtoolsClient(config: DevtoolsClientConfig): DevtoolsClie
       }));
       throw new DevtoolsValidationError(
         "Explanation response failed schema validation",
-        validationErrors
+        validationErrors,
       );
     }
 

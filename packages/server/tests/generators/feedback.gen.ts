@@ -59,5 +59,5 @@ export const arbInvalidFeedbackEvent = fc.oneof(
     timestamp: arbISOTimestamp,
     reason: fc.constant(""),
     contextSequenceId: fc.constant(undefined),
-  })
+  }),
 );

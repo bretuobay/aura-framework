@@ -7,9 +7,9 @@
  * as a no-op. Never throws during the React render phase.
  */
 
-import { useContext, useCallback } from 'react';
-import type { AuraEvent } from '@aura/protocol';
-import { AuraContext } from './AuraContext';
+import { useContext, useCallback } from "react";
+import type { AuraEvent } from "@aura/protocol";
+import { AuraContext } from "./AuraContext";
 
 /**
  * Hook that returns a stable emit function for sending AuraEvent objects
@@ -31,6 +31,6 @@ export function useAuraEmit(): (event: AuraEvent) => Promise<void> {
       }
       return client.emit(event);
     },
-    [client]
+    [client],
   );
 }

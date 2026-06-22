@@ -8,9 +8,9 @@
  * and onError handler lifecycle.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { render, act, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
+import { render, act, cleanup } from "@testing-library/react";
 
 // ─── Mock Setup ────────────────────────────────────────────────────────────────
 
@@ -35,7 +35,7 @@ let createClientError: Error | null = null;
 function buildMockClient(overrides?: Partial<MockClient>): MockClient {
   const errorUnsub = vi.fn();
   const client: MockClient = {
-    status: 'active',
+    status: "active",
     init: vi.fn(
       () =>
         new Promise<void>((resolve, reject) => {
@@ -56,7 +56,7 @@ function buildMockClient(overrides?: Partial<MockClient>): MockClient {
   return client;
 }
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn((config: unknown) => {
     if (createClientError) {
       throw createClientError;
@@ -65,35 +65,35 @@ vi.mock('@aura/sdk', () => ({
   }),
 }));
 
-import { createAuraClient } from '@aura/sdk';
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAura } from '../../src/useAura';
+import { createAuraClient } from "@aura/sdk";
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAura } from "../../src/useAura";
 
 // ─── Helper Components ─────────────────────────────────────────────────────────
 
 function StatusReader({ onStatus }: { onStatus: (s: { status: string; error: unknown }) => void }) {
   const { status, error } = useAura();
   onStatus({ status, error });
-  return React.createElement('span', { 'data-testid': 'status' }, status);
+  return React.createElement("span", { "data-testid": "status" }, status);
 }
 
 // ─── Default Props ─────────────────────────────────────────────────────────────
 
 const defaultProps = {
-  endpoint: 'https://aura.test/api',
+  endpoint: "https://aura.test/api",
   manifest: {
-    appId: 'test-app',
-    version: '1.0.0',
-    surfaces: [{ surfaceId: 'main', components: [] }],
+    appId: "test-app",
+    version: "1.0.0",
+    surfaces: [{ surfaceId: "main", components: [] }],
   },
-  userId: 'user-1',
-  consentProfile: { level: 'full' as const },
+  userId: "user-1",
+  consentProfile: { level: "full" as const },
   context: {},
 };
 
 // ─── Tests ─────────────────────────────────────────────────────────────────────
 
-describe('AuraProvider lifecycle', () => {
+describe("AuraProvider lifecycle", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     createClientError = null;
@@ -103,10 +103,10 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Mount ─────────────────────────────────────────────────────────────────
 
-  describe('mount', () => {
-    it('calls createAuraClient with config props and then init()', () => {
+  describe("mount", () => {
+    it("calls createAuraClient with config props and then init()", () => {
       const { unmount } = render(
-        React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+        React.createElement(AuraProvider, defaultProps, React.createElement("div")),
       );
 
       expect(createAuraClient).toHaveBeenCalledTimes(1);
@@ -123,13 +123,13 @@ describe('AuraProvider lifecycle', () => {
       cleanup();
     });
 
-    it('renders children immediately before init() resolves', () => {
-      const childText = 'child-content';
+    it("renders children immediately before init() resolves", () => {
+      const childText = "child-content";
       const { getByText, unmount } = render(
         React.createElement(
           AuraProvider,
           defaultProps,
-          React.createElement('span', null, childText),
+          React.createElement("span", null, childText),
         ),
       );
 
@@ -143,9 +143,9 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Config Error ──────────────────────────────────────────────────────────
 
-  describe('config error', () => {
-    it('enters degraded mode when createAuraClient throws', async () => {
-      const configError = new Error('Invalid endpoint');
+  describe("config error", () => {
+    it("enters degraded mode when createAuraClient throws", async () => {
+      const configError = new Error("Invalid endpoint");
       createClientError = configError;
 
       const statuses: Array<{ status: string; error: unknown }> = [];
@@ -165,22 +165,22 @@ describe('AuraProvider lifecycle', () => {
 
       // Provider should be in degraded mode
       const lastStatus = statuses[statuses.length - 1];
-      expect(lastStatus.status).toBe('degraded');
+      expect(lastStatus.status).toBe("degraded");
       expect(lastStatus.error).toBe(configError);
 
       unmountFn!();
       cleanup();
     });
 
-    it('renders children even when config is invalid', () => {
-      createClientError = new Error('Bad config');
+    it("renders children even when config is invalid", () => {
+      createClientError = new Error("Bad config");
 
-      const childText = 'still-renders';
+      const childText = "still-renders";
       const { getByText, unmount } = render(
         React.createElement(
           AuraProvider,
           defaultProps,
-          React.createElement('span', null, childText),
+          React.createElement("span", null, childText),
         ),
       );
 
@@ -193,8 +193,8 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Init Success ──────────────────────────────────────────────────────────
 
-  describe('init success', () => {
-    it('status transitions to active after init resolves', async () => {
+  describe("init success", () => {
+    it("status transitions to active after init resolves", async () => {
       const statuses: Array<{ status: string; error: unknown }> = [];
       const onStatus = (s: { status: string; error: unknown }) => statuses.push(s);
 
@@ -211,7 +211,7 @@ describe('AuraProvider lifecycle', () => {
       });
 
       // Before init resolves, status is 'idle'
-      expect(statuses[0].status).toBe('idle');
+      expect(statuses[0].status).toBe("idle");
 
       // Resolve init — client.status is 'active' by default
       await act(async () => {
@@ -219,7 +219,7 @@ describe('AuraProvider lifecycle', () => {
       });
 
       const lastStatus = statuses[statuses.length - 1];
-      expect(lastStatus.status).toBe('active');
+      expect(lastStatus.status).toBe("active");
 
       unmountFn!();
       cleanup();
@@ -228,11 +228,11 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Init Degraded ─────────────────────────────────────────────────────────
 
-  describe('init degraded', () => {
-    it('status transitions to degraded when init resolves with degraded status', async () => {
+  describe("init degraded", () => {
+    it("status transitions to degraded when init resolves with degraded status", async () => {
       // Set client status to 'degraded' so that after init resolves, provider reads it
       mockClient = buildMockClient();
-      mockClient.status = 'degraded';
+      mockClient.status = "degraded";
 
       const statuses: Array<{ status: string; error: unknown }> = [];
       const onStatus = (s: { status: string; error: unknown }) => statuses.push(s);
@@ -255,7 +255,7 @@ describe('AuraProvider lifecycle', () => {
       });
 
       const lastStatus = statuses[statuses.length - 1];
-      expect(lastStatus.status).toBe('degraded');
+      expect(lastStatus.status).toBe("degraded");
 
       unmountFn!();
       cleanup();
@@ -264,13 +264,13 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Unmount ───────────────────────────────────────────────────────────────
 
-  describe('unmount', () => {
-    it('calls disconnect() on the client', async () => {
+  describe("unmount", () => {
+    it("calls disconnect() on the client", async () => {
       let unmountFn: () => void;
 
       await act(async () => {
         const result = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn = result.unmount;
       });
@@ -293,7 +293,7 @@ describe('AuraProvider lifecycle', () => {
       cleanup();
     });
 
-    it('unregisters onError handler before disconnect', async () => {
+    it("unregisters onError handler before disconnect", async () => {
       const errorUnsub = vi.fn();
       mockClient = buildMockClient({
         onError: vi.fn((handler: ErrorHandler) => {
@@ -305,7 +305,7 @@ describe('AuraProvider lifecycle', () => {
       let unmountFn: () => void;
       await act(async () => {
         const result = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn = result.unmount;
       });
@@ -337,13 +337,13 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Unmount with init in-flight ───────────────────────────────────────────
 
-  describe('unmount with init in-flight', () => {
-    it('waits for init then disconnects', async () => {
+  describe("unmount with init in-flight", () => {
+    it("waits for init then disconnects", async () => {
       let unmountFn: () => void;
 
       await act(async () => {
         const result = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn = result.unmount;
       });
@@ -372,13 +372,13 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Remount ───────────────────────────────────────────────────────────────
 
-  describe('remount', () => {
-    it('creates a new client instance (no reuse)', async () => {
+  describe("remount", () => {
+    it("creates a new client instance (no reuse)", async () => {
       let unmountFn: () => void;
 
       await act(async () => {
         const result = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn = result.unmount;
       });
@@ -403,7 +403,7 @@ describe('AuraProvider lifecycle', () => {
       let unmountFn2: () => void;
       await act(async () => {
         const result2 = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn2 = result2.unmount;
       });
@@ -422,8 +422,8 @@ describe('AuraProvider lifecycle', () => {
 
   // ── onError ───────────────────────────────────────────────────────────────
 
-  describe('onError', () => {
-    it('stores error in state and exposes via context', async () => {
+  describe("onError", () => {
+    it("stores error in state and exposes via context", async () => {
       const statuses: Array<{ status: string; error: unknown }> = [];
       const onStatus = (s: { status: string; error: unknown }) => statuses.push(s);
 
@@ -445,7 +445,7 @@ describe('AuraProvider lifecycle', () => {
       });
 
       // Simulate SDK error via the registered error handler
-      const sdkError = new Error('SDK connection lost');
+      const sdkError = new Error("SDK connection lost");
       await act(async () => {
         errorHandler!(sdkError);
       });
@@ -460,8 +460,8 @@ describe('AuraProvider lifecycle', () => {
 
   // ── Strict Mode double-invocation ─────────────────────────────────────────
 
-  describe('Strict Mode double-invocation', () => {
-    it('handles cleanup + re-setup correctly', async () => {
+  describe("Strict Mode double-invocation", () => {
+    it("handles cleanup + re-setup correctly", async () => {
       // React Strict Mode invokes effects twice: setup → cleanup → setup
       // The provider must create a valid client on the second setup.
 
@@ -472,7 +472,7 @@ describe('AuraProvider lifecycle', () => {
           React.createElement(
             React.StrictMode,
             null,
-            React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+            React.createElement(AuraProvider, defaultProps, React.createElement("div")),
           ),
         );
         unmountFn = result.unmount;
@@ -519,7 +519,7 @@ describe('AuraProvider lifecycle', () => {
       });
 
       // Status should initially be 'idle'
-      expect(statuses[0].status).toBe('idle');
+      expect(statuses[0].status).toBe("idle");
 
       // Resolve init
       await act(async () => {
@@ -528,13 +528,13 @@ describe('AuraProvider lifecycle', () => {
 
       // Final status should be 'active'
       const lastStatus = statuses[statuses.length - 1];
-      expect(lastStatus.status).toBe('active');
+      expect(lastStatus.status).toBe("active");
 
       unmountFn2!();
       cleanup();
     });
 
-    it('does not leak error handlers across double-invocation', async () => {
+    it("does not leak error handlers across double-invocation", async () => {
       const errorUnsubs: ReturnType<typeof vi.fn>[] = [];
       mockClient = buildMockClient({
         onError: vi.fn((handler: ErrorHandler) => {
@@ -551,7 +551,7 @@ describe('AuraProvider lifecycle', () => {
           React.createElement(
             React.StrictMode,
             null,
-            React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+            React.createElement(AuraProvider, defaultProps, React.createElement("div")),
           ),
         );
         unmountFn = result.unmount;
@@ -582,18 +582,18 @@ describe('AuraProvider lifecycle', () => {
 
   // ── disconnect throws ─────────────────────────────────────────────────────
 
-  describe('disconnect throws', () => {
-    it('suppresses exception silently', async () => {
+  describe("disconnect throws", () => {
+    it("suppresses exception silently", async () => {
       mockClient = buildMockClient({
         disconnect: vi.fn(() => {
-          throw new Error('disconnect failure');
+          throw new Error("disconnect failure");
         }),
       });
 
       let unmountFn: () => void;
       await act(async () => {
         const result = render(
-          React.createElement(AuraProvider, defaultProps, React.createElement('div')),
+          React.createElement(AuraProvider, defaultProps, React.createElement("div")),
         );
         unmountFn = result.unmount;
       });

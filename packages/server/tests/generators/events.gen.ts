@@ -40,17 +40,20 @@ const arbISOTimestamp = fc
 export const arbAuraEvent: fc.Arbitrary<AuraEvent> = fc.record({
   type: fc.oneof(
     fc.constantFrom(...minEventVocabulary),
-    fc.string({ minLength: 1, maxLength: 50 })
+    fc.string({ minLength: 1, maxLength: 50 }),
   ),
   surfaceId: fc.string({ minLength: 1, maxLength: 30 }),
   timestamp: arbISOTimestamp,
   payload: fc.dictionary(
     fc.string({ minLength: 1, maxLength: 10 }),
-    fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null))
+    fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null)),
   ),
-  dataClasses: fc.option(fc.array(fc.constantFrom(...dataClasses), { minLength: 0, maxLength: 4 }), {
-    nil: undefined,
-  }),
+  dataClasses: fc.option(
+    fc.array(fc.constantFrom(...dataClasses), { minLength: 0, maxLength: 4 }),
+    {
+      nil: undefined,
+    },
+  ),
 });
 
 /**
@@ -88,7 +91,7 @@ export const arbInvalidAuraEvent = fc.oneof(
     timestamp: arbISOTimestamp,
     payload: fc.constant({}),
     dataClasses: fc.constant(["invalidClass" as unknown] as unknown as undefined),
-  })
+  }),
 );
 
 /**
@@ -109,9 +112,7 @@ export const arbInvalidEventsRequest = fc.oneof(
   // Empty sessionId
   fc.record({
     sessionId: fc.constant(""),
-    events: fc
-      .array(arbAuraEvent, { minLength: 1, maxLength: 3 })
-      .filter((arr) => arr.length >= 1),
+    events: fc.array(arbAuraEvent, { minLength: 1, maxLength: 3 }).filter((arr) => arr.length >= 1),
     contextSequenceId: fc.option(fc.nat(), { nil: undefined }),
   }),
   // Empty events array
@@ -119,5 +120,5 @@ export const arbInvalidEventsRequest = fc.oneof(
     sessionId: fc.string({ minLength: 1, maxLength: 36 }),
     events: fc.constant([]),
     contextSequenceId: fc.option(fc.nat(), { nil: undefined }),
-  })
+  }),
 );

@@ -199,9 +199,7 @@ export function PrescriptionLogView({
           >
             <div style={styles.entryHeader}>
               <span style={styles.entryId}>{rx.id}</span>
-              <span style={getDispositionBadgeStyle(rx.disposition)}>
-                {rx.disposition}
-              </span>
+              <span style={getDispositionBadgeStyle(rx.disposition)}>{rx.disposition}</span>
             </div>
 
             <div style={styles.metaGrid}>
@@ -222,9 +220,7 @@ export function PrescriptionLogView({
 
               <span style={styles.metaLabel}>Disposition Time</span>
               <span style={styles.metaValue}>
-                <time dateTime={rx.dispositionTimestamp}>
-                  {rx.dispositionTimestamp}
-                </time>
+                <time dateTime={rx.dispositionTimestamp}>{rx.dispositionTimestamp}</time>
               </span>
             </div>
 
@@ -238,26 +234,21 @@ export function PrescriptionLogView({
             </div>
 
             {rx.disposition === "rejected" && rx.rejectionReason && (
-              <div style={styles.reasonText}>
-                Rejected: {rx.rejectionReason}
+              <div style={styles.reasonText}>Rejected: {rx.rejectionReason}</div>
+            )}
+
+            {rx.disposition === "dropped" && rx.dropReason === "stale context" && (
+              <div style={styles.staleContextText}>
+                Stale context — prescription sequenceId: {rx.contextLock.sequenceId}, session
+                sequenceId: {sessionContextSequenceId}
               </div>
             )}
 
-            {rx.disposition === "dropped" &&
-              rx.dropReason === "stale context" && (
-                <div style={styles.staleContextText}>
-                  Stale context — prescription sequenceId:{" "}
-                  {rx.contextLock.sequenceId}, session sequenceId:{" "}
-                  {sessionContextSequenceId}
-                </div>
-              )}
-
-            {rx.disposition === "rejected" &&
-              rx.rejectionReason === "manifest check failed" && (
-                <div style={styles.reasonText}>
-                  Manifest mismatch — prescription version: {rx.manifestVersion}
-                </div>
-              )}
+            {rx.disposition === "rejected" && rx.rejectionReason === "manifest check failed" && (
+              <div style={styles.reasonText}>
+                Manifest mismatch — prescription version: {rx.manifestVersion}
+              </div>
+            )}
           </li>
         ))}
       </ul>

@@ -55,7 +55,7 @@ describe("OperationalAuditView", () => {
         <OperationalAuditView
           operationalAudit={[sampleOperationalEntry, llmEntry, droppedEntry]}
           securityAudit={[]}
-        />
+        />,
       );
 
       const opList = container.querySelector('[aria-label="Operational audit entries"]');
@@ -69,7 +69,7 @@ describe("OperationalAuditView", () => {
         <OperationalAuditView
           operationalAudit={[]}
           securityAudit={[sampleSecurityRecord, { ...sampleSecurityRecord, id: "sec-002" }]}
-        />
+        />,
       );
 
       const secList = container.querySelector('[aria-label="Security audit entries"]');
@@ -82,10 +82,7 @@ describe("OperationalAuditView", () => {
   describe("displays operational audit fields (Req 13a.2)", () => {
     it("shows latencyClass, evaluationTime, decisionSource, policyVersion, manifestVersion, and disposition", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[sampleOperationalEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[sampleOperationalEntry]} securityAudit={[]} />,
       );
 
       const text = container.textContent!;
@@ -99,10 +96,7 @@ describe("OperationalAuditView", () => {
 
     it("shows dataClassesUsed tags", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[sampleOperationalEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[sampleOperationalEntry]} securityAudit={[]} />,
       );
 
       const text = container.textContent!;
@@ -114,10 +108,7 @@ describe("OperationalAuditView", () => {
   describe("LLM decision source details (Req 13a.3)", () => {
     it("shows LLM justification and consent when decisionSource is llm", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[llmEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[llmEntry]} securityAudit={[]} />,
       );
 
       const text = container.textContent!;
@@ -128,10 +119,7 @@ describe("OperationalAuditView", () => {
 
     it("does not show LLM section for non-llm decisionSource", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[sampleOperationalEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[sampleOperationalEntry]} securityAudit={[]} />,
       );
 
       const text = container.textContent!;
@@ -144,10 +132,7 @@ describe("OperationalAuditView", () => {
         cloudModelConsentGranted: false,
       };
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[deniedEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[deniedEntry]} securityAudit={[]} />,
       );
 
       expect(container.textContent).toContain("Denied");
@@ -157,10 +142,7 @@ describe("OperationalAuditView", () => {
   describe("dropped prescription details (Req 13a.4)", () => {
     it("shows budget, elapsed, and dropReason for dropped prescriptions", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[droppedEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[droppedEntry]} securityAudit={[]} />,
       );
 
       const text = container.textContent!;
@@ -172,10 +154,7 @@ describe("OperationalAuditView", () => {
 
     it("does not show drop details for non-dropped prescriptions", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[sampleOperationalEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[sampleOperationalEntry]} securityAudit={[]} />,
       );
 
       expect(container.textContent).not.toContain("Drop Details");
@@ -185,10 +164,7 @@ describe("OperationalAuditView", () => {
   describe("security audit records (Req 13a.5)", () => {
     it("shows category and sanitized reason", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[]}
-          securityAudit={[sampleSecurityRecord]}
-        />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[sampleSecurityRecord]} />,
       );
 
       const text = container.textContent!;
@@ -199,10 +175,7 @@ describe("OperationalAuditView", () => {
 
     it("displays the record id", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[]}
-          securityAudit={[sampleSecurityRecord]}
-        />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[sampleSecurityRecord]} />,
       );
 
       expect(container.textContent).toContain("sec-001");
@@ -212,10 +185,7 @@ describe("OperationalAuditView", () => {
   describe("empty states", () => {
     it("shows empty message when no operational audit entries exist", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[]}
-          securityAudit={[sampleSecurityRecord]}
-        />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[sampleSecurityRecord]} />,
       );
 
       expect(container.textContent).toContain("No operational audit entries recorded");
@@ -223,10 +193,7 @@ describe("OperationalAuditView", () => {
 
     it("shows empty message when no security audit records exist", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[sampleOperationalEntry]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[sampleOperationalEntry]} securityAudit={[]} />,
       );
 
       expect(container.textContent).toContain("No security audit records");
@@ -234,10 +201,7 @@ describe("OperationalAuditView", () => {
 
     it("shows both empty messages when everything is empty", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[]}
-          securityAudit={[]}
-        />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[]} />,
       );
 
       expect(container.textContent).toContain("No operational audit entries recorded");
@@ -247,13 +211,9 @@ describe("OperationalAuditView", () => {
 
   describe("audit display accuracy (Req 13a.6)", () => {
     it("renders every operational entry from input", () => {
-      const entries: OperationalAuditEntry[] = [
-        sampleOperationalEntry,
-        llmEntry,
-        droppedEntry,
-      ];
+      const entries: OperationalAuditEntry[] = [sampleOperationalEntry, llmEntry, droppedEntry];
       const { container } = render(
-        <OperationalAuditView operationalAudit={entries} securityAudit={[]} />
+        <OperationalAuditView operationalAudit={entries} securityAudit={[]} />,
       );
 
       const opList = container.querySelector('[aria-label="Operational audit entries"]');
@@ -268,10 +228,15 @@ describe("OperationalAuditView", () => {
     it("renders every security record from input", () => {
       const records: SecurityAuditRecord[] = [
         sampleSecurityRecord,
-        { id: "sec-002", category: "replay-attack", reason: "Duplicate event detected", timestamp: "2024-06-15T11:00:00.000Z" },
+        {
+          id: "sec-002",
+          category: "replay-attack",
+          reason: "Duplicate event detected",
+          timestamp: "2024-06-15T11:00:00.000Z",
+        },
       ];
       const { container } = render(
-        <OperationalAuditView operationalAudit={[]} securityAudit={records} />
+        <OperationalAuditView operationalAudit={[]} securityAudit={records} />,
       );
 
       const secList = container.querySelector('[aria-label="Security audit entries"]');
@@ -287,7 +252,7 @@ describe("OperationalAuditView", () => {
   describe("accessibility", () => {
     it("uses semantic section with aria-label", () => {
       const { container } = render(
-        <OperationalAuditView operationalAudit={[]} securityAudit={[]} />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[]} />,
       );
 
       const section = container.querySelector('[aria-label="Operational audit"]');
@@ -296,10 +261,7 @@ describe("OperationalAuditView", () => {
 
     it("uses time elements for security audit timestamps", () => {
       const { container } = render(
-        <OperationalAuditView
-          operationalAudit={[]}
-          securityAudit={[sampleSecurityRecord]}
-        />
+        <OperationalAuditView operationalAudit={[]} securityAudit={[sampleSecurityRecord]} />,
       );
 
       const time = container.querySelector("time");

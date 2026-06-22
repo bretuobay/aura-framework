@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import type {
-  PrescriptionEntry,
-  RuleMatchRecord,
-  PrescriptionAudit,
-} from "../schema";
+import type { PrescriptionEntry, RuleMatchRecord, PrescriptionAudit } from "../schema";
 import type { ExplanationRecord } from "@aura/protocol";
 import type { ConsentProfile, CapabilityManifest } from "@aura/protocol";
 
@@ -252,9 +248,7 @@ const PIPELINE_STAGES = [
   "Context-Lock Check",
 ] as const;
 
-function getDispositionBadgeStyle(
-  disposition: string
-): React.CSSProperties {
+function getDispositionBadgeStyle(disposition: string): React.CSSProperties {
   switch (disposition) {
     case "accepted":
       return { ...styles.dispositionBadge, ...styles.acceptedBadge };
@@ -274,8 +268,7 @@ function identifyRejectingStage(reason?: string): string | null {
   if (lower.includes("consent")) return "Consent Gate";
   if (lower.includes("manifest")) return "Manifest Check";
   if (lower.includes("risk")) return "Risk-Class Enforcement";
-  if (lower.includes("context") || lower.includes("stale"))
-    return "Context-Lock Check";
+  if (lower.includes("context") || lower.includes("stale")) return "Context-Lock Check";
   // Default to first stage if we can't identify
   return "Rule Evaluation";
 }
@@ -303,9 +296,7 @@ export function PrescriptionInspector({
   };
 
   // Find the surface referenced by the prescription
-  const surface = manifest.surfaces.find(
-    (s) => s.surfaceId === prescription.surfaceId
-  );
+  const surface = manifest.surfaces.find((s) => s.surfaceId === prescription.surfaceId);
 
   // Determine data classes used by the prescription's components from manifest
   const dataClassesForPrescription: string[] = [];
@@ -374,13 +365,10 @@ export function PrescriptionInspector({
           <span style={styles.metaValue}>{prescription.manifestVersion}</span>
           <span style={styles.metaLabel}>Context Lock</span>
           <span style={styles.metaValue}>
-            seq {prescription.contextLock.sequenceId} at{" "}
-            {prescription.contextLock.capturedAt}
+            seq {prescription.contextLock.sequenceId} at {prescription.contextLock.capturedAt}
           </span>
           <span style={styles.metaLabel}>Disposition Time</span>
-          <span style={styles.metaValue}>
-            {prescription.dispositionTimestamp}
-          </span>
+          <span style={styles.metaValue}>{prescription.dispositionTimestamp}</span>
         </div>
       </div>
 
@@ -396,13 +384,9 @@ export function PrescriptionInspector({
                 <span style={styles.metaLabel}>Summary</span>
                 <span style={styles.metaValue}>{explanation.summary}</span>
                 <span style={styles.metaLabel}>Confidence</span>
-                <span style={styles.metaValue}>
-                  {(explanation.confidence * 100).toFixed(1)}%
-                </span>
+                <span style={styles.metaValue}>{(explanation.confidence * 100).toFixed(1)}%</span>
                 <span style={styles.metaLabel}>User Visible</span>
-                <span style={styles.metaValue}>
-                  {explanation.userVisible ? "Yes" : "No"}
-                </span>
+                <span style={styles.metaValue}>{explanation.userVisible ? "Yes" : "No"}</span>
               </div>
               {explanation.factors.length > 0 && (
                 <>
@@ -434,9 +418,7 @@ export function PrescriptionInspector({
           <h3 style={styles.sectionHeading}>Pipeline Stages</h3>
           <ul style={styles.pipelineStages}>
             {(() => {
-              const rejectingStage = identifyRejectingStage(
-                prescription.rejectionReason
-              );
+              const rejectingStage = identifyRejectingStage(prescription.rejectionReason);
               let rejectingStageReached = false;
               return PIPELINE_STAGES.map((stage) => {
                 if (rejectingStageReached) {
@@ -456,8 +438,7 @@ export function PrescriptionInspector({
                         ...styles.pipelineStageFailed,
                       }}
                     >
-                      ✗ {stage} — rejected:{" "}
-                      {prescription.rejectionReason || "unknown"}
+                      ✗ {stage} — rejected: {prescription.rejectionReason || "unknown"}
                     </li>
                   );
                 }
@@ -483,15 +464,11 @@ export function PrescriptionInspector({
           <h3 style={styles.sectionHeading}>Drop Reason</h3>
           <div style={styles.metaGrid}>
             <span style={styles.metaLabel}>Reason</span>
-            <span style={styles.metaValue}>
-              {prescription.dropReason || "unknown"}
-            </span>
+            <span style={styles.metaValue}>{prescription.dropReason || "unknown"}</span>
             {prescription.dropReason === "stale context" && (
               <>
                 <span style={styles.metaLabel}>Prescription Seq ID</span>
-                <span style={styles.metaValue}>
-                  {prescription.contextLock.sequenceId}
-                </span>
+                <span style={styles.metaValue}>{prescription.contextLock.sequenceId}</span>
                 <span style={styles.metaLabel}>Current Seq ID</span>
                 <span style={styles.metaValue}>
                   {prescription.currentContextSequenceId ?? "N/A"}
@@ -531,9 +508,7 @@ export function PrescriptionInspector({
                     <span
                       style={{
                         ...styles.matchedBadge,
-                        ...(match.matched
-                          ? styles.matchedTrue
-                          : styles.matchedFalse),
+                        ...(match.matched ? styles.matchedTrue : styles.matchedFalse),
                       }}
                     >
                       {match.matched ? "✓ matched" : "✗ not matched"}
@@ -567,15 +542,11 @@ export function PrescriptionInspector({
                           <tr key={idx}>
                             <td style={styles.tableTd}>{condition.path}</td>
                             <td style={styles.tableTd}>{condition.operator}</td>
-                            <td style={styles.tableTd}>
-                              {JSON.stringify(condition.expected)}
-                            </td>
+                            <td style={styles.tableTd}>{JSON.stringify(condition.expected)}</td>
                             <td
                               style={{
                                 ...styles.tableTd,
-                                ...(condition.passed
-                                  ? styles.grantedCell
-                                  : styles.deniedCell),
+                                ...(condition.passed ? styles.grantedCell : styles.deniedCell),
                               }}
                             >
                               {condition.passed ? "✓" : "✗"}
@@ -587,9 +558,7 @@ export function PrescriptionInspector({
                   )}
 
                   {!match.matched && match.failureReason && (
-                    <div style={styles.failureReason}>
-                      Failure: {match.failureReason}
-                    </div>
+                    <div style={styles.failureReason}>Failure: {match.failureReason}</div>
                   )}
                 </li>
               );
@@ -602,14 +571,9 @@ export function PrescriptionInspector({
       <div style={styles.section}>
         <h3 style={styles.sectionHeading}>Consent Gate</h3>
         {dataClassesForPrescription.length === 0 ? (
-          <p style={styles.unavailable}>
-            No consent requirements for this prescription
-          </p>
+          <p style={styles.unavailable}>No consent requirements for this prescription</p>
         ) : (
-          <table
-            style={styles.consentTable}
-            aria-label="Consent gate results"
-          >
+          <table style={styles.consentTable} aria-label="Consent gate results">
             <thead>
               <tr>
                 <th style={styles.tableTh}>Data Class</th>
@@ -641,10 +605,7 @@ export function PrescriptionInspector({
       {/* Manifest Check Results */}
       <div style={styles.section}>
         <h3 style={styles.sectionHeading}>Manifest Check</h3>
-        <table
-          style={styles.consentTable}
-          aria-label="Manifest check results"
-        >
+        <table style={styles.consentTable} aria-label="Manifest check results">
           <thead>
             <tr>
               <th style={styles.tableTh}>Check</th>
@@ -671,19 +632,13 @@ export function PrescriptionInspector({
                   <tr>
                     <td style={styles.tableTd}>Component</td>
                     <td style={styles.tableTd}>{component.componentId}</td>
-                    <td style={{ ...styles.tableTd, ...styles.presentCell }}>
-                      ✓ present
-                    </td>
+                    <td style={{ ...styles.tableTd, ...styles.presentCell }}>✓ present</td>
                   </tr>
                   {component.variants.map((variant) => (
                     <tr key={`${component.componentId}-${variant}`}>
-                      <td style={{ ...styles.tableTd, paddingLeft: "24px" }}>
-                        Variant
-                      </td>
+                      <td style={{ ...styles.tableTd, paddingLeft: "24px" }}>Variant</td>
                       <td style={styles.tableTd}>{variant}</td>
-                      <td style={{ ...styles.tableTd, ...styles.presentCell }}>
-                        ✓ present
-                      </td>
+                      <td style={{ ...styles.tableTd, ...styles.presentCell }}>✓ present</td>
                     </tr>
                   ))}
                 </React.Fragment>
@@ -698,31 +653,23 @@ export function PrescriptionInspector({
           <h3 style={styles.sectionHeading}>Layout Stability</h3>
           <div style={styles.layoutBox}>
             <span style={styles.metaLabel}>Strategy</span>
-            <span style={styles.metaValue}>
-              {surface.layoutStability.strategy}
-            </span>
+            <span style={styles.metaValue}>{surface.layoutStability.strategy}</span>
             {surface.layoutStability.maxDecisionWaitMs !== undefined && (
               <>
                 <span style={styles.metaLabel}>Max Decision Wait</span>
-                <span style={styles.metaValue}>
-                  {surface.layoutStability.maxDecisionWaitMs}ms
-                </span>
+                <span style={styles.metaValue}>{surface.layoutStability.maxDecisionWaitMs}ms</span>
               </>
             )}
             {prescription.layoutStabilityBudgetMs !== undefined && (
               <>
                 <span style={styles.metaLabel}>Budget</span>
-                <span style={styles.metaValue}>
-                  {prescription.layoutStabilityBudgetMs}ms
-                </span>
+                <span style={styles.metaValue}>{prescription.layoutStabilityBudgetMs}ms</span>
               </>
             )}
             {prescription.elapsedMs !== undefined && (
               <>
                 <span style={styles.metaLabel}>Elapsed</span>
-                <span style={styles.metaValue}>
-                  {prescription.elapsedMs}ms
-                </span>
+                <span style={styles.metaValue}>{prescription.elapsedMs}ms</span>
               </>
             )}
           </div>

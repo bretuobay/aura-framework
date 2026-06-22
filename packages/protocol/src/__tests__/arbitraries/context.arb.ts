@@ -17,7 +17,7 @@ export function arbContextModel(): fc.Arbitrary<ContextModel> {
           width: fc.integer({ min: 1, max: 32767 }),
           height: fc.integer({ min: 1, max: 32767 }),
         }),
-        { nil: undefined }
+        { nil: undefined },
       ),
       networkQuality: fc.option(fc.constantFrom(...NetworkQualities), {
         nil: undefined,
@@ -25,12 +25,11 @@ export function arbContextModel(): fc.Arbitrary<ContextModel> {
       sequenceId: fc.option(arbContextSequenceId(), { nil: undefined }),
       taskState: fc.option(
         fc.dictionary(fc.string({ minLength: 1, maxLength: 20 }), fc.jsonValue()),
-        { nil: undefined }
+        { nil: undefined },
       ),
-      domain: fc.option(
-        fc.dictionary(fc.string({ minLength: 1, maxLength: 20 }), fc.jsonValue()),
-        { nil: undefined }
-      ),
+      domain: fc.option(fc.dictionary(fc.string({ minLength: 1, maxLength: 20 }), fc.jsonValue()), {
+        nil: undefined,
+      }),
     })
     .map((obj) => {
       // Remove undefined optional fields for cleaner generation
@@ -39,8 +38,7 @@ export function arbContextModel(): fc.Arbitrary<ContextModel> {
         locale: obj.locale,
       };
       if (obj.viewport !== undefined) result.viewport = obj.viewport;
-      if (obj.networkQuality !== undefined)
-        result.networkQuality = obj.networkQuality;
+      if (obj.networkQuality !== undefined) result.networkQuality = obj.networkQuality;
       if (obj.sequenceId !== undefined) result.sequenceId = obj.sequenceId;
       if (obj.taskState !== undefined) result.taskState = obj.taskState;
       if (obj.domain !== undefined) result.domain = obj.domain;

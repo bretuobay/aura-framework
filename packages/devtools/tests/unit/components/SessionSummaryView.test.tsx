@@ -72,7 +72,7 @@ describe("SessionSummaryView", () => {
   describe("error state for session not found (Req 2.4)", () => {
     it("displays an error message when error prop is provided", () => {
       const { container } = render(
-        <SessionSummaryView session={null} error="Session not found: sess-999" />
+        <SessionSummaryView session={null} error="Session not found: sess-999" />,
       );
 
       expect(container.textContent).toContain("Session Not Found");
@@ -87,15 +87,11 @@ describe("SessionSummaryView", () => {
     });
 
     it("does not throw or crash the panel", () => {
-      expect(() =>
-        render(<SessionSummaryView session={null} error="Some error" />)
-      ).not.toThrow();
+      expect(() => render(<SessionSummaryView session={null} error="Some error" />)).not.toThrow();
     });
 
     it("renders a role=alert element for error states", () => {
-      const { container } = render(
-        <SessionSummaryView session={null} error="Not found" />
-      );
+      const { container } = render(<SessionSummaryView session={null} error="Not found" />);
       const alert = container.querySelector('[role="alert"]');
       expect(alert).not.toBeNull();
     });

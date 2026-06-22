@@ -58,9 +58,7 @@ function mapToProtocolShape(candidate: CandidatePrescription): unknown {
  *
  * This function never throws — if all candidates fail, an empty array is returned.
  */
-export function validatePrescriptions(
-  candidates: CandidatePrescription[]
-): UIPrescription[] {
+export function validatePrescriptions(candidates: CandidatePrescription[]): UIPrescription[] {
   const valid: UIPrescription[] = [];
 
   for (const candidate of candidates) {
@@ -73,13 +71,13 @@ export function validatePrescriptions(
       } else {
         console.error(
           `[protocol-validate] Candidate from rule "${candidate.ruleId}" failed validation:`,
-          result.error.issues
+          result.error.issues,
         );
       }
     } catch (error) {
       console.error(
         `[protocol-validate] Unexpected error validating candidate from rule "${candidate.ruleId}":`,
-        error
+        error,
       );
     }
   }

@@ -6,15 +6,15 @@
  * NOT exported from the public API.
  */
 
-import { createContext } from 'react';
-import type { AuraClient, AuraClientError } from '@aura/sdk';
+import { createContext } from "react";
+import type { AuraClient, AuraClientError } from "@aura/sdk";
 
 /**
  * The lifecycle status of the SDK client.
  * Mirrors `AuraClientStatus` from `@aura/sdk` but re-exported
  * under the React adapter's naming convention.
  */
-export type SdkStatus = AuraClient['status'];
+export type SdkStatus = AuraClient["status"];
 
 /**
  * The shape of the value propagated through AuraContext.
@@ -36,6 +36,6 @@ export interface AuraContextValue {
  */
 export const AuraContext = createContext<AuraContextValue>({
   client: null,
-  status: 'degraded',
+  status: "degraded",
   error: null,
 });

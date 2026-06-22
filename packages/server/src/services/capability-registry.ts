@@ -14,10 +14,7 @@ export interface ICapabilityRegistry {
   register(sessionId: string, manifest: CapabilityManifest): void;
 
   /** Validate a prescription candidate against the stored manifest */
-  validate(
-    sessionId: string,
-    prescription: UIPrescription
-  ): CapabilityValidationResult;
+  validate(sessionId: string, prescription: UIPrescription): CapabilityValidationResult;
 
   /** Get the manifest version for a session */
   getManifestVersion(sessionId: string): string | null;
@@ -60,10 +57,7 @@ export function createCapabilityRegistry(): ICapabilityRegistry {
       store.set(sessionId, { manifest, version });
     },
 
-    validate(
-      sessionId: string,
-      prescription: UIPrescription
-    ): CapabilityValidationResult {
+    validate(sessionId: string, prescription: UIPrescription): CapabilityValidationResult {
       const entry = store.get(sessionId);
       if (!entry) {
         return {
@@ -91,9 +85,7 @@ export function createCapabilityRegistry(): ICapabilityRegistry {
       }
 
       // Check 2: prescription.surfaceId must match a declared surface
-      const targetSurface = manifest.surfaces.find(
-        (s) => s.surfaceId === prescription.surfaceId
-      );
+      const targetSurface = manifest.surfaces.find((s) => s.surfaceId === prescription.surfaceId);
 
       if (!targetSurface) {
         errors.push({
@@ -110,7 +102,7 @@ export function createCapabilityRegistry(): ICapabilityRegistry {
         // Check 3 & 4: componentVariant adaptations
         if (adaptation.type === "componentVariant") {
           const component = targetSurface.components.find(
-            (c) => c.componentId === adaptation.componentId
+            (c) => c.componentId === adaptation.componentId,
           );
 
           if (!component) {

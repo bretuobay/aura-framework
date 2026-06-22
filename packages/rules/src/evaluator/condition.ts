@@ -5,11 +5,7 @@
  * array, and evaluates all 10 condition operators against resolved values.
  */
 
-import type {
-  Condition,
-  ConditionOperator,
-  RulesPipelineInput,
-} from "../schema/types.js";
+import type { Condition, ConditionOperator, RulesPipelineInput } from "../schema/types.js";
 
 /**
  * Resolves a dot-separated path against a RulesPipelineInput object.
@@ -77,10 +73,7 @@ function traverseSegments(obj: unknown, segments: string[]): unknown {
  * is not a string, returns false. For 'in'/'notIn', if value is not an
  * array, returns false.
  */
-export function evaluateCondition(
-  condition: Condition,
-  input: RulesPipelineInput
-): boolean {
+export function evaluateCondition(condition: Condition, input: RulesPipelineInput): boolean {
   const segments = condition.path.split(".");
 
   // Existential matching over the events array (requirement 3.8)
@@ -91,9 +84,7 @@ export function evaluateCondition(
     }
 
     for (const event of input.events) {
-      const resolved = remainingPath
-        ? traverseSegments(event, segments.slice(1))
-        : event;
+      const resolved = remainingPath ? traverseSegments(event, segments.slice(1)) : event;
       if (applyOperator(condition.operator, resolved, condition.value)) {
         return true;
       }
@@ -108,11 +99,7 @@ export function evaluateCondition(
 /**
  * Applies a condition operator against a resolved value.
  */
-function applyOperator(
-  operator: ConditionOperator,
-  resolved: unknown,
-  value: unknown
-): boolean {
+function applyOperator(operator: ConditionOperator, resolved: unknown, value: unknown): boolean {
   switch (operator) {
     case "exists":
       return resolved !== undefined && resolved !== null;
@@ -169,9 +156,6 @@ function applyOperator(
  * Evaluates all conditions against the pipeline input using logical AND.
  * Returns true only when ALL conditions pass.
  */
-export function evaluateConditions(
-  conditions: Condition[],
-  input: RulesPipelineInput
-): boolean {
+export function evaluateConditions(conditions: Condition[], input: RulesPipelineInput): boolean {
   return conditions.every((condition) => evaluateCondition(condition, input));
 }

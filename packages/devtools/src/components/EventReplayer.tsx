@@ -63,7 +63,10 @@ export function EventReplayer({
         <button
           type="button"
           style={mode === "fixture" ? styles.modeButtonActive : styles.modeButton}
-          onClick={() => { setMode("fixture"); setError(null); }}
+          onClick={() => {
+            setMode("fixture");
+            setError(null);
+          }}
           disabled={isReplaying}
         >
           Fixture
@@ -71,7 +74,10 @@ export function EventReplayer({
         <button
           type="button"
           style={mode === "manual" ? styles.modeButtonActive : styles.modeButton}
-          onClick={() => { setMode("manual"); setError(null); }}
+          onClick={() => {
+            setMode("manual");
+            setError(null);
+          }}
           disabled={isReplaying}
         >
           Manual

@@ -71,9 +71,7 @@ async function loadFixturesFromFile(filePath: string): Promise<Fixture[]> {
  * from the given source, runs each fixture through FixtureRunner, and
  * returns a summary with total/passed/failed/errors/results.
  */
-export async function runFixtures(
-  options: RunFixturesOptions
-): Promise<FixtureSummary> {
+export async function runFixtures(options: RunFixturesOptions): Promise<FixtureSummary> {
   // 1. Resolve fixture files via glob
   const filePaths = await fg(options.fixtureGlob);
 
@@ -86,7 +84,7 @@ export async function runFixtures(
     try {
       const fixtures = await loadFixturesFromFile(filePath);
       allFixtures.push(...fixtures);
-    } catch (error) {
+    } catch {
       // If a file cannot be loaded, add an error result for it
       allFixtures.push({
         id: `file-load-error:${filePath}`,

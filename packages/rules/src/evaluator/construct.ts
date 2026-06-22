@@ -47,11 +47,7 @@ const RISK_CLASS_LATENCY_MAP: Record<RiskClass, LatencyClass> = {
  * Generates a stable prescription ID by hashing the concatenation of
  * ruleId, sessionId, and eventBatchId using SHA-256 (first 16 hex chars).
  */
-function generatePrescriptionId(
-  ruleId: string,
-  sessionId: string,
-  eventBatchId: string
-): string {
+function generatePrescriptionId(ruleId: string, sessionId: string, eventBatchId: string): string {
   const input = `${ruleId}${sessionId}${eventBatchId}`;
   return createHash("sha256").update(input).digest("hex").slice(0, 16);
 }
@@ -74,7 +70,7 @@ function actionToAdaptation(action: Rule["actions"][number]): Adaptation {
  */
 function buildExplanation(
   prescriptionId: string,
-  metadata: Rule["metadata"]
+  metadata: Rule["metadata"],
 ): ExplanationRecord | undefined {
   if (!metadata?.explanationSummary) {
     return undefined;
@@ -111,13 +107,9 @@ function buildExplanation(
 export function buildCandidatePrescription(
   rule: Rule,
   input: RulesPipelineInput,
-  clock: ClockProvider
+  clock: ClockProvider,
 ): CandidatePrescription {
-  const prescriptionId = generatePrescriptionId(
-    rule.id,
-    input.sessionId,
-    input.eventBatchId
-  );
+  const prescriptionId = generatePrescriptionId(rule.id, input.sessionId, input.eventBatchId);
 
   const now = clock.now();
   const expiresAt = new Date(new Date(now).getTime() + DEFAULT_TTL_MS).toISOString();
@@ -129,8 +121,7 @@ export function buildCandidatePrescription(
 
   const explanation = buildExplanation(prescriptionId, rule.metadata);
 
-  const decisionSource: DecisionSource =
-    rule.metadata?.decisionSource ?? "rules";
+  const decisionSource: DecisionSource = rule.metadata?.decisionSource ?? "rules";
 
   const dataClassesUsed: DataClass[] = rule.requiredConsent ?? [];
 

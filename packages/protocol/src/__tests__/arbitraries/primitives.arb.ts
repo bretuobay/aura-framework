@@ -18,7 +18,7 @@ export function arbNonISOString(): fc.Arbitrary<string> {
   return fc
     .stringOf(
       fc.char().filter((c) => c !== "T" && c !== "Z"),
-      { minLength: 1, maxLength: 20 }
+      { minLength: 1, maxLength: 20 },
     )
     .filter((s) => isNaN(new Date(s).getTime()));
 }
@@ -48,10 +48,6 @@ export function arbContextSequenceId(): fc.Arbitrary<number> {
  * Generates a string NOT in the provided valid set (for testing enum rejection).
  * Useful for verifying that schemas reject invalid enum values.
  */
-export function arbInvalidEnumValue(
-  validSet: readonly string[]
-): fc.Arbitrary<string> {
-  return fc
-    .string({ minLength: 1, maxLength: 50 })
-    .filter((s) => !validSet.includes(s));
+export function arbInvalidEnumValue(validSet: readonly string[]): fc.Arbitrary<string> {
+  return fc.string({ minLength: 1, maxLength: 50 }).filter((s) => !validSet.includes(s));
 }

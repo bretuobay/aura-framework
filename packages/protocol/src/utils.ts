@@ -8,12 +8,9 @@ import type { UIPrescription } from "./prescription.js";
  * - Never throws regardless of input
  * - Monotone: once expired at time d1, stays expired for all d2 > d1
  */
-export function isPrescriptionExpired(
-  prescription: UIPrescription,
-  now: Date
-): boolean {
+export function isPrescriptionExpired(prescription: UIPrescription, now: Date): boolean {
   try {
-    const expiresAt = (prescription as any)?.constraints?.expiresAt;
+    const expiresAt = prescription.constraints?.expiresAt;
     if (typeof expiresAt !== "string" || expiresAt.length === 0) {
       return true;
     }
@@ -39,7 +36,7 @@ export function isPrescriptionExpired(
  */
 export function isPrescriptionContextStale(
   prescription: UIPrescription,
-  currentContextSequenceId: number
+  currentContextSequenceId: number,
 ): boolean {
   try {
     if (
@@ -51,7 +48,7 @@ export function isPrescriptionContextStale(
       return true;
     }
 
-    const lockSequenceId = (prescription as any)?.contextLock?.sequenceId;
+    const lockSequenceId = prescription.contextLock?.sequenceId;
     if (
       typeof lockSequenceId !== "number" ||
       !Number.isFinite(lockSequenceId) ||

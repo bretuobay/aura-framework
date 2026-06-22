@@ -17,7 +17,7 @@ export const ISOTimestamp = z.string().refine(
     const date = new Date(val);
     return !isNaN(date.getTime());
   },
-  { message: "Invalid ISO 8601 timestamp" }
+  { message: "Invalid ISO 8601 timestamp" },
 );
 export type ISOTimestamp = z.infer<typeof ISOTimestamp>;
 

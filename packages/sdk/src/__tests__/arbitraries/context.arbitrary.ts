@@ -9,12 +9,7 @@ import type { ContextModel, NetworkQuality } from "@aura/protocol";
 // Shared enum values (matching @aura/protocol enums)
 // =============================================================================
 
-const NETWORK_QUALITIES: NetworkQuality[] = [
-  "offline",
-  "slow",
-  "moderate",
-  "fast",
-];
+const NETWORK_QUALITIES: NetworkQuality[] = ["offline", "slow", "moderate", "fast"];
 
 // =============================================================================
 // Valid ContextModel
@@ -33,7 +28,7 @@ const arbLocale: fc.Arbitrary<string> = fc.constantFrom(
   "es-ES",
   "pt-BR",
   "ar-SA",
-  "ko-KR"
+  "ko-KR",
 );
 
 /**
@@ -45,7 +40,7 @@ const arbDevice: fc.Arbitrary<string> = fc.constantFrom(
   "tablet",
   "watch",
   "tv",
-  "kiosk"
+  "kiosk",
 );
 
 /**
@@ -70,35 +65,31 @@ export const arbContextModel: fc.Arbitrary<ContextModel> = fc
       fc.dictionary(
         fc.stringMatching(/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/),
         fc.oneof(fc.string(), fc.integer(), fc.boolean()),
-        { minKeys: 0, maxKeys: 3 }
+        { minKeys: 0, maxKeys: 3 },
       ),
-      { nil: undefined }
+      { nil: undefined },
     ),
     fc.option(
       fc.dictionary(
         fc.stringMatching(/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/),
         fc.oneof(fc.string(), fc.integer(), fc.boolean()),
-        { minKeys: 0, maxKeys: 3 }
+        { minKeys: 0, maxKeys: 3 },
       ),
-      { nil: undefined }
-    )
+      { nil: undefined },
+    ),
   )
-  .map(
-    ([device, locale, viewport, networkQuality, sequenceId, taskState, domain]) => {
-      const context: ContextModel = { device, locale };
-      if (viewport !== undefined) context.viewport = viewport;
-      if (networkQuality !== undefined) context.networkQuality = networkQuality;
-      if (sequenceId !== undefined) context.sequenceId = sequenceId;
-      if (taskState !== undefined) context.taskState = taskState;
-      if (domain !== undefined) context.domain = domain;
-      return context;
-    }
-  );
+  .map(([device, locale, viewport, networkQuality, sequenceId, taskState, domain]) => {
+    const context: ContextModel = { device, locale };
+    if (viewport !== undefined) context.viewport = viewport;
+    if (networkQuality !== undefined) context.networkQuality = networkQuality;
+    if (sequenceId !== undefined) context.sequenceId = sequenceId;
+    if (taskState !== undefined) context.taskState = taskState;
+    if (domain !== undefined) context.domain = domain;
+    return context;
+  });
 
 /**
  * Generates a ContextModel with a specific sequenceId (useful for context lock tests).
  */
-export const arbContextModelWithSequenceId = (
-  seqId: number
-): fc.Arbitrary<ContextModel> =>
+export const arbContextModelWithSequenceId = (seqId: number): fc.Arbitrary<ContextModel> =>
   arbContextModel.map((ctx) => ({ ...ctx, sequenceId: seqId }));

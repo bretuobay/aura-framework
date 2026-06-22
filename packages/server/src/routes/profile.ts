@@ -22,10 +22,7 @@ export function createProfileHandler(deps: {
     // 1. Get sessionId from query parameter
     const sessionId = c.req.query("sessionId");
     if (!sessionId) {
-      return c.json(
-        { message: "Missing sessionId query parameter" },
-        400
-      );
+      return c.json({ message: "Missing sessionId query parameter" }, 400);
     }
 
     // 2. Look up session — 404 if not found
@@ -41,7 +38,7 @@ export function createProfileHandler(deps: {
     const filteredAttributes = consentEnforcer.filterProfileAttributes(
       attributes,
       session.consentProfile,
-      new Date().toISOString()
+      new Date().toISOString(),
     );
 
     // 5. Return 200 with filtered attributes

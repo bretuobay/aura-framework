@@ -3,15 +3,15 @@
  * Validates: Requirements 3.1–3.8
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
+import { renderHook, act } from "@testing-library/react";
 
 // Mock client with configurable status and onError behavior
 let onErrorHandler: ((err: any) => void) | null = null;
 
 const mockClient = {
-  status: 'active' as string,
+  status: "active" as string,
   init: vi.fn(() => Promise.resolve()),
   disconnect: vi.fn(),
   emit: vi.fn(() => Promise.resolve()),
@@ -25,23 +25,23 @@ const mockClient = {
   }),
 };
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => mockClient),
 }));
 
-import { createAuraClient } from '@aura/sdk';
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAura } from '../../src/useAura';
+import { createAuraClient } from "@aura/sdk";
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAura } from "../../src/useAura";
 
 function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return React.createElement(
       AuraProvider,
       {
-        endpoint: 'https://aura.test/api',
+        endpoint: "https://aura.test/api",
         manifest: { capabilities: [] },
-        userId: 'test-user',
-        consentProfile: { level: 'full' },
+        userId: "test-user",
+        consentProfile: { level: "full" },
         context: {},
       },
       children,
@@ -49,29 +49,29 @@ function createWrapper() {
   };
 }
 
-describe('useAura', () => {
+describe("useAura", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     onErrorHandler = null;
-    mockClient.status = 'active';
+    mockClient.status = "active";
     mockClient.init.mockImplementation(() => Promise.resolve());
   });
 
   // Req 3.2: Returns idle status before init resolves
-  it('returns idle status before init resolves', () => {
+  it("returns idle status before init resolves", () => {
     // Make init never resolve during this test
     mockClient.init.mockImplementation(() => new Promise(() => {}));
 
     const wrapper = createWrapper();
     const { result } = renderHook(() => useAura(), { wrapper });
 
-    expect(result.current.status).toBe('idle');
+    expect(result.current.status).toBe("idle");
     expect(result.current.error).toBeNull();
   });
 
   // Req 3.3: Returns active status after init resolves successfully
-  it('returns active status after init resolves successfully', async () => {
-    mockClient.status = 'active';
+  it("returns active status after init resolves successfully", async () => {
+    mockClient.status = "active";
     mockClient.init.mockImplementation(() => Promise.resolve());
 
     const wrapper = createWrapper();
@@ -82,14 +82,14 @@ describe('useAura', () => {
       await Promise.resolve();
     });
 
-    expect(result.current.status).toBe('active');
+    expect(result.current.status).toBe("active");
     expect(result.current.error).toBeNull();
   });
 
   // Req 3.4: Returns degraded status when init resolves with degraded client status
-  it('returns degraded status when init resolves with degraded client status', async () => {
+  it("returns degraded status when init resolves with degraded client status", async () => {
     // Simulate SDK transitioning to degraded during init (e.g., server unreachable)
-    mockClient.status = 'degraded';
+    mockClient.status = "degraded";
     mockClient.init.mockImplementation(() => Promise.resolve());
 
     const wrapper = createWrapper();
@@ -100,13 +100,13 @@ describe('useAura', () => {
       await Promise.resolve();
     });
 
-    expect(result.current.status).toBe('degraded');
+    expect(result.current.status).toBe("degraded");
     // No error from init itself — error is null unless onError fires
     expect(result.current.error).toBeNull();
   });
 
   // Req 3.5: Returns most recent error from onError handler
-  it('returns most recent error from onError handler', async () => {
+  it("returns most recent error from onError handler", async () => {
     const wrapper = createWrapper();
     const { result } = renderHook(() => useAura(), { wrapper });
 
@@ -115,7 +115,7 @@ describe('useAura', () => {
       await Promise.resolve();
     });
 
-    const sdkError = { code: 'CONNECTION_LOST', message: 'Connection lost' };
+    const sdkError = { code: "CONNECTION_LOST", message: "Connection lost" };
 
     // Simulate SDK emitting an error
     await act(async () => {
@@ -126,7 +126,7 @@ describe('useAura', () => {
   });
 
   // Req 3.5 continued: Error is replaced by subsequent errors (latest error wins)
-  it('error is replaced by subsequent errors (latest error wins)', async () => {
+  it("error is replaced by subsequent errors (latest error wins)", async () => {
     const wrapper = createWrapper();
     const { result } = renderHook(() => useAura(), { wrapper });
 
@@ -135,8 +135,8 @@ describe('useAura', () => {
       await Promise.resolve();
     });
 
-    const firstError = { code: 'ERR_1', message: 'First error' };
-    const secondError = { code: 'ERR_2', message: 'Second error' };
+    const firstError = { code: "ERR_1", message: "First error" };
+    const secondError = { code: "ERR_2", message: "Second error" };
 
     // Emit first error
     await act(async () => {
@@ -156,16 +156,18 @@ describe('useAura', () => {
     // Render without any wrapper (no AuraProvider)
     const { result } = renderHook(() => useAura());
 
-    expect(result.current.status).toBe('degraded');
+    expect(result.current.status).toBe("degraded");
     expect(result.current.error).toBeNull();
   });
 
   // Req 3.7: Never throws during render
-  it('never throws during render', async () => {
+  it("never throws during render", async () => {
     // Test that calling useAura inside a provider does not throw
     const wrapper = createWrapper();
     const { unmount: u1 } = renderHook(() => useAura(), { wrapper });
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
     u1();
 
     // Test that calling useAura outside a provider does not throw
@@ -174,10 +176,12 @@ describe('useAura', () => {
 
     // Test with a degraded client (config error)
     (createAuraClient as ReturnType<typeof vi.fn>).mockImplementationOnce(() => {
-      throw new Error('Config error');
+      throw new Error("Config error");
     });
     const { unmount: u3 } = renderHook(() => useAura(), { wrapper: createWrapper() });
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
     u3();
 
     // If we reached here, no throw occurred
@@ -185,7 +189,7 @@ describe('useAura', () => {
   });
 
   // Req 3.8: Status values are referentially stable across re-renders when unchanged
-  it('status values are referentially stable across re-renders when unchanged', async () => {
+  it("status values are referentially stable across re-renders when unchanged", async () => {
     const wrapper = createWrapper();
     const { result, rerender } = renderHook(() => useAura(), { wrapper });
 
@@ -195,7 +199,7 @@ describe('useAura', () => {
     });
 
     const firstStatus = result.current.status;
-    expect(firstStatus).toBe('active');
+    expect(firstStatus).toBe("active");
 
     // Re-render multiple times and verify same string reference (===)
     rerender();

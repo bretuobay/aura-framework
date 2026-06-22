@@ -212,9 +212,7 @@ export function OperationalAuditView({
               style={getEntryStyle(entry.disposition)}
             >
               <div style={styles.entryHeader}>
-                <span style={styles.entryId}>
-                  {entry.prescriptionId ?? `Entry ${index + 1}`}
-                </span>
+                <span style={styles.entryId}>{entry.prescriptionId ?? `Entry ${index + 1}`}</span>
                 {entry.disposition && (
                   <span style={getDispositionBadgeStyle(entry.disposition)}>
                     {entry.disposition}
@@ -233,9 +231,7 @@ export function OperationalAuditView({
                 {entry.evaluationTimeMs != null && (
                   <>
                     <span style={styles.metaLabel}>Evaluation Time</span>
-                    <span style={styles.metaValue}>
-                      {entry.evaluationTimeMs}ms
-                    </span>
+                    <span style={styles.metaValue}>{entry.evaluationTimeMs}ms</span>
                   </>
                 )}
 
@@ -256,9 +252,7 @@ export function OperationalAuditView({
                 {entry.manifestVersion && (
                   <>
                     <span style={styles.metaLabel}>Manifest Version</span>
-                    <span style={styles.metaValue}>
-                      {entry.manifestVersion}
-                    </span>
+                    <span style={styles.metaValue}>{entry.manifestVersion}</span>
                   </>
                 )}
               </div>
@@ -335,10 +329,7 @@ export function OperationalAuditView({
       ) : (
         <ul style={styles.list} aria-label="Security audit entries">
           {securityAudit.map((record) => (
-            <li
-              key={record.id}
-              style={{ ...styles.entry, ...styles.securityEntry }}
-            >
+            <li key={record.id} style={{ ...styles.entry, ...styles.securityEntry }}>
               <div style={styles.entryHeader}>
                 <span style={styles.entryId}>{record.id}</span>
                 <span style={styles.categoryBadge}>{record.category}</span>

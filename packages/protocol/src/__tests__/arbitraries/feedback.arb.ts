@@ -1,19 +1,8 @@
 import * as fc from "fast-check";
 import type { FeedbackEvent } from "../../feedback.js";
-import {
-  arbNonEmptyString,
-  arbISOTimestamp,
-  arbContextSequenceId,
-} from "./primitives.arb.js";
+import { arbNonEmptyString, arbISOTimestamp, arbContextSequenceId } from "./primitives.arb.js";
 
-const FeedbackActions = [
-  "accept",
-  "dismiss",
-  "override",
-  "undo",
-  "reject",
-  "error",
-] as const;
+const FeedbackActions = ["accept", "dismiss", "override", "undo", "reject", "error"] as const;
 
 /**
  * Generates a valid FeedbackEvent with required fields and optional reason/contextSequenceId.
@@ -34,8 +23,7 @@ export function arbFeedbackEvent(): fc.Arbitrary<FeedbackEvent> {
         timestamp: obj.timestamp,
       };
       if (obj.reason !== undefined) result.reason = obj.reason;
-      if (obj.contextSequenceId !== undefined)
-        result.contextSequenceId = obj.contextSequenceId;
+      if (obj.contextSequenceId !== undefined) result.contextSequenceId = obj.contextSequenceId;
       return result as FeedbackEvent;
     });
 }

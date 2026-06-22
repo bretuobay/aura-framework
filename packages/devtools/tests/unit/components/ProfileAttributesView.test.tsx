@@ -18,15 +18,13 @@ function makeAttribute(overrides: Partial<ProfileAttribute> = {}): ProfileAttrib
 describe("ProfileAttributesView", () => {
   describe("empty state (Req 7.6)", () => {
     it("renders empty state when no attributes", () => {
-      const { container } = render(
-        <ProfileAttributesView attributes={[]} />
-      );
+      const { container } = render(<ProfileAttributesView attributes={[]} />);
       expect(container.textContent).toContain("No profile attributes recorded");
     });
 
     it("renders empty state when both arrays are empty", () => {
       const { container } = render(
-        <ProfileAttributesView attributes={[]} simulatedAttributes={[]} />
+        <ProfileAttributesView attributes={[]} simulatedAttributes={[]} />,
       );
       expect(container.textContent).toContain("No profile attributes recorded");
     });
@@ -40,9 +38,7 @@ describe("ProfileAttributesView", () => {
         confidence: 0.85,
         dataClass: "demographic",
       });
-      const { container } = render(
-        <ProfileAttributesView attributes={[attr]} />
-      );
+      const { container } = render(<ProfileAttributesView attributes={[attr]} />);
       expect(container.textContent).toContain("language");
       expect(container.textContent).toContain("en-US");
       expect(container.textContent).toContain("85%");
@@ -52,18 +48,14 @@ describe("ProfileAttributesView", () => {
     it("displays expiresAt field when present", () => {
       const futureDate = "2030-01-01T00:00:00.000Z";
       const attr = makeAttribute({ expiresAt: futureDate });
-      const { container } = render(
-        <ProfileAttributesView attributes={[attr]} />
-      );
+      const { container } = render(<ProfileAttributesView attributes={[attr]} />);
       expect(container.textContent).toContain("Expires At");
       expect(container.textContent).toContain(futureDate);
     });
 
     it("handles object values by JSON stringifying them", () => {
       const attr = makeAttribute({ value: { nested: true } });
-      const { container } = render(
-        <ProfileAttributesView attributes={[attr]} />
-      );
+      const { container } = render(<ProfileAttributesView attributes={[attr]} />);
       expect(container.textContent).toContain('{"nested":true}');
     });
   });
@@ -143,9 +135,7 @@ describe("ProfileAttributesView", () => {
   describe("simulated attributes (Req 7.5)", () => {
     it("renders simulated attributes with simulation badge", () => {
       const simAttr = makeAttribute({ id: "sim-1", key: "simKey" });
-      render(
-        <ProfileAttributesView attributes={[]} simulatedAttributes={[simAttr]} />
-      );
+      render(<ProfileAttributesView attributes={[]} simulatedAttributes={[simAttr]} />);
       const badge = screen.getByTestId("simulated-badge");
       expect(badge.textContent).toContain("Simulated");
       expect(badge.textContent).toContain("🧪");
@@ -155,7 +145,7 @@ describe("ProfileAttributesView", () => {
       const realAttr = makeAttribute({ id: "real-1", key: "realKey" });
       const simAttr = makeAttribute({ id: "sim-1", key: "simKey" });
       const { container } = render(
-        <ProfileAttributesView attributes={[realAttr]} simulatedAttributes={[simAttr]} />
+        <ProfileAttributesView attributes={[realAttr]} simulatedAttributes={[simAttr]} />,
       );
       expect(container.textContent).toContain("Profile Attributes (1)");
       expect(container.textContent).toContain("Simulated Attributes (1)");
@@ -165,9 +155,7 @@ describe("ProfileAttributesView", () => {
 
     it("simulated attributes do not have simulated badge in real attributes section", () => {
       const realAttr = makeAttribute({ id: "real-1", key: "realKey" });
-      render(
-        <ProfileAttributesView attributes={[realAttr]} simulatedAttributes={[]} />
-      );
+      render(<ProfileAttributesView attributes={[realAttr]} simulatedAttributes={[]} />);
       expect(screen.queryByTestId("simulated-badge")).toBeNull();
     });
   });

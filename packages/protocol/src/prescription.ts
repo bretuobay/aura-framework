@@ -1,15 +1,6 @@
 import { z } from "zod";
-import {
-  NonEmptyString,
-  ISOTimestamp,
-  ContextSequenceId,
-  Confidence,
-} from "./common.js";
-import {
-  PrescriptionModeSchema,
-  LatencyClassSchema,
-  DataClassSchema,
-} from "./enums.js";
+import { NonEmptyString, ISOTimestamp, ContextSequenceId, Confidence } from "./common.js";
+import { PrescriptionModeSchema, LatencyClassSchema, DataClassSchema } from "./enums.js";
 import { AdaptationSchema } from "./adaptation.js";
 
 // === ContextLock ===

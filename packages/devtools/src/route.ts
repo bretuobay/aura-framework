@@ -119,10 +119,7 @@ export function registerDevtoolsRoute(options: RegisterDevtoolsRouteOptionsWithM
 
     // 2. If missing → 400
     if (!sessionId) {
-      return c.json(
-        { error: "sessionId query parameter is required" },
-        400
-      );
+      return c.json({ error: "sessionId query parameter is required" }, 400);
     }
 
     // 3. Fetch session metadata
@@ -130,10 +127,7 @@ export function registerDevtoolsRoute(options: RegisterDevtoolsRouteOptionsWithM
 
     // 4. If not found → 404
     if (!session) {
-      return c.json(
-        { error: `Session not found: ${sessionId}` },
-        404
-      );
+      return c.json({ error: `Session not found: ${sessionId}` }, 404);
     }
 
     // 5. Fetch all data in parallel from 9 storage adapters

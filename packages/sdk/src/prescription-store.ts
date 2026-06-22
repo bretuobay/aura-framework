@@ -6,7 +6,7 @@
  */
 
 import { UIPrescriptionSchema } from "@aura/protocol";
-import type { UIPrescription } from "@aura/protocol";
+import type { DataClass, UIPrescription } from "@aura/protocol";
 import type { PrescriptionListener } from "./types.js";
 
 /**
@@ -32,11 +32,7 @@ export class PrescriptionStore {
    * 3. contextLock.sequenceId equals currentSeqId
    * 4. manifestVersion equals the provided manifestVersion parameter
    */
-  store(
-    prescription: UIPrescription,
-    currentSeqId: number,
-    manifestVersion: string,
-  ): boolean {
+  store(prescription: UIPrescription, currentSeqId: number, manifestVersion: string): boolean {
     // 1. Schema validation
     const parseResult = UIPrescriptionSchema.safeParse(prescription);
     if (!parseResult.success) {
@@ -125,7 +121,7 @@ export class PrescriptionStore {
 
     for (const [surfaceId, prescription] of this.prescriptions) {
       const dataClasses = prescription.audit?.dataClassesUsed;
-      if (dataClasses && dataClasses.includes(dataClass as any)) {
+      if (dataClasses && dataClasses.includes(dataClass as DataClass)) {
         this.prescriptions.delete(surfaceId);
         affected.push(surfaceId);
       }
@@ -194,10 +190,7 @@ export class PrescriptionStore {
    * Notifies all registered listeners for a surface with the given prescription
    * (or undefined when a prescription is removed/expired).
    */
-  notifyListeners(
-    surfaceId: string,
-    prescription: UIPrescription | undefined,
-  ): void {
+  notifyListeners(surfaceId: string, prescription: UIPrescription | undefined): void {
     const surfaceListeners = this.listeners.get(surfaceId);
     if (!surfaceListeners) {
       return;

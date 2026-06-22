@@ -22,9 +22,7 @@ describe("ConsentStateView", () => {
   describe("displays all standard DataClass keys (Req 6.1)", () => {
     it("renders all 12 standard DataClass keys", () => {
       const consentProfile: ConsentProfile = {};
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       const items = container.querySelectorAll("li");
       expect(items.length).toBe(12);
@@ -41,12 +39,10 @@ describe("ConsentStateView", () => {
         behavior: true,
         personalization: true,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       const behaviorItem = container.querySelector(
-        '[data-testid="consent-behavior"]'
+        '[data-testid="consent-behavior"]',
       ) as HTMLElement;
       expect(behaviorItem).not.toBeNull();
       expect(behaviorItem.textContent).toContain("✓");
@@ -56,12 +52,10 @@ describe("ConsentStateView", () => {
       const consentProfile: ConsentProfile = {
         behavior: false,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       const behaviorItem = container.querySelector(
-        '[data-testid="consent-behavior"]'
+        '[data-testid="consent-behavior"]',
       ) as HTMLElement;
       expect(behaviorItem).not.toBeNull();
       expect(behaviorItem.textContent).toContain("✗");
@@ -73,13 +67,9 @@ describe("ConsentStateView", () => {
       const consentProfile: ConsentProfile = {
         health: false,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
-      const healthItem = container.querySelector(
-        '[data-testid="consent-health"]'
-      ) as HTMLElement;
+      const healthItem = container.querySelector('[data-testid="consent-health"]') as HTMLElement;
       expect(healthItem).not.toBeNull();
       expect(healthItem.style.backgroundColor).toBe("rgb(252, 232, 230)");
       expect(healthItem.style.borderColor).toBe("rgb(245, 198, 203)");
@@ -89,13 +79,9 @@ describe("ConsentStateView", () => {
       const consentProfile: ConsentProfile = {
         health: true,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
-      const healthItem = container.querySelector(
-        '[data-testid="consent-health"]'
-      ) as HTMLElement;
+      const healthItem = container.querySelector('[data-testid="consent-health"]') as HTMLElement;
       expect(healthItem).not.toBeNull();
       expect(healthItem.style.backgroundColor).toBe("rgb(230, 244, 234)");
       expect(healthItem.style.borderColor).toBe("rgb(168, 218, 181)");
@@ -110,30 +96,26 @@ describe("ConsentStateView", () => {
         accessibility: true,
         health: false,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       // Check enabled classes show checkmark
       const behaviorItem = container.querySelector(
-        '[data-testid="consent-behavior"]'
+        '[data-testid="consent-behavior"]',
       ) as HTMLElement;
       expect(behaviorItem.textContent).toContain("✓");
 
       const accessibilityItem = container.querySelector(
-        '[data-testid="consent-accessibility"]'
+        '[data-testid="consent-accessibility"]',
       ) as HTMLElement;
       expect(accessibilityItem.textContent).toContain("✓");
 
       // Check disabled classes show X
       const personalizationItem = container.querySelector(
-        '[data-testid="consent-personalization"]'
+        '[data-testid="consent-personalization"]',
       ) as HTMLElement;
       expect(personalizationItem.textContent).toContain("✗");
 
-      const healthItem = container.querySelector(
-        '[data-testid="consent-health"]'
-      ) as HTMLElement;
+      const healthItem = container.querySelector('[data-testid="consent-health"]') as HTMLElement;
       expect(healthItem.textContent).toContain("✗");
     });
   });
@@ -143,33 +125,27 @@ describe("ConsentStateView", () => {
       const consentProfile: ConsentProfile = {
         behavior: true,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       // behavior should be enabled
       const behaviorItem = container.querySelector(
-        '[data-testid="consent-behavior"]'
+        '[data-testid="consent-behavior"]',
       ) as HTMLElement;
       expect(behaviorItem.textContent).toContain("✓");
 
       // All other keys should be disabled since they're missing
-      const healthItem = container.querySelector(
-        '[data-testid="consent-health"]'
-      ) as HTMLElement;
+      const healthItem = container.querySelector('[data-testid="consent-health"]') as HTMLElement;
       expect(healthItem.textContent).toContain("✗");
 
       const educationItem = container.querySelector(
-        '[data-testid="consent-education"]'
+        '[data-testid="consent-education"]',
       ) as HTMLElement;
       expect(educationItem.textContent).toContain("✗");
     });
 
     it("shows all keys as disabled when consentProfile is empty", () => {
       const consentProfile: ConsentProfile = {};
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       const items = container.querySelectorAll("li");
       for (const item of Array.from(items)) {
@@ -181,9 +157,7 @@ describe("ConsentStateView", () => {
   describe("accessibility", () => {
     it("uses semantic HTML with section and list elements", () => {
       const consentProfile: ConsentProfile = { behavior: true };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       expect(container.querySelector("section")).not.toBeNull();
       expect(container.querySelector("ul")).not.toBeNull();
@@ -192,12 +166,8 @@ describe("ConsentStateView", () => {
 
     it("has an aria-label on the section", () => {
       const consentProfile: ConsentProfile = {};
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
-      const section = container.querySelector(
-        'section[aria-label="Consent state"]'
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
+      const section = container.querySelector('section[aria-label="Consent state"]');
       expect(section).not.toBeNull();
     });
 
@@ -206,20 +176,14 @@ describe("ConsentStateView", () => {
         behavior: true,
         health: false,
       };
-      const { container } = render(
-        <ConsentStateView consentProfile={consentProfile} />
-      );
+      const { container } = render(<ConsentStateView consentProfile={consentProfile} />);
 
       const behaviorItem = container.querySelector(
-        '[data-testid="consent-behavior"]'
+        '[data-testid="consent-behavior"]',
       ) as HTMLElement;
-      expect(behaviorItem.getAttribute("aria-label")).toBe(
-        "behavior: enabled"
-      );
+      expect(behaviorItem.getAttribute("aria-label")).toBe("behavior: enabled");
 
-      const healthItem = container.querySelector(
-        '[data-testid="consent-health"]'
-      ) as HTMLElement;
+      const healthItem = container.querySelector('[data-testid="consent-health"]') as HTMLElement;
       expect(healthItem.getAttribute("aria-label")).toBe("health: disabled");
     });
   });

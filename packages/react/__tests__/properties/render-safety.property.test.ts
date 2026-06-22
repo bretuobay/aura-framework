@@ -1,14 +1,14 @@
 // Feature: aura-react, Property 8: Total Render Safety
 // **Validates: Requirements 3.7, 4.7, 5.9, 6.7, 7.1, 7.7, 12.6**
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React from "react";
+import { renderHook, act } from "@testing-library/react";
 
 // Mock client with configurable status
 const mockClient = {
-  status: 'active' as string,
+  status: "active" as string,
   init: vi.fn(() => Promise.resolve()),
   disconnect: vi.fn(),
   emit: vi.fn(() => Promise.resolve()),
@@ -17,15 +17,15 @@ const mockClient = {
   onError: vi.fn(() => () => {}),
 };
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => mockClient),
 }));
 
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAura } from '../../src/useAura';
-import { useAuraEmit } from '../../src/useAuraEmit';
-import { usePrescription } from '../../src/usePrescription';
-import { useAuraFeedback } from '../../src/useAuraFeedback';
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAura } from "../../src/useAura";
+import { useAuraEmit } from "../../src/useAuraEmit";
+import { usePrescription } from "../../src/usePrescription";
+import { useAuraFeedback } from "../../src/useAuraFeedback";
 
 /**
  * Creates a wrapper that renders all four hooks inside an AuraProvider.
@@ -35,10 +35,10 @@ function createWrapper() {
     return React.createElement(
       AuraProvider,
       {
-        endpoint: 'https://aura.test/api',
+        endpoint: "https://aura.test/api",
         manifest: { capabilities: [] },
-        userId: 'test-user',
-        consentProfile: { level: 'full' },
+        userId: "test-user",
+        consentProfile: { level: "full" },
         context: {},
       },
       children,
@@ -46,18 +46,18 @@ function createWrapper() {
   };
 }
 
-describe('Property 8: Total Render Safety', () => {
+describe("Property 8: Total Render Safety", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockClient.status = 'active';
+    mockClient.status = "active";
     mockClient.init.mockImplementation(() => Promise.resolve());
   });
 
-  it('all hooks return non-throwing, defined values for all SDK states and surfaceId inputs', async () => {
+  it("all hooks return non-throwing, defined values for all SDK states and surfaceId inputs", async () => {
     await fc.assert(
       fc.asyncProperty(
         fc.tuple(
-          fc.constantFrom('idle', 'active', 'degraded'),
+          fc.constantFrom("idle", "active", "degraded"),
           fc.string({ minLength: 0, maxLength: 30 }), // surfaceId (includes empty)
         ),
         async ([status, surfaceId]) => {
@@ -67,28 +67,28 @@ describe('Property 8: Total Render Safety', () => {
           const wrapper = createWrapper();
 
           // useAura: should return { status, error } without throwing
-          const { result: auraResult, unmount: unmountAura } = renderHook(
-            () => useAura(),
-            { wrapper },
-          );
+          const { result: auraResult, unmount: unmountAura } = renderHook(() => useAura(), {
+            wrapper,
+          });
           await act(async () => {
             await Promise.resolve();
           });
           expect(auraResult.current).toBeDefined();
-          expect(auraResult.current.status).toBeTypeOf('string');
-          expect(auraResult.current.error === null || auraResult.current.error !== undefined).toBe(true);
+          expect(auraResult.current.status).toBeTypeOf("string");
+          expect(auraResult.current.error === null || auraResult.current.error !== undefined).toBe(
+            true,
+          );
           unmountAura();
 
           // useAuraEmit: should return a function without throwing
-          const { result: emitResult, unmount: unmountEmit } = renderHook(
-            () => useAuraEmit(),
-            { wrapper },
-          );
+          const { result: emitResult, unmount: unmountEmit } = renderHook(() => useAuraEmit(), {
+            wrapper,
+          });
           await act(async () => {
             await Promise.resolve();
           });
           expect(emitResult.current).toBeDefined();
-          expect(emitResult.current).toBeTypeOf('function');
+          expect(emitResult.current).toBeTypeOf("function");
           unmountEmit();
 
           // usePrescription: should return undefined or a prescription without throwing
@@ -104,15 +104,14 @@ describe('Property 8: Total Render Safety', () => {
           unmountRx();
 
           // useAuraFeedback: should return a function without throwing
-          const { result: fbResult, unmount: unmountFb } = renderHook(
-            () => useAuraFeedback(),
-            { wrapper },
-          );
+          const { result: fbResult, unmount: unmountFb } = renderHook(() => useAuraFeedback(), {
+            wrapper,
+          });
           await act(async () => {
             await Promise.resolve();
           });
           expect(fbResult.current).toBeDefined();
-          expect(fbResult.current).toBeTypeOf('function');
+          expect(fbResult.current).toBeTypeOf("function");
           unmountFb();
         },
       ),

@@ -111,9 +111,7 @@ describe("CapabilityRegistry", () => {
       const rx = makePrescription({ surfaceId: "nonexistent-surface" });
       const result = registry.validate("sess-1", rx);
       expect(result.valid).toBe(false);
-      expect(result.errors).toContainEqual(
-        expect.objectContaining({ type: "undeclared-surface" })
-      );
+      expect(result.errors).toContainEqual(expect.objectContaining({ type: "undeclared-surface" }));
     });
 
     it("rejects prescription with undeclared componentId", () => {
@@ -131,7 +129,7 @@ describe("CapabilityRegistry", () => {
       const result = registry.validate("sess-1", rx);
       expect(result.valid).toBe(false);
       expect(result.errors).toContainEqual(
-        expect.objectContaining({ type: "undeclared-component" })
+        expect.objectContaining({ type: "undeclared-component" }),
       );
     });
 
@@ -149,9 +147,7 @@ describe("CapabilityRegistry", () => {
       });
       const result = registry.validate("sess-1", rx);
       expect(result.valid).toBe(false);
-      expect(result.errors).toContainEqual(
-        expect.objectContaining({ type: "undeclared-variant" })
-      );
+      expect(result.errors).toContainEqual(expect.objectContaining({ type: "undeclared-variant" }));
     });
 
     it("rejects prescription with manifest version mismatch", () => {
@@ -159,7 +155,7 @@ describe("CapabilityRegistry", () => {
       const result = registry.validate("sess-1", rx);
       expect(result.valid).toBe(false);
       expect(result.errors).toContainEqual(
-        expect.objectContaining({ type: "manifest-version-mismatch" })
+        expect.objectContaining({ type: "manifest-version-mismatch" }),
       );
     });
 
@@ -201,9 +197,7 @@ describe("CapabilityRegistry", () => {
       const result = registry.validate("sess-unv", rx);
       // Should only fail if surfaceId/component/variant are wrong
       // manifestVersion matches "unversioned"
-      expect(
-        result.errors.find((e) => e.type === "manifest-version-mismatch")
-      ).toBeUndefined();
+      expect(result.errors.find((e) => e.type === "manifest-version-mismatch")).toBeUndefined();
     });
   });
 });

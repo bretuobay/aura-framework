@@ -69,7 +69,10 @@ const styles = {
   },
 } as const;
 
-export function SessionSummaryView({ session, error }: SessionSummaryViewProps): React.ReactElement {
+export function SessionSummaryView({
+  session,
+  error,
+}: SessionSummaryViewProps): React.ReactElement {
   if (error) {
     return (
       <div style={styles.errorContainer} role="alert" aria-label="Session error">
@@ -112,9 +115,7 @@ export function SessionSummaryView({ session, error }: SessionSummaryViewProps):
         </dd>
 
         <dt style={styles.dt}>Manifest Version</dt>
-        <dd style={styles.dd}>
-          {session.manifestVersion ?? "unversioned"}
-        </dd>
+        <dd style={styles.dd}>{session.manifestVersion ?? "unversioned"}</dd>
 
         <dt style={styles.dt}>Context Sequence ID</dt>
         <dd style={styles.dd}>{session.contextSequenceId}</dd>

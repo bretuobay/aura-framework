@@ -2,19 +2,9 @@ import * as fc from "fast-check";
 import type { Adaptation } from "../../adaptation.js";
 import { arbNonEmptyString } from "./primitives.arb.js";
 
-const AccessibilitySettings = [
-  "fontScale",
-  "contrast",
-  "motion",
-  "inputMode",
-] as const;
+const AccessibilitySettings = ["fontScale", "contrast", "motion", "inputMode"] as const;
 
-const LayoutTypes = [
-  "compact",
-  "expanded",
-  "step-by-step",
-  "accessible",
-] as const;
+const LayoutTypes = ["compact", "expanded", "step-by-step", "accessible"] as const;
 
 function arbRankAdaptation(): fc.Arbitrary<Adaptation> {
   return fc
@@ -70,7 +60,7 @@ function arbAccessibilityAdaptation(): fc.Arbitrary<Adaptation> {
       value: fc.oneof(
         fc.string({ minLength: 0, maxLength: 50 }),
         fc.double({ noNaN: true, min: -1000, max: 1000 }),
-        fc.boolean()
+        fc.boolean(),
       ),
       reasonCode: arbNonEmptyString(),
     })
@@ -100,6 +90,6 @@ export function arbAdaptation(): fc.Arbitrary<Adaptation> {
     arbLayoutAdaptation(),
     arbContentAdaptation(),
     arbAccessibilityAdaptation(),
-    arbFilterAdaptation()
+    arbFilterAdaptation(),
   );
 }

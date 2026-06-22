@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import type { AuraEvent, DataClass, ProfileAttribute } from "@aura/protocol";
+import type { AuraEvent, DataClass, ExplanationRecord, ProfileAttribute } from "@aura/protocol";
 import type { DevtoolsState } from "../schema";
 import type { DevtoolsClient } from "../client";
 import { createDevtoolsClient } from "../client";
@@ -87,9 +87,7 @@ function classifyError(error: unknown): ErrorState {
     return {
       type: "validation",
       message: "Invalid server response",
-      details: error.validationErrors
-        .map((e) => `${e.path.join(".")}: ${e.message}`)
-        .join("; "),
+      details: error.validationErrors.map((e) => `${e.path.join(".")}: ${e.message}`).join("; "),
     };
   }
   if (error instanceof Error) {
@@ -118,9 +116,7 @@ export function DevtoolsPanel({
   const [replayedEventIds, setReplayedEventIds] = useState<Set<string>>(new Set());
   const [simulatedAttributes, setSimulatedAttributes] = useState<ProfileAttribute[]>([]);
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string | null>(null);
-  const [explanation, setExplanation] = useState<
-    import("@aura/protocol").ExplanationRecord | null
-  >(null);
+  const [explanation, setExplanation] = useState<ExplanationRecord | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const clientRef = useRef<DevtoolsClient | null>(null);
@@ -175,7 +171,7 @@ export function DevtoolsPanel({
       await client.sendConsent({ [dataClass]: value });
       await fetchState();
     },
-    [fetchState]
+    [fetchState],
   );
 
   const handleEventReplay = useCallback(
@@ -197,7 +193,7 @@ export function DevtoolsPanel({
         setIsReplaying(false);
       }
     },
-    [fetchState, state?.events.length]
+    [fetchState, state?.events.length],
   );
 
   const handleApplyScenario = useCallback((attribute: ProfileAttribute) => {
@@ -208,30 +204,27 @@ export function DevtoolsPanel({
     setSimulatedAttributes([]);
   }, []);
 
-  const handleSelectPrescription = useCallback(
-    async (prescriptionId: string) => {
-      setSelectedPrescriptionId(prescriptionId);
-      setExplanation(null);
+  const handleSelectPrescription = useCallback(async (prescriptionId: string) => {
+    setSelectedPrescriptionId(prescriptionId);
+    setExplanation(null);
 
-      const client = clientRef.current;
-      if (!client) return;
+    const client = clientRef.current;
+    if (!client) return;
 
-      try {
-        const result = await client.fetchExplanation(prescriptionId);
-        setExplanation(result);
-      } catch {
-        // Explanation fetch failure is non-fatal; inspector shows "not available"
-      }
-    },
-    []
-  );
+    try {
+      const result = await client.fetchExplanation(prescriptionId);
+      setExplanation(result);
+    } catch {
+      // Explanation fetch failure is non-fatal; inspector shows "not available"
+    }
+  }, []);
 
   const handleNavigateToPrescription = useCallback(
     (prescriptionId: string) => {
       setActiveTab("prescriptions");
       handleSelectPrescription(prescriptionId);
     },
-    [handleSelectPrescription]
+    [handleSelectPrescription],
   );
 
   // --- Rendering ---
@@ -279,7 +272,7 @@ export function DevtoolsPanel({
   }
 
   const selectedPrescription = selectedPrescriptionId
-    ? state.prescriptions.find((rx) => rx.id === selectedPrescriptionId) ?? null
+    ? (state.prescriptions.find((rx) => rx.id === selectedPrescriptionId) ?? null)
     : null;
 
   return (
@@ -307,19 +300,12 @@ export function DevtoolsPanel({
         aria-labelledby={`tab-${activeTab}`}
         style={styles.tabPanel}
       >
-        {activeTab === "session" && (
-          <SessionSummaryView session={state.session} />
-        )}
+        {activeTab === "session" && <SessionSummaryView session={state.session} />}
 
-        {activeTab === "manifest" && (
-          <ManifestSummaryView manifest={state.manifest} />
-        )}
+        {activeTab === "manifest" && <ManifestSummaryView manifest={state.manifest} />}
 
         {activeTab === "events" && (
-          <EventLogView
-            events={state.events}
-            replayedEventIds={replayedEventIds}
-          />
+          <EventLogView events={state.events} replayedEventIds={replayedEventIds} />
         )}
 
         {activeTab === "prescriptions" && (
@@ -334,7 +320,7 @@ export function DevtoolsPanel({
                 <PrescriptionInspector
                   prescription={selectedPrescription}
                   ruleMatches={state.ruleMatches.filter(
-                    (rm) => rm.prescriptionId === selectedPrescriptionId
+                    (rm) => rm.prescriptionId === selectedPrescriptionId,
                   )}
                   explanation={explanation}
                   consentProfile={state.consentProfile}
@@ -357,10 +343,7 @@ export function DevtoolsPanel({
           <>
             <ConsentStateView consentProfile={state.consentProfile} />
             <div style={styles.simToolSpacer}>
-              <ConsentEditor
-                consentProfile={state.consentProfile}
-                onToggle={handleConsentToggle}
-              />
+              <ConsentEditor consentProfile={state.consentProfile} onToggle={handleConsentToggle} />
             </div>
           </>
         )}

@@ -1,19 +1,19 @@
 // Feature: aura-react, Property 3: Feedback Forwarding
 // **Validates: Requirements 6.2, 6.8, 12.3**
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import fc from 'fast-check';
-import React from 'react';
-import { cleanup } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react';
-import { arbFeedbackEvent } from '../arbitraries/feedback.arbitrary';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import fc from "fast-check";
+import React from "react";
+import { cleanup } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
+import { arbFeedbackEvent } from "../arbitraries/feedback.arbitrary";
 
 // Mock @aura/sdk before importing components that use it
 const mockFeedback = vi.fn(() => Promise.resolve());
 
-vi.mock('@aura/sdk', () => ({
+vi.mock("@aura/sdk", () => ({
   createAuraClient: vi.fn(() => ({
-    status: 'active',
+    status: "active",
     init: vi.fn(() => Promise.resolve()),
     disconnect: vi.fn(),
     emit: vi.fn(),
@@ -23,26 +23,26 @@ vi.mock('@aura/sdk', () => ({
   })),
 }));
 
-import { AuraProvider } from '../../src/AuraProvider';
-import { useAuraFeedback } from '../../src/useAuraFeedback';
+import { AuraProvider } from "../../src/AuraProvider";
+import { useAuraFeedback } from "../../src/useAuraFeedback";
 
-describe('Property 3: Feedback Forwarding', () => {
+describe("Property 3: Feedback Forwarding", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('client.feedback receives structurally equal FeedbackEvent for all valid events', async () => {
+  it("client.feedback receives structurally equal FeedbackEvent for all valid events", async () => {
     await fc.assert(
       fc.asyncProperty(arbFeedbackEvent, async (feedbackEvent) => {
         const wrapper = ({ children }: { children: React.ReactNode }) =>
           React.createElement(
             AuraProvider,
             {
-              endpoint: 'https://aura.test',
+              endpoint: "https://aura.test",
               manifest: { surfaces: [], interactions: [] },
-              userId: 'test-user',
-              consentProfile: { level: 'full', categories: [] },
-              context: { environment: 'test' },
+              userId: "test-user",
+              consentProfile: { level: "full", categories: [] },
+              context: { environment: "test" },
             },
             children,
           );

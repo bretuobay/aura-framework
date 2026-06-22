@@ -38,7 +38,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = CapabilityManifestSchema.safeParse(manifest);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -50,7 +50,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = CapabilityManifestSchema.safeParse(manifest);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -61,7 +61,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = CapabilityManifestSchema.safeParse(manifest);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -71,7 +71,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = ContextModelSchema.safeParse(ctx);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -81,7 +81,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = AuraEventSchema.safeParse(event);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -91,7 +91,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = UIPrescriptionSchema.safeParse(prescription);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -103,7 +103,7 @@ describe("Arbitraries Smoke Tests", () => {
         expect(prescription.contextLock.sequenceId).toBe(5);
         expect(prescription.manifestVersion).toBe("v1.0");
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -115,7 +115,7 @@ describe("Arbitraries Smoke Tests", () => {
         const expiresAt = new Date(prescription.constraints.expiresAt).getTime();
         expect(expiresAt).toBeLessThan(Date.now());
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -125,7 +125,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = ConsentProfileSchema.safeParse(profile);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -136,7 +136,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = ConsentProfileSchema.safeParse(profile);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -148,7 +148,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = ConsentProfileSchema.safeParse(profile);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -160,7 +160,7 @@ describe("Arbitraries Smoke Tests", () => {
         const result = ConsentProfileSchema.safeParse(patch);
         expect(result.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 
@@ -176,7 +176,7 @@ describe("Arbitraries Smoke Tests", () => {
         const contextResult = ContextModelSchema.safeParse(config.context);
         expect(contextResult.success).toBe(true);
       }),
-      { numRuns: 50 }
+      { numRuns: 50 },
     );
   });
 });

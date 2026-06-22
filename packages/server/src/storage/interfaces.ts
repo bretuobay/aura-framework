@@ -36,10 +36,7 @@ export interface IUserModelStore {
   upsertAttribute(userId: string, attribute: ProfileAttribute): Promise<void>;
   getAttributes(userId: string): Promise<ProfileAttribute[]>;
   deleteAttribute(userId: string, attributeId: string): Promise<void>;
-  getAttribute(
-    userId: string,
-    attributeId: string,
-  ): Promise<ProfileAttribute | null>;
+  getAttribute(userId: string, attributeId: string): Promise<ProfileAttribute | null>;
 }
 
 /**
@@ -48,10 +45,7 @@ export interface IUserModelStore {
  */
 export interface IFeedbackStore {
   record(sessionId: string, event: FeedbackEvent): Promise<void>;
-  getByPrescriptionId(
-    sessionId: string,
-    prescriptionId: string,
-  ): Promise<FeedbackEvent[]>;
+  getByPrescriptionId(sessionId: string, prescriptionId: string): Promise<FeedbackEvent[]>;
 }
 
 /**
@@ -59,10 +53,7 @@ export interface IFeedbackStore {
  * Supports store and retrieval operations.
  */
 export interface IExplanationStore {
-  store(
-    prescriptionId: string,
-    explanation: ExplanationRecord,
-  ): Promise<void>;
+  store(prescriptionId: string, explanation: ExplanationRecord): Promise<void>;
   get(prescriptionId: string): Promise<ExplanationRecord | null>;
 }
 
@@ -72,9 +63,6 @@ export interface IExplanationStore {
  */
 export interface IPrescriptionStore {
   store(sessionId: string, prescription: UIPrescription): Promise<void>;
-  get(
-    sessionId: string,
-    prescriptionId: string,
-  ): Promise<UIPrescription | null>;
+  get(sessionId: string, prescriptionId: string): Promise<UIPrescription | null>;
   listActive(sessionId: string, asOf: string): Promise<UIPrescription[]>;
 }

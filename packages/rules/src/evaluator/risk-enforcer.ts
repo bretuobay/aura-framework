@@ -12,10 +12,7 @@
  * Requirements validated: 7.1, 7.2, 7.3, 7.4
  */
 
-import type {
-  CandidatePrescription,
-  CapabilityManifest,
-} from "../schema/types.js";
+import type { CandidatePrescription, CapabilityManifest } from "../schema/types.js";
 
 // ─── Manifest Lookup ──────────────────────────────────────────────────────────
 
@@ -24,17 +21,14 @@ import type {
  * `allowAutoApply: true`. The field is treated as an extension property
  * on the ManifestComponent (not part of the core schema).
  */
-function surfaceAllowsAutoApply(
-  surfaceId: string,
-  manifest: CapabilityManifest
-): boolean {
+function surfaceAllowsAutoApply(surfaceId: string, manifest: CapabilityManifest): boolean {
   const surface = manifest.surfaces.find((s) => s.surfaceId === surfaceId);
   if (!surface) {
     return false;
   }
 
   return surface.components.some(
-    (component) => (component as Record<string, unknown>).allowAutoApply === true
+    (component) => (component as Record<string, unknown>).allowAutoApply === true,
   );
 }
 
@@ -48,7 +42,7 @@ function surfaceAllowsAutoApply(
  */
 export function enforceRiskClass(
   candidates: CandidatePrescription[],
-  manifest: CapabilityManifest
+  manifest: CapabilityManifest,
 ): CandidatePrescription[] {
   return candidates.map((candidate) => {
     switch (candidate.riskClass) {

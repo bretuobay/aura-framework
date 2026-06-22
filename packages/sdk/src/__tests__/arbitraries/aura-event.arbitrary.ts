@@ -42,22 +42,15 @@ const STANDARD_EVENT_TYPES = [
 
 const arbEventType: fc.Arbitrary<string> = fc.oneof(
   fc.constantFrom(...STANDARD_EVENT_TYPES),
-  fc.stringMatching(/^[a-z][a-z0-9]*\.[a-z][a-z0-9]*$/) // extensible custom types
+  fc.stringMatching(/^[a-z][a-z0-9]*\.[a-z][a-z0-9]*$/), // extensible custom types
 );
 
-const arbSurfaceId: fc.Arbitrary<string> = fc.stringMatching(
-  /^[a-zA-Z][a-zA-Z0-9_-]{0,30}$/
-);
+const arbSurfaceId: fc.Arbitrary<string> = fc.stringMatching(/^[a-zA-Z][a-zA-Z0-9_-]{0,30}$/);
 
 const arbPayload: fc.Arbitrary<Record<string, unknown>> = fc.dictionary(
   fc.stringMatching(/^[a-zA-Z][a-zA-Z0-9_]{0,15}$/),
-  fc.oneof(
-    fc.string({ maxLength: 50 }),
-    fc.integer(),
-    fc.boolean(),
-    fc.constant(null)
-  ),
-  { minKeys: 0, maxKeys: 5 }
+  fc.oneof(fc.string({ maxLength: 50 }), fc.integer(), fc.boolean(), fc.constant(null)),
+  { minKeys: 0, maxKeys: 5 },
 );
 
 // =============================================================================
@@ -75,8 +68,8 @@ export const arbAuraEvent: fc.Arbitrary<AuraEvent> = fc
         minLength: 1,
         maxLength: 4,
       }),
-      { nil: undefined }
-    )
+      { nil: undefined },
+    ),
   )
   .map(([type, surfaceId, timestamp, payload, dataClasses]) => {
     const event: AuraEvent = { type, surfaceId, timestamp, payload };
@@ -87,16 +80,11 @@ export const arbAuraEvent: fc.Arbitrary<AuraEvent> = fc
   });
 
 /** AuraEvent with a specific surfaceId (useful for targeted tests) */
-export const arbAuraEventForSurface = (
-  surfaceId: string
-): fc.Arbitrary<AuraEvent> =>
+export const arbAuraEventForSurface = (surfaceId: string): fc.Arbitrary<AuraEvent> =>
   arbAuraEvent.map((event) => ({ ...event, surfaceId }));
 
 /** Generate a batch of valid AuraEvent values */
-export const arbAuraEventBatch = (
-  minSize = 1,
-  maxSize = 10
-): fc.Arbitrary<AuraEvent[]> =>
+export const arbAuraEventBatch = (minSize = 1, maxSize = 10): fc.Arbitrary<AuraEvent[]> =>
   fc.array(arbAuraEvent, { minLength: minSize, maxLength: maxSize });
 
 // =============================================================================
@@ -104,17 +92,21 @@ export const arbAuraEventBatch = (
 // =============================================================================
 
 /** Event with empty type string */
-export const arbInvalidEventEmptyType: fc.Arbitrary<Record<string, unknown>> =
-  arbAuraEvent.map((event) => ({ ...event, type: "" }));
+export const arbInvalidEventEmptyType: fc.Arbitrary<Record<string, unknown>> = arbAuraEvent.map(
+  (event) => ({ ...event, type: "" }),
+);
 
 /** Event with empty surfaceId */
-export const arbInvalidEventEmptySurface: fc.Arbitrary<Record<string, unknown>> =
-  arbAuraEvent.map((event) => ({ ...event, surfaceId: "" }));
+export const arbInvalidEventEmptySurface: fc.Arbitrary<Record<string, unknown>> = arbAuraEvent.map(
+  (event) => ({ ...event, surfaceId: "" }),
+);
 
 /** Event with invalid timestamp */
-export const arbInvalidEventBadTimestamp: fc.Arbitrary<Record<string, unknown>> =
-  arbAuraEvent.map((event) => ({ ...event, timestamp: "not-a-date" }));
+export const arbInvalidEventBadTimestamp: fc.Arbitrary<Record<string, unknown>> = arbAuraEvent.map(
+  (event) => ({ ...event, timestamp: "not-a-date" }),
+);
 
 /** Event with missing payload */
-export const arbInvalidEventNoPayload: fc.Arbitrary<Record<string, unknown>> =
-  arbAuraEvent.map(({ payload, ...rest }) => rest);
+export const arbInvalidEventNoPayload: fc.Arbitrary<Record<string, unknown>> = arbAuraEvent.map(
+  ({ payload, ...rest }) => rest,
+);

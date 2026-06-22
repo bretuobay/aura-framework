@@ -6,11 +6,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import {
-  resolvePath,
-  evaluateCondition,
-  evaluateConditions,
-} from "../../evaluator/condition.js";
+import { resolvePath, evaluateCondition, evaluateConditions } from "../../evaluator/condition.js";
 import type { Condition, RulesPipelineInput } from "../../schema/types.js";
 
 // ─── Test Helpers ─────────────────────────────────────────────────────────────

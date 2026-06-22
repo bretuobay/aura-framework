@@ -51,7 +51,7 @@ export default [
     ]
   }
 ];
-`
+`,
   );
 
   // A passing fixture: expects no prescriptions when event type doesn't match
@@ -73,7 +73,7 @@ export default {
   },
   expected: []
 };
-`
+`,
   );
 
   // A fixture with invalid structure (not parseable as Fixture)
@@ -83,7 +83,7 @@ export default {
 export default {
   notAFixture: true
 };
-`
+`,
   );
 }
 
@@ -141,11 +141,7 @@ describe("aura-rules test CLI", () => {
     const { testCommand } = await import("../../cli/commands/test.js");
 
     try {
-      await testCommand.parseAsync([
-        "node",
-        "test",
-        "nonexistent/**/*.fixture.ts",
-      ]);
+      await testCommand.parseAsync(["node", "test", "nonexistent/**/*.fixture.ts"]);
     } catch {
       // process.exit throws
     }

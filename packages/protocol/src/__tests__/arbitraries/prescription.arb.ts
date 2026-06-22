@@ -1,9 +1,5 @@
 import * as fc from "fast-check";
-import type {
-  UIPrescription,
-  ContextLock,
-  AdaptationGroup,
-} from "../../prescription.js";
+import type { UIPrescription, ContextLock, AdaptationGroup } from "../../prescription.js";
 import {
   arbNonEmptyString,
   arbISOTimestamp,
@@ -12,12 +8,7 @@ import {
 } from "./primitives.arb.js";
 import { arbAdaptation } from "./adaptation.arb.js";
 
-const PrescriptionModes = [
-  "recommend",
-  "autoApply",
-  "askUser",
-  "observeOnly",
-] as const;
+const PrescriptionModes = ["recommend", "autoApply", "askUser", "observeOnly"] as const;
 
 const LatencyClasses = ["immediate", "fast", "deliberate"] as const;
 
@@ -78,10 +69,9 @@ export function arbUIPrescription(): fc.Arbitrary<UIPrescription> {
       }),
       manifestVersion: arbNonEmptyString(),
       audit: fc.record({
-        dataClassesUsed: fc.option(
-          fc.subarray([...DataClassValues], { minLength: 1 }),
-          { nil: undefined }
-        ),
+        dataClassesUsed: fc.option(fc.subarray([...DataClassValues], { minLength: 1 }), {
+          nil: undefined,
+        }),
         policyVersion: fc.option(arbNonEmptyString(), { nil: undefined }),
         decisionSource: fc.option(arbNonEmptyString(), { nil: undefined }),
       }),
@@ -92,12 +82,11 @@ export function arbUIPrescription(): fc.Arbitrary<UIPrescription> {
             nil: undefined,
           }),
         }),
-        { nil: undefined }
+        { nil: undefined },
       ),
-      adaptationGroups: fc.option(
-        fc.array(arbAdaptationGroup(), { minLength: 1, maxLength: 3 }),
-        { nil: undefined }
-      ),
+      adaptationGroups: fc.option(fc.array(arbAdaptationGroup(), { minLength: 1, maxLength: 3 }), {
+        nil: undefined,
+      }),
     })
     .map((obj) => {
       const result: Record<string, unknown> = {
@@ -115,23 +104,19 @@ export function arbUIPrescription(): fc.Arbitrary<UIPrescription> {
       const audit: Record<string, unknown> = {};
       if (obj.audit.dataClassesUsed !== undefined)
         audit.dataClassesUsed = obj.audit.dataClassesUsed;
-      if (obj.audit.policyVersion !== undefined)
-        audit.policyVersion = obj.audit.policyVersion;
-      if (obj.audit.decisionSource !== undefined)
-        audit.decisionSource = obj.audit.decisionSource;
+      if (obj.audit.policyVersion !== undefined) audit.policyVersion = obj.audit.policyVersion;
+      if (obj.audit.decisionSource !== undefined) audit.decisionSource = obj.audit.decisionSource;
       result.audit = audit;
 
       if (obj.explanation !== undefined) {
         const explanation: Record<string, unknown> = {
           confidence: obj.explanation.confidence,
         };
-        if (obj.explanation.summary !== undefined)
-          explanation.summary = obj.explanation.summary;
+        if (obj.explanation.summary !== undefined) explanation.summary = obj.explanation.summary;
         result.explanation = explanation;
       }
 
-      if (obj.adaptationGroups !== undefined)
-        result.adaptationGroups = obj.adaptationGroups;
+      if (obj.adaptationGroups !== undefined) result.adaptationGroups = obj.adaptationGroups;
 
       return result as UIPrescription;
     });

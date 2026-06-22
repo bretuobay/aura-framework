@@ -18,7 +18,7 @@ describe("primitives.arb", () => {
           expect(date.getTime()).not.toBeNaN();
           expect(ts).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -30,7 +30,7 @@ describe("primitives.arb", () => {
           const date = new Date(s);
           expect(date.getTime()).toBeNaN();
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -41,7 +41,7 @@ describe("primitives.arb", () => {
         fc.property(arbNonEmptyString(), (s) => {
           expect(s.length).toBeGreaterThanOrEqual(1);
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -54,7 +54,7 @@ describe("primitives.arb", () => {
           expect(n).toBeLessThanOrEqual(1);
           expect(Number.isNaN(n)).toBe(false);
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -66,7 +66,7 @@ describe("primitives.arb", () => {
           expect(n).toBeGreaterThanOrEqual(0);
           expect(Number.isInteger(n)).toBe(true);
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -79,7 +79,7 @@ describe("primitives.arb", () => {
           expect(validSet).not.toContain(s);
           expect(s.length).toBeGreaterThanOrEqual(1);
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });

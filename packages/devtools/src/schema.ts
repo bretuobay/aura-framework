@@ -17,11 +17,7 @@ import {
 
 // --- Devtools-specific sub-schemas ---
 
-export const PrescriptionDispositionSchema = z.enum([
-  "accepted",
-  "rejected",
-  "dropped",
-]);
+export const PrescriptionDispositionSchema = z.enum(["accepted", "rejected", "dropped"]);
 export type PrescriptionDisposition = z.infer<typeof PrescriptionDispositionSchema>;
 
 export const RuleConditionResultSchema = z.object({

@@ -24,7 +24,7 @@ export interface MatchResult {
  */
 function prescriptionMatchesMatcher(
   prescription: UIPrescription,
-  matcher: PrescriptionMatcher
+  matcher: PrescriptionMatcher,
 ): boolean {
   if (matcher.surfaceId !== undefined) {
     if (prescription.surfaceId !== matcher.surfaceId) {
@@ -43,7 +43,7 @@ function prescriptionMatchesMatcher(
 
   if (matcher.adaptationType !== undefined) {
     const hasMatchingAdaptation = prescription.adaptations.some(
-      (adaptation) => adaptation.type === matcher.adaptationType
+      (adaptation) => adaptation.type === matcher.adaptationType,
     );
     if (!hasMatchingAdaptation) {
       return false;
@@ -69,14 +69,12 @@ function prescriptionMatchesMatcher(
  */
 export function matchPrescriptions(
   output: UIPrescription[],
-  expected: PrescriptionMatcher[]
+  expected: PrescriptionMatcher[],
 ): MatchResult {
   const mismatches: string[] = [];
 
   for (const matcher of expected) {
-    const matchingPrescriptions = output.filter((p) =>
-      prescriptionMatchesMatcher(p, matcher)
-    );
+    const matchingPrescriptions = output.filter((p) => prescriptionMatchesMatcher(p, matcher));
 
     if (matcher.count !== undefined) {
       // Exact count matching
@@ -84,7 +82,7 @@ export function matchPrescriptions(
         const matcherDesc = formatMatcher(matcher);
         mismatches.push(
           `Expected exactly ${matcher.count} prescription(s) matching ${matcherDesc}, ` +
-            `but found ${matchingPrescriptions.length}`
+            `but found ${matchingPrescriptions.length}`,
         );
       }
     } else {
@@ -92,7 +90,7 @@ export function matchPrescriptions(
       if (matchingPrescriptions.length === 0) {
         const matcherDesc = formatMatcher(matcher);
         mismatches.push(
-          `Expected at least one prescription matching ${matcherDesc}, but found none`
+          `Expected at least one prescription matching ${matcherDesc}, but found none`,
         );
       }
     }

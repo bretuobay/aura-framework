@@ -102,9 +102,10 @@ export class RulesPipeline {
               ruleId: rule.id,
               phase: "construction",
               reason: "Construction threw an exception",
-              error: constructionError instanceof Error
-                ? constructionError
-                : new Error(String(constructionError)),
+              error:
+                constructionError instanceof Error
+                  ? constructionError
+                  : new Error(String(constructionError)),
             });
           }
         } catch (conditionError) {
@@ -112,9 +113,8 @@ export class RulesPipeline {
             ruleId: rule.id,
             phase: "condition",
             reason: "Condition evaluation threw an exception",
-            error: conditionError instanceof Error
-              ? conditionError
-              : new Error(String(conditionError)),
+            error:
+              conditionError instanceof Error ? conditionError : new Error(String(conditionError)),
           });
         }
       }
@@ -124,12 +124,8 @@ export class RulesPipeline {
       let afterFeedback: CandidatePrescription[];
 
       if (recentRejections && recentRejections.length > 0) {
-        const rejectedRuleIds = new Set(
-          recentRejections.map((r) => r.ruleId)
-        );
-        afterFeedback = candidates.filter(
-          (candidate) => !rejectedRuleIds.has(candidate.ruleId)
-        );
+        const rejectedRuleIds = new Set(recentRejections.map((r) => r.ruleId));
+        afterFeedback = candidates.filter((candidate) => !rejectedRuleIds.has(candidate.ruleId));
       } else {
         afterFeedback = candidates;
       }
@@ -155,9 +151,7 @@ export class RulesPipeline {
       // Top-level catch: evaluate() NEVER throws
       this.logger.error({
         reason: "Fatal pipeline error — returning empty array",
-        error: fatalError instanceof Error
-          ? fatalError
-          : new Error(String(fatalError)),
+        error: fatalError instanceof Error ? fatalError : new Error(String(fatalError)),
       });
       return [];
     }

@@ -50,12 +50,8 @@ export const FixtureSchema = z.object({
     eventBatchId: z.string().min(1),
     feedback: z
       .object({
-        recentRejections: z.array(
-          z.object({ ruleId: z.string(), timestamp: z.string() })
-        ),
-        recentUndos: z.array(
-          z.object({ ruleId: z.string(), timestamp: z.string() })
-        ),
+        recentRejections: z.array(z.object({ ruleId: z.string(), timestamp: z.string() })),
+        recentUndos: z.array(z.object({ ruleId: z.string(), timestamp: z.string() })),
       })
       .optional(),
   }),

@@ -26,7 +26,7 @@ export class RuleLoadError extends Error {
 
   constructor(
     message: string,
-    options: { failures?: RuleValidationFailure[]; duplicateId?: string } = {}
+    options: { failures?: RuleValidationFailure[]; duplicateId?: string } = {},
   ) {
     super(message);
     this.name = "RuleLoadError";
@@ -104,10 +104,9 @@ export async function loadRules(source: RuleSource): Promise<RuleSet> {
 
     if (failures.length > 0) {
       const indices = failures.map((f) => f.index).join(", ");
-      throw new RuleLoadError(
-        `Rule validation failed for entries at index: ${indices}`,
-        { failures }
-      );
+      throw new RuleLoadError(`Rule validation failed for entries at index: ${indices}`, {
+        failures,
+      });
     }
 
     rules = validated;
@@ -119,10 +118,7 @@ export async function loadRules(source: RuleSource): Promise<RuleSet> {
   // Detect duplicate IDs
   const duplicateId = findDuplicateId(rules);
   if (duplicateId) {
-    throw new RuleLoadError(
-      `Duplicate rule id detected: "${duplicateId}"`,
-      { duplicateId }
-    );
+    throw new RuleLoadError(`Duplicate rule id detected: "${duplicateId}"`, { duplicateId });
   }
 
   return buildRuleSet(rules);

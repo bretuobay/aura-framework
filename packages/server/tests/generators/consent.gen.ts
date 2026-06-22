@@ -29,7 +29,7 @@ export const arbConsentProfile: fc.Arbitrary<ConsentProfile> = fc
         profile[key] = values[i];
       });
       return profile as ConsentProfile;
-    })
+    }),
   );
 
 /**
@@ -44,7 +44,7 @@ export const arbInvalidConsentProfile = fc.oneof(
   // Invalid key (not a DataClass)
   fc.record({
     invalidDataClass: fc.boolean(),
-  })
+  }),
 );
 
 /**
@@ -68,5 +68,5 @@ export const arbInvalidConsentRequest = fc.oneof(
   fc.record({
     sessionId: fc.string({ minLength: 1, maxLength: 36 }),
     consentPatch: fc.constant({ behavior: "yes" as unknown as boolean }),
-  })
+  }),
 );

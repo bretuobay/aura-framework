@@ -14,7 +14,7 @@ export class DevtoolsSessionNotFoundError extends Error {
 export class DevtoolsRequestError extends Error {
   constructor(
     public readonly statusCode: number,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = "DevtoolsRequestError";
@@ -25,7 +25,10 @@ export class DevtoolsRequestError extends Error {
  * Error thrown when a network-level failure occurs (timeout, DNS, connection refused, etc.).
  */
 export class DevtoolsNetworkError extends Error {
-  constructor(message: string, public readonly cause?: unknown) {
+  constructor(
+    message: string,
+    public readonly cause?: unknown,
+  ) {
     super(message);
     this.name = "DevtoolsNetworkError";
   }
@@ -40,7 +43,7 @@ export class DevtoolsValidationError extends Error {
     public readonly validationErrors: Array<{
       path: (string | number)[];
       message: string;
-    }>
+    }>,
   ) {
     super(message);
     this.name = "DevtoolsValidationError";

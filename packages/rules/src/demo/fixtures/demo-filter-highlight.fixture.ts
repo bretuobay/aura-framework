@@ -9,8 +9,7 @@ import type { Fixture } from "../../schema/fixture.schema.js";
 
 const fixture: Fixture = {
   id: "demo-filter-highlight-basic",
-  description:
-    "Filter highlighting triggers on search.submitted with behavior consent",
+  description: "Filter highlighting triggers on search.submitted with behavior consent",
   input: {
     events: [
       {

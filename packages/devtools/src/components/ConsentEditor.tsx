@@ -118,7 +118,10 @@ const styles = {
  * calls onToggle with the data class and new value. Shows inline error
  * on failure without updating the consent state view.
  */
-export function ConsentEditor({ consentProfile, onToggle }: ConsentEditorProps): React.ReactElement {
+export function ConsentEditor({
+  consentProfile,
+  onToggle,
+}: ConsentEditorProps): React.ReactElement {
   const [loadingKeys, setLoadingKeys] = useState<Set<DataClass>>(new Set());
   const [errors, setErrors] = useState<Partial<Record<DataClass, string>>>({});
 
@@ -140,8 +143,7 @@ export function ConsentEditor({ consentProfile, onToggle }: ConsentEditorProps):
       try {
         await onToggle(dataClass, newValue);
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : "Toggle failed";
+        const message = error instanceof Error ? error.message : "Toggle failed";
         setErrors((prev) => ({ ...prev, [dataClass]: message }));
       } finally {
         setLoadingKeys((prev) => {
@@ -151,7 +153,7 @@ export function ConsentEditor({ consentProfile, onToggle }: ConsentEditorProps):
         });
       }
     },
-    [consentProfile, onToggle]
+    [consentProfile, onToggle],
   );
 
   return (
@@ -182,7 +184,11 @@ export function ConsentEditor({ consentProfile, onToggle }: ConsentEditorProps):
           };
 
           return (
-            <li key={dataClass} style={styles.itemWrapper} data-testid={`consent-editor-${dataClass}`}>
+            <li
+              key={dataClass}
+              style={styles.itemWrapper}
+              data-testid={`consent-editor-${dataClass}`}
+            >
               <div style={itemStyle}>
                 <span style={labelStyle}>{dataClass}</span>
                 <button

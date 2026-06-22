@@ -24,7 +24,10 @@ export function arbConsentProfile(): fc.Arbitrary<ConsentProfile> {
   return fc
     .tuple(
       fc.subarray([...DataClassValues], { minLength: 0 }),
-      fc.array(fc.boolean(), { minLength: DataClassValues.length, maxLength: DataClassValues.length })
+      fc.array(fc.boolean(), {
+        minLength: DataClassValues.length,
+        maxLength: DataClassValues.length,
+      }),
     )
     .map(([keys, booleans]) => {
       const profile: Record<string, boolean> = {};
