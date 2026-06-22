@@ -3,10 +3,12 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "composite": false,
     "paths": {
       "@aura/rules/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
   "references": [{ "path": "../protocol" }]
 }

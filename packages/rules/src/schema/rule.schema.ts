@@ -109,7 +109,7 @@ export type RuleMetadata = z.output<typeof RuleMetadataSchema>;
  */
 export const RuleSchema = z.object({
   id: z.string().min(1),
-  priority: z.number().int().nonneg(),
+  priority: z.number().int().nonnegative(),
   riskClass: RiskClassSchema,
   conditions: z.array(ConditionSchema).nonempty(),
   actions: z.array(ActionSchema).nonempty(),

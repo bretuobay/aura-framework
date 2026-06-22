@@ -110,11 +110,11 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: prescriptionId stability across calls; mode defaults for each riskClass; expiresAt calculation; explanation record presence/absence; manifestVersion fallback to "unversioned"
     - _Requirements: 4.1, 4.2, 4.3, 4.6, 4.7, 4.10_
 
-- [~] 6. Checkpoint - Core evaluation stages complete
+- [x] 6. Checkpoint - Core evaluation stages complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement consent gate
-  - [~] 7.1 Implement filterByConsent function
+- [x] 7. Implement consent gate
+  - [x] 7.1 Implement filterByConsent function
     - Create `src/evaluator/consent-gate.ts` with `filterByConsent(candidates: CandidatePrescription[], consent: ConsentProfile): CandidatePrescription[]`
     - Remove candidates whose rule's `requiredConsent` includes a DataClass that is `false` or absent in the consent profile
     - Pass through candidates with no `requiredConsent` field
@@ -133,8 +133,8 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
 
-- [ ] 8. Implement manifest checking
-  - [~] 8.1 Implement filterByManifest function
+- [x] 8. Implement manifest checking
+  - [x] 8.1 Implement filterByManifest function
     - Create `src/evaluator/manifest-check.ts` with `filterByManifest(candidates: CandidatePrescription[], manifest: CapabilityManifest): CandidatePrescription[]`
     - Discard candidates whose `surfaceId` is not declared in `manifest.surfaces`
     - Discard candidates with `componentVariant` adaptation whose `componentId` is not under the referenced surface
@@ -154,8 +154,8 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: valid surface passes; missing surface discards; valid component passes; missing component discards; invalid variant discards; filter target validation; metamorphic test — adding surface allows through
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
-- [ ] 9. Implement risk-class enforcement
-  - [~] 9.1 Implement enforceRiskClass function
+- [x] 9. Implement risk-class enforcement
+  - [x] 9.1 Implement enforceRiskClass function
     - Create `src/evaluator/risk-enforcer.ts` with `enforceRiskClass(candidates: CandidatePrescription[], manifest: CapabilityManifest): CandidatePrescription[]`
     - Low risk: allow `autoApply` and `recommend` unchanged
     - Medium risk: downgrade `autoApply` to `recommend` unless manifest declares `allowAutoApply: true` for the component
@@ -174,15 +174,15 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: low risk autoApply passes unchanged; medium risk autoApply downgrades to recommend; medium with allowAutoApply keeps autoApply; high forces askUser; critical forces observeOnly
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
 
-- [ ] 10. Implement protocol validation and priority sort
-  - [~] 10.1 Implement validatePrescriptions function
+- [x] 10. Implement protocol validation and priority sort
+  - [x] 10.1 Implement validatePrescriptions function
     - Create `src/evaluator/protocol-validate.ts` with `validatePrescriptions(candidates: CandidatePrescription[]): UIPrescription[]`
     - Validate each candidate through `UIPrescriptionSchema.safeParse()` from `@aura/protocol`
     - Discard candidates that fail validation, log errors with ruleId and validation issues
     - Return only valid prescriptions; never throw
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [~] 10.2 Implement sortByPriority function
+  - [x] 10.2 Implement sortByPriority function
     - Create `src/evaluator/priority-sort.ts` with `sortByPriority(prescriptions: UIPrescription[]): UIPrescription[]`
     - Sort by `priority` descending (highest first)
     - Use `ruleId` lexicographic ascending as stable tiebreaker for equal priorities
@@ -205,11 +205,11 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: valid candidate passes validation; invalid candidate discarded; all invalid returns empty array; priority descending sort; tiebreaker on equal priority; single prescription returns as-is; empty input returns empty
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 9.5_
 
-- [~] 11. Checkpoint - Pipeline stages complete
+- [x] 11. Checkpoint - Pipeline stages complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Implement the RulesPipeline orchestrator
-  - [~] 12.1 Implement RulesPipeline class with full evaluate() method
+- [x] 12. Implement the RulesPipeline orchestrator
+  - [x] 12.1 Implement RulesPipeline class with full evaluate() method
     - Create `src/evaluator/pipeline.ts` with `RulesPipeline` class implementing `IRulesPipeline`
     - Constructor accepts `{ ruleSet, clock?, logger? }` with defaults for clock and logger
     - Implement `evaluate(input: RulesPipelineInput): Promise<UIPrescription[]>` orchestrating the full pipeline:
@@ -254,16 +254,16 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: full pipeline happy path; error isolation with throwing rule; feedback suppression; empty rule set returns []; all rules filtered returns []; input not mutated after call
     - _Requirements: 9.4, 10.1, 10.2, 10.3, 10.5, 11.1, 11.4, 17.1, 17.2, 17.3_
 
-- [~] 13. Checkpoint - Pipeline orchestrator complete
+- [x] 13. Checkpoint - Pipeline orchestrator complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. Implement fixture runner and schema
-  - [~] 14.1 Implement FixtureSchema and PrescriptionMatcher
+- [x] 14. Implement fixture runner and schema
+  - [x] 14.1 Implement FixtureSchema and PrescriptionMatcher
     - Create `src/schema/fixture.schema.ts` with `FixtureSchema` (id: non-empty string, description: non-empty string, input: RulesPipelineInput shape, expected: PrescriptionMatcher[])
     - Define `PrescriptionMatcher` type supporting: surfaceId, ruleId, mode, adaptationType, count
     - _Requirements: 12.2, 12.3_
 
-  - [~] 14.2 Implement FixtureRunner and matcher logic
+  - [x] 14.2 Implement FixtureRunner and matcher logic
     - Create `src/fixture/matcher.ts` with prescription matching logic: match by surfaceId, ruleId, mode, adaptationType, and count
     - Create `src/fixture/diff.ts` with diff output generation for failed fixtures (show expected vs actual)
     - Create `src/fixture/runner.ts` with `FixtureRunner` class:
@@ -275,7 +275,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
       - Returns results in same order as input fixtures
     - _Requirements: 12.1, 12.4, 12.5, 12.6, 12.8, 12.9_
 
-  - [~] 14.3 Implement programmatic runFixtures function
+  - [x] 14.3 Implement programmatic runFixtures function
     - Create or extend `src/fixture/runner.ts` with `runFixtures(options: RunFixturesOptions): Promise<FixtureSummary>` function
     - Resolves fixture files via glob, loads rules source, runs FixtureRunner, returns summary with total/passed/failed/errors/results
     - _Requirements: 13.6_
@@ -286,8 +286,8 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Run the same fixture twice with the same RuleSet and verify identical pass/fail results
     - **Validates: Requirements 12.7, 18.10**
 
-- [ ] 15. Implement CLI
-  - [~] 15.1 Implement aura-rules CLI with test command
+- [x] 15. Implement CLI
+  - [x] 15.1 Implement aura-rules CLI with test command
     - Create `src/cli/index.ts` as CLI entry point using `commander`
     - Create `src/cli/commands/test.ts` implementing `aura-rules test <fixtureGlob>` command:
       - Resolves fixture files via `fast-glob`
@@ -306,8 +306,8 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: CLI spawns and exits 0 with passing fixtures; exits 1 with failing fixture; verbose output includes fixture ids; no-match glob exits 0 with warning; invalid fixture file exits 1
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 16. Implement demo rules for e-commerce surface
-  - [~] 16.1 Create demo rules and fixtures
+- [x] 16. Implement demo rules for e-commerce surface
+  - [x] 16.1 Create demo rules and fixtures
     - Create `src/demo/rules.ts` with `Demo_Rules` array containing:
       1. Filter highlighting rule: triggers on `search.submitted` event, requires `consent.behavior`, riskClass `low`, targets `search.results` surface with `filter` adaptation, includes explanationSummary
       2. Product-card variant rule: triggers on `product.compareIntent` event, requires `consent.personalization`, riskClass `low`, targets `product-card` component on `search.results` surface with `componentVariant` adaptation (variant: 'comparison'), includes explanationSummary
@@ -325,14 +325,14 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Verify: filter highlighting produces filter adaptation with non-empty visibleFilters; product-card produces componentVariant with variant 'comparison'; explanation records present; reject feedback produces zero prescriptions; missing consent blocks; missing manifest surface blocks
     - _Requirements: 14.1, 14.5, 15.1, 15.5, 16.5, 17.4_
 
-- [ ] 17. Wire public API exports and finalize package
-  - [~] 17.1 Complete src/index.ts public API barrel export
+- [x] 17. Wire public API exports and finalize package
+  - [x] 17.1 Complete src/index.ts public API barrel export
     - Export from `src/index.ts`: `RuleSchema`, `ConditionSchema`, `ActionSchema`, `FixtureSchema`, `RulesPipeline`, `loadRules`, `FixtureRunner`, `runFixtures`, all types (`Rule`, `Condition`, `Action`, `RuleSet`, `RuleSource`, `ClockProvider`, `Fixture`, `PrescriptionMatcher`, `FixtureRunResult`, `FixtureSummary`, `RunFixturesOptions`, `RulesLogger`, `LogEntry`)
     - Verify `RulesPipeline` implements `IRulesPipeline` from `@aura/protocol`
     - Ensure package.json `exports` field points to compiled output
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 9.4, 12.1, 12.2, 12.3, 13.6_
 
-- [~] 18. Final checkpoint - Full package verification
+- [x] 18. Final checkpoint - Full package verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

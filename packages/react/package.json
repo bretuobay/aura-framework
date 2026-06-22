@@ -1,33 +1,37 @@
 {
   "name": "@aura/react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
-  "module": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "package.json"],
+  "files": ["dist"],
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly --declarationDir ./dist",
+    "build": "tsup",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "dev": "vite build --watch"
-  },
-  "dependencies": {
-    "@aura/protocol": "workspace:*",
-    "@aura/sdk": "workspace:*"
+    "dev": "tsup --watch"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "@aura/sdk": "^0.1.0",
+    "@aura/protocol": "^0.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^6.3.5",
+    "@aura/protocol": "workspace:*",
+    "@aura/sdk": "workspace:*",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0",
+    "fast-check": "^3.19.0",
+    "@testing-library/react": "^16.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "@types/react": "^19.1.6",
