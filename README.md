@@ -316,3 +316,16 @@ The v0 target delivers: fully typed AUIP protocol, Hono reference server, React 
 
 - `product-docs/aura-paper/AURA-Reference-Architecture-Paper.md` — full reference architecture
 - `product-docs/aura-paper/03-aura-typescript-implementation-prd.md` — v0 product requirements
+
+## License and Attribution
+
+Implementation code, tests, package configuration, and build tooling are licensed under the Apache License, Version 2.0. See `LICENSE`.
+
+Architecture documents, diagrams, whitepapers, reference architecture materials, and research synthesis are licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). See `LICENSE-DOCS.md`.
+
+Recommended attribution for architecture materials:
+
+> Festus Yeboah, 2026. Adaptive UI Middleware Architecture.
+> https://github.com/bretuobay/aura-framework
+
+Third-party research papers and PDFs included for reference may have their own copyrights and licenses and are not relicensed by this repository.

@@ -1,0 +1,12 @@
+AURA - Adaptive UI Runtime Architecture
+Copyright 2026 Festus Yeboah
+
+This repository contains implementation code licensed under the Apache
+License, Version 2.0, and architecture/research documentation licensed
+under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+Recommended attribution for architecture documents, diagrams,
+whitepapers, and reference architecture materials:
+
+Festus Yeboah, 2026. Adaptive UI Middleware Architecture.
+https://github.com/bretuobay/aura-framework
