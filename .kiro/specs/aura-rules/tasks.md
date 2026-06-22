@@ -6,39 +6,39 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
 
 ## Tasks
 
-- [ ] 1. Set up package structure and core configuration
-  - [ ] 1.1 Initialize package with package.json, tsconfig.json, and vitest.config.ts
+- [x] 1. Set up package structure and core configuration
+  - [x] 1.1 Initialize package with package.json, tsconfig.json, and vitest.config.ts
     - Create `@aura/rules` package directory with `package.json` (dependencies: zod, fast-glob, commander; devDependencies: vitest, fast-check, @fast-check/zod, @aura/protocol)
     - Create `tsconfig.json` with strict mode, ESM output, path aliases
     - Create `vitest.config.ts` with test file patterns for unit, property, and integration tests
     - Create `src/index.ts` as the public API barrel export
     - _Requirements: 1.1, 9.4_
 
-  - [ ] 1.2 Define core TypeScript types and interfaces
+  - [x] 1.2 Define core TypeScript types and interfaces
     - Create `src/schema/types.ts` with all derived TypeScript types: `Rule`, `RuleId`, `RiskClass`, `Condition`, `ConditionPath`, `ConditionOperator`, `Action`, `AdaptationType`, `RuleMetadata`, `DecisionSource`, `LatencyClass`, `RulesPipelineInput`, `CandidatePrescription`, `PrescriptionMode`, `FeedbackContext`, `RuleSource`, `RuleSet`, `ClockProvider`, `RulesLogger`, `LogEntry`
     - Create `src/evaluator/clock.ts` with `ClockProvider` interface and `DefaultClockProvider` implementation using `new Date().toISOString()`
     - _Requirements: 1.1, 1.9, 11.2_
 
 
-- [ ] 2. Implement Zod schemas for rules, conditions, and actions
-  - [ ] 2.1 Create RuleSchema, ConditionSchema, and ActionSchema
+- [x] 2. Implement Zod schemas for rules, conditions, and actions
+  - [x] 2.1 Create RuleSchema, ConditionSchema, and ActionSchema
     - Create `src/schema/rule.schema.ts` with Zod schemas: `ConditionSchema` (path: non-empty string, operator: enum of 10 operators, value: optional when operator is 'exists'), `ActionSchema` (adaptationType: enum of 6 types, surfaceId: non-empty string, slotId: non-empty string, payload: record), `RuleMetadataSchema` (explanationSummary, explanationFactors, userVisible, decisionSource defaulting to 'rules', latencyClass, justification required when decisionSource is 'llm'), `RuleSchema` (id: non-empty string, priority: non-negative integer, riskClass: enum, conditions: non-empty array, actions: non-empty array, requiredConsent: optional, metadata: optional)
     - Export all schemas and inferred types from `src/schema/rule.schema.ts`
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 11a.2, 11a.4_
 
-  - [ ]* 2.2 Write property test for schema round-trip
+  - [x]* 2.2 Write property test for schema round-trip
     - **Property 1: Rule Schema Round-Trip**
     - Create `src/__tests__/properties/schema-roundtrip.property.test.ts`
     - Generate valid `Rule` values via `@fast-check/zod` from `RuleSchema`, serialize with `JSON.stringify`, parse back through `RuleSchema.parse(JSON.parse(...))`, assert deep equality
     - **Validates: Requirements 1.10, 1.11, 18.1**
 
-  - [ ]* 2.3 Write unit tests for schema validation edge cases
+  - [x]* 2.3 Write unit tests for schema validation edge cases
     - Create `src/__tests__/unit/schema.test.ts`
     - Test: empty conditions array → validation failure; empty actions array → validation failure; invalid riskClass → failure; negative priority → failure; non-integer priority → failure; missing value when operator is not 'exists' → failure; valid rule with metadata → success; valid rule without metadata → success
     - _Requirements: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
 
-- [ ] 3. Implement rule set loading
-  - [ ] 3.1 Implement loadRules function
+- [x] 3. Implement rule set loading
+  - [x] 3.1 Implement loadRules function
     - Create `src/loader/load-rules.ts` with `loadRules(source: RuleSource): Promise<RuleSet>` function
     - For `json` source: validate each entry through `RuleSchema`, reject with `RuleLoadError` identifying index and failures for invalid entries
     - For `module` source: accept typed `Rule[]` directly without re-serialization
@@ -47,44 +47,44 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Handle empty array input by resolving with empty `RuleSet`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
 
-  - [ ]* 3.2 Write unit tests for rule loading
+  - [x]* 3.2 Write unit tests for rule loading
     - Create `src/__tests__/unit/loader.test.ts`
     - Test: valid JSON source loads successfully; invalid entry rejects with index; module source passes through; empty array returns empty RuleSet; duplicate id rejects; RuleSet methods work correctly
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
 
-- [ ] 4. Implement condition evaluation
-  - [ ] 4.1 Implement dot-path resolution and condition evaluator
+- [x] 4. Implement condition evaluation
+  - [x] 4.1 Implement dot-path resolution and condition evaluator
     - Create `src/evaluator/condition.ts` with `resolvePath(input: object, path: string): unknown` implementing dot-path traversal with existential matching over `events` array
     - Implement `evaluateCondition(condition: Condition, input: RulesPipelineInput): boolean` supporting all 10 operators: eq (strict equality), neq, in (array includes), notIn, gt, gte, lt, lte, exists (not undefined/null), matches (regex)
     - Implement `evaluateConditions(conditions: Condition[], input: RulesPipelineInput): boolean` returning true only when ALL conditions pass (logical AND)
     - Ensure missing paths return `undefined` without throwing; condition evaluates to `false` for missing paths (except `exists` which returns `false` naturally)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-  - [ ]* 4.2 Write property test for condition evaluation metamorphic property
+  - [x]* 4.2 Write property test for condition evaluation metamorphic property
     - **Property 3: Condition Evaluation Metamorphic**
     - Create `src/__tests__/properties/condition-metamorphic.property.test.ts`
     - Generate inputs where all conditions match, then negate a single field value and verify the rule no longer matches
     - **Validates: Requirements 3.1, 3.2, 3.9**
 
-  - [ ]* 4.3 Write property test for condition operator correctness
+  - [x]* 4.3 Write property test for condition operator correctness
     - **Property 4: Condition Operator Correctness**
     - Create `src/__tests__/properties/condition-operators.property.test.ts`
     - For each operator, generate condition + input pairs and verify the boolean result matches the operator's specification
     - **Validates: Requirements 3.3, 3.4, 3.5, 3.6**
 
-  - [ ]* 4.4 Write property test for missing path safety
+  - [x]* 4.4 Write property test for missing path safety
     - **Property 5: Missing Path Safety**
     - Create `src/__tests__/properties/missing-path-safety.property.test.ts` (can be combined in condition-operators file)
     - Generate conditions with non-existent paths and verify they evaluate to `false` without throwing
     - **Validates: Requirements 3.7, 3.8**
 
-  - [ ]* 4.5 Write unit tests for condition evaluation
+  - [x]* 4.5 Write unit tests for condition evaluation
     - Create `src/__tests__/unit/condition.test.ts`
     - Test each operator with concrete examples, test existential matching over events array, test nested path traversal, test missing path returns false gracefully
     - _Requirements: 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 5. Implement candidate prescription construction
-  - [ ] 5.1 Implement buildCandidatePrescription function
+- [x] 5. Implement candidate prescription construction
+  - [x] 5.1 Implement buildCandidatePrescription function
     - Create `src/evaluator/construct.ts` with `buildCandidatePrescription(rule: Rule, input: RulesPipelineInput, clock: ClockProvider): CandidatePrescription`
     - Generate stable `prescriptionId` via hash of `ruleId + sessionId + eventBatchId`
     - Set `surfaceId` from `rule.actions[0].surfaceId`
@@ -110,11 +110,11 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: prescriptionId stability across calls; mode defaults for each riskClass; expiresAt calculation; explanation record presence/absence; manifestVersion fallback to "unversioned"
     - _Requirements: 4.1, 4.2, 4.3, 4.6, 4.7, 4.10_
 
-- [ ] 6. Checkpoint - Core evaluation stages complete
+- [~] 6. Checkpoint - Core evaluation stages complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Implement consent gate
-  - [ ] 7.1 Implement filterByConsent function
+  - [~] 7.1 Implement filterByConsent function
     - Create `src/evaluator/consent-gate.ts` with `filterByConsent(candidates: CandidatePrescription[], consent: ConsentProfile): CandidatePrescription[]`
     - Remove candidates whose rule's `requiredConsent` includes a DataClass that is `false` or absent in the consent profile
     - Pass through candidates with no `requiredConsent` field
@@ -134,7 +134,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
 
 
 - [ ] 8. Implement manifest checking
-  - [ ] 8.1 Implement filterByManifest function
+  - [~] 8.1 Implement filterByManifest function
     - Create `src/evaluator/manifest-check.ts` with `filterByManifest(candidates: CandidatePrescription[], manifest: CapabilityManifest): CandidatePrescription[]`
     - Discard candidates whose `surfaceId` is not declared in `manifest.surfaces`
     - Discard candidates with `componentVariant` adaptation whose `componentId` is not under the referenced surface
@@ -155,7 +155,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
 - [ ] 9. Implement risk-class enforcement
-  - [ ] 9.1 Implement enforceRiskClass function
+  - [~] 9.1 Implement enforceRiskClass function
     - Create `src/evaluator/risk-enforcer.ts` with `enforceRiskClass(candidates: CandidatePrescription[], manifest: CapabilityManifest): CandidatePrescription[]`
     - Low risk: allow `autoApply` and `recommend` unchanged
     - Medium risk: downgrade `autoApply` to `recommend` unless manifest declares `allowAutoApply: true` for the component
@@ -175,14 +175,14 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
 
 - [ ] 10. Implement protocol validation and priority sort
-  - [ ] 10.1 Implement validatePrescriptions function
+  - [~] 10.1 Implement validatePrescriptions function
     - Create `src/evaluator/protocol-validate.ts` with `validatePrescriptions(candidates: CandidatePrescription[]): UIPrescription[]`
     - Validate each candidate through `UIPrescriptionSchema.safeParse()` from `@aura/protocol`
     - Discard candidates that fail validation, log errors with ruleId and validation issues
     - Return only valid prescriptions; never throw
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [ ] 10.2 Implement sortByPriority function
+  - [~] 10.2 Implement sortByPriority function
     - Create `src/evaluator/priority-sort.ts` with `sortByPriority(prescriptions: UIPrescription[]): UIPrescription[]`
     - Sort by `priority` descending (highest first)
     - Use `ruleId` lexicographic ascending as stable tiebreaker for equal priorities
@@ -205,11 +205,11 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: valid candidate passes validation; invalid candidate discarded; all invalid returns empty array; priority descending sort; tiebreaker on equal priority; single prescription returns as-is; empty input returns empty
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 9.5_
 
-- [ ] 11. Checkpoint - Pipeline stages complete
+- [~] 11. Checkpoint - Pipeline stages complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 12. Implement the RulesPipeline orchestrator
-  - [ ] 12.1 Implement RulesPipeline class with full evaluate() method
+  - [~] 12.1 Implement RulesPipeline class with full evaluate() method
     - Create `src/evaluator/pipeline.ts` with `RulesPipeline` class implementing `IRulesPipeline`
     - Constructor accepts `{ ruleSet, clock?, logger? }` with defaults for clock and logger
     - Implement `evaluate(input: RulesPipelineInput): Promise<UIPrescription[]>` orchestrating the full pipeline:
@@ -254,16 +254,16 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - Test: full pipeline happy path; error isolation with throwing rule; feedback suppression; empty rule set returns []; all rules filtered returns []; input not mutated after call
     - _Requirements: 9.4, 10.1, 10.2, 10.3, 10.5, 11.1, 11.4, 17.1, 17.2, 17.3_
 
-- [ ] 13. Checkpoint - Pipeline orchestrator complete
+- [~] 13. Checkpoint - Pipeline orchestrator complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. Implement fixture runner and schema
-  - [ ] 14.1 Implement FixtureSchema and PrescriptionMatcher
+  - [~] 14.1 Implement FixtureSchema and PrescriptionMatcher
     - Create `src/schema/fixture.schema.ts` with `FixtureSchema` (id: non-empty string, description: non-empty string, input: RulesPipelineInput shape, expected: PrescriptionMatcher[])
     - Define `PrescriptionMatcher` type supporting: surfaceId, ruleId, mode, adaptationType, count
     - _Requirements: 12.2, 12.3_
 
-  - [ ] 14.2 Implement FixtureRunner and matcher logic
+  - [~] 14.2 Implement FixtureRunner and matcher logic
     - Create `src/fixture/matcher.ts` with prescription matching logic: match by surfaceId, ruleId, mode, adaptationType, and count
     - Create `src/fixture/diff.ts` with diff output generation for failed fixtures (show expected vs actual)
     - Create `src/fixture/runner.ts` with `FixtureRunner` class:
@@ -275,7 +275,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
       - Returns results in same order as input fixtures
     - _Requirements: 12.1, 12.4, 12.5, 12.6, 12.8, 12.9_
 
-  - [ ] 14.3 Implement programmatic runFixtures function
+  - [~] 14.3 Implement programmatic runFixtures function
     - Create or extend `src/fixture/runner.ts` with `runFixtures(options: RunFixturesOptions): Promise<FixtureSummary>` function
     - Resolves fixture files via glob, loads rules source, runs FixtureRunner, returns summary with total/passed/failed/errors/results
     - _Requirements: 13.6_
@@ -287,7 +287,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - **Validates: Requirements 12.7, 18.10**
 
 - [ ] 15. Implement CLI
-  - [ ] 15.1 Implement aura-rules CLI with test command
+  - [~] 15.1 Implement aura-rules CLI with test command
     - Create `src/cli/index.ts` as CLI entry point using `commander`
     - Create `src/cli/commands/test.ts` implementing `aura-rules test <fixtureGlob>` command:
       - Resolves fixture files via `fast-glob`
@@ -307,7 +307,7 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
 - [ ] 16. Implement demo rules for e-commerce surface
-  - [ ] 16.1 Create demo rules and fixtures
+  - [~] 16.1 Create demo rules and fixtures
     - Create `src/demo/rules.ts` with `Demo_Rules` array containing:
       1. Filter highlighting rule: triggers on `search.submitted` event, requires `consent.behavior`, riskClass `low`, targets `search.results` surface with `filter` adaptation, includes explanationSummary
       2. Product-card variant rule: triggers on `product.compareIntent` event, requires `consent.personalization`, riskClass `low`, targets `product-card` component on `search.results` surface with `componentVariant` adaptation (variant: 'comparison'), includes explanationSummary
@@ -326,13 +326,13 @@ Implement the `@aura/rules` package — the deterministic adaptation logic engin
     - _Requirements: 14.1, 14.5, 15.1, 15.5, 16.5, 17.4_
 
 - [ ] 17. Wire public API exports and finalize package
-  - [ ] 17.1 Complete src/index.ts public API barrel export
+  - [~] 17.1 Complete src/index.ts public API barrel export
     - Export from `src/index.ts`: `RuleSchema`, `ConditionSchema`, `ActionSchema`, `FixtureSchema`, `RulesPipeline`, `loadRules`, `FixtureRunner`, `runFixtures`, all types (`Rule`, `Condition`, `Action`, `RuleSet`, `RuleSource`, `ClockProvider`, `Fixture`, `PrescriptionMatcher`, `FixtureRunResult`, `FixtureSummary`, `RunFixturesOptions`, `RulesLogger`, `LogEntry`)
     - Verify `RulesPipeline` implements `IRulesPipeline` from `@aura/protocol`
     - Ensure package.json `exports` field points to compiled output
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 9.4, 12.1, 12.2, 12.3, 13.6_
 
-- [ ] 18. Final checkpoint - Full package verification
+- [~] 18. Final checkpoint - Full package verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
