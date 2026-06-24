@@ -12,7 +12,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Star, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, X, LayoutGrid, DollarSign, Building2, Check } from "lucide-react";
 import type { FilterState, ProductCategory } from "@/lib/types/product";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -84,12 +84,21 @@ function countActiveFilters(filterState: FilterState): number {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+const SECTION_ICONS: Record<string, React.ElementType> = {
+  Categories: LayoutGrid,
+  "Price Range": DollarSign,
+  Ratings: Star,
+  Brands: Building2,
+};
+
 function FilterGroupHeader({ title, count }: { title: string; count?: number }) {
+  const Icon = SECTION_ICONS[title];
   return (
-    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+    <h3 className="flex items-center gap-1.5 border-b border-border pb-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+      {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
       {title}
       {count !== undefined && count > 0 && (
-        <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span className="ml-auto inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
           {count}
         </span>
       )}
@@ -114,8 +123,9 @@ function CheckboxItem({
     <label
       htmlFor={id}
       className={cn(
-        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer transition-all duration-200 hover:bg-accent/50",
-        highlighted && "ring-2 ring-amber-500 bg-amber-500/5"
+        "flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-all duration-200 hover:bg-accent",
+        checked && "bg-accent/60 font-medium",
+        highlighted && "ring-2 ring-amber-500 bg-amber-50 dark:bg-amber-900/20"
       )}
     >
       <input
@@ -123,9 +133,10 @@ function CheckboxItem({
         id={id}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-ring"
+        className="sr-only"
       />
       <span className="text-foreground">{label}</span>
+      {checked && <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />}
     </label>
   );
 }
@@ -146,8 +157,9 @@ function RatingCheckboxItem({
     <label
       htmlFor={id}
       className={cn(
-        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer transition-all duration-200 hover:bg-accent/50",
-        highlighted && "ring-2 ring-amber-500 bg-amber-500/5"
+        "flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-all duration-200 hover:bg-accent",
+        checked && "bg-accent/60",
+        highlighted && "ring-2 ring-amber-500 bg-amber-50 dark:bg-amber-900/20"
       )}
     >
       <input
@@ -155,17 +167,18 @@ function RatingCheckboxItem({
         id={id}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-ring"
+        className="sr-only"
       />
       <span className="flex items-center gap-0.5" aria-label={`${rating} stars & up`}>
         {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+          <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
         ))}
         {Array.from({ length: 5 - rating }).map((_, i) => (
           <Star key={`empty-${i}`} className="h-3.5 w-3.5 text-muted-foreground/30" />
         ))}
         <span className="ml-1 text-muted-foreground">& up</span>
       </span>
+      {checked && <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />}
     </label>
   );
 }
@@ -410,7 +423,7 @@ export function FilterPanel({
                 value={filterState.priceRange?.min ?? ""}
                 onChange={(e) => handlePriceMinChange(e.target.value)}
                 onBlur={handlePriceApply}
-                className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-9 w-full rounded-lg border border-input bg-background px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Minimum price"
               />
               <span className="text-sm text-muted-foreground">–</span>
@@ -423,7 +436,7 @@ export function FilterPanel({
                 value={filterState.priceRange?.max ?? ""}
                 onChange={(e) => handlePriceMaxChange(e.target.value)}
                 onBlur={handlePriceApply}
-                className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-9 w-full rounded-lg border border-input bg-background px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Maximum price"
               />
             </div>
