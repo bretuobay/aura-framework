@@ -1,0 +1,49 @@
+{
+  "name": "@aura/web",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@aura/protocol": "workspace:*",
+    "@aura/sdk": "workspace:*",
+    "@aura/react": "workspace:*",
+    "@aura/server": "workspace:*",
+    "@aura/rules": "workspace:*",
+    "@aura/devtools": "workspace:*",
+    "hono": "^4.4.0",
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "minisearch": "^7.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.3.0",
+    "lucide-react": "^0.400.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.8.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "vitest": "^3.2.0",
+    "fast-check": "^4.1.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/jest-dom": "^6.4.0",
+    "jsdom": "^26.0.0",
+    "msw": "^2.3.0",
+    "@vitejs/plugin-react": "^4.3.0"
+  }
+}

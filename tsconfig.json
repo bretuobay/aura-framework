@@ -20,6 +20,7 @@
     { "path": "packages/react" },
     { "path": "packages/server" },
     { "path": "packages/rules" },
-    { "path": "packages/devtools" }
+    { "path": "packages/devtools" },
+    { "path": "apps/web" }
   ]
 }
