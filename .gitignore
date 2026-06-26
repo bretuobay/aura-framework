@@ -48,9 +48,11 @@ vitest-results/
 # pnpm
 .pnpm-store/
 
-# Research PDFs (large binary assets, not source)
+# Research PDFs and Word docs (large binary assets, not source)
 product-docs/**/*.pdf
+product-docs/**/*.docx
 !product-docs/aura-paper/*.pdf
+!product-docs/aura-paper/*.docx
 
 # Reading list / private reference docs
 product-docs/to-read/
