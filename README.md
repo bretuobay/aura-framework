@@ -318,6 +318,7 @@ The v0 target delivers: fully typed AUIP protocol, Hono reference server, React 
 - `aura-paper/02-aura-reference-architecture.md` — AURA reference architecture (also available as [PDF](product-docs/aura-paper/02-aura-reference-architecture.pdf))
 - `aura-paper/03-aura-implementation-paper.md` — implementation paper
 - `aura-paper/03-aura-typescript-implementation-prd.md` — v0 TypeScript implementation PRD
+- [Governing Adaptive Interfaces — slides](product-docs/aura-paper/Governing_Adaptive_Interfaces.pdf)
 
 ## License and Attribution
 
