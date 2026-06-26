@@ -278,11 +278,11 @@ const pipeline = createPipeline({ rules: [darkModeRule] });
 │   ├── rules/        # @aura/rules
 │   └── devtools/     # @aura/devtools
 ├── product-docs/     # Research literature and architecture papers
-│   ├── aura-paper/   # Reference architecture + TypeScript PRD
+│   ├── aura-paper/   # Research paper series (Markdown + PDF)
 │   ├── HealthCare/
 │   ├── Education/
 │   └── Ecommerce/
-├── .kiro/specs/      # Per-package requirements, design, and task specs
+├── scripts/          # Developer utilities (md-to-pdf, etc.)
 ├── turbo.json
 ├── pnpm-workspace.yaml
 └── tsconfig.json
@@ -312,10 +312,12 @@ The v0 target delivers: fully typed AUIP protocol, Hono reference server, React 
 
 ## Research Foundation
 
-`product-docs/` contains 37+ academic papers across e-commerce, education, and healthcare domains that informed the architecture. Key synthesis documents:
+`product-docs/` contains academic papers and synthesis documents across e-commerce, education, and healthcare domains that informed the architecture. The research paper series:
 
-- `product-docs/aura-paper/AURA-Reference-Architecture-Paper.md` — full reference architecture
-- `product-docs/aura-paper/03-aura-typescript-implementation-prd.md` — v0 product requirements
+- `aura-paper/01-adaptive-ui-literature-review.md` — literature review of adaptive UI in the LLM era
+- `aura-paper/02-aura-reference-architecture.md` — AURA reference architecture (also available as [PDF](product-docs/aura-paper/02-aura-reference-architecture.pdf))
+- `aura-paper/03-aura-implementation-paper.md` — implementation paper
+- `aura-paper/03-aura-typescript-implementation-prd.md` — v0 TypeScript implementation PRD
 
 ## License and Attribution
 
