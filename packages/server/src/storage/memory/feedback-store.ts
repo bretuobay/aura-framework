@@ -32,5 +32,15 @@ export function createInMemoryFeedbackStore(): IFeedbackStore {
       if (!events) return [];
       return events.map((e) => structuredClone(e));
     },
+
+    async listAll(sessionId) {
+      const sessionFeedback = store.get(sessionId);
+      if (!sessionFeedback) return [];
+      const all: FeedbackEvent[] = [];
+      for (const events of sessionFeedback.values()) {
+        all.push(...events.map((e) => structuredClone(e)));
+      }
+      return all;
+    },
   };
 }

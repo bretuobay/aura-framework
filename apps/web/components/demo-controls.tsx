@@ -1,21 +1,5 @@
 "use client";
 
-/**
- * DemoControls component for the AURA E-Commerce Demo.
- *
- * Presenter-facing controls panel providing:
- * - Mode selector: Dropdown for 5 demo modes
- * - Scenario trigger buttons: 6 predefined scenario triggers
- * - Reset profile button: Resets user model to initial state
- * - Context switcher: Simulate device/accessibility contexts
- * - Mode indicator: Visual badge showing active mode
- *
- * When SIMULATE_ADAPTATIONS is true, predefined prescriptions override AI
- * responses regardless of other flag settings.
- *
- * @see Requirements 7.1, 7.6, 7.7, 11.3, 11.8
- */
-
 import { useCallback } from "react";
 import {
   RotateCcw,
@@ -23,7 +7,11 @@ import {
   Tablet,
   Monitor,
   Accessibility,
-  Play,
+  Search,
+  Tag,
+  Award,
+  Sparkles,
+  Terminal,
   Settings2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,7 +22,6 @@ import type { DemoMode } from "@/lib/types/demo";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-/** Human-readable labels for scenario triggers */
 const SCENARIO_LABELS: Record<string, string> = {
   "search-intent-detection": "Search Intent",
   "price-sensitive-user": "Price-Sensitive",
@@ -44,7 +31,15 @@ const SCENARIO_LABELS: Record<string, string> = {
   "accessibility-preference": "Accessibility",
 };
 
-/** Context switcher options */
+const SCENARIO_ICONS: Record<string, React.ElementType> = {
+  "search-intent-detection": Search,
+  "price-sensitive-user": Tag,
+  "brand-preference": Award,
+  "cold-start": Sparkles,
+  "mobile-context": Smartphone,
+  "accessibility-preference": Accessibility,
+};
+
 const CONTEXT_OPTIONS = [
   { id: "mobile", label: "Mobile", icon: Smartphone },
   { id: "tablet", label: "Tablet", icon: Tablet },
@@ -52,40 +47,27 @@ const CONTEXT_OPTIONS = [
   { id: "accessibility", label: "A11y", icon: Accessibility },
 ] as const;
 
-/** Mode indicator color map */
 const MODE_COLORS: Record<DemoMode, string> = {
-  "rules-only": "bg-slate-500",
-  "slm-enabled": "bg-blue-500",
-  "llm-enabled": "bg-purple-500",
-  "demo-simulation": "bg-amber-500",
-  developer: "bg-emerald-500",
+  "rules-only": "bg-slate-400",
+  "slm-enabled": "bg-blue-400",
+  "llm-enabled": "bg-panel-accent",
+  "demo-simulation": "bg-amber-400",
+  developer: "bg-emerald-400",
 };
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface DemoControlsProps {
-  /** Currently active demo mode */
   currentMode: DemoMode;
-  /** Callback when demo mode is changed */
   onModeChange: (mode: DemoMode) => void;
-  /** Callback when a scenario trigger is activated */
   onTriggerScenario: (scenarioId: string) => void;
-  /** Callback to reset the user profile to initial state */
   onResetProfile: () => void;
-  /** Optional callback for context changes (device/accessibility simulation) */
   onContextChange?: (context: string) => void;
-  /** Optional className for the wrapper */
   className?: string;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-/**
- * DemoControls provides presenter-facing controls for managing the AURA demo.
- *
- * When SIMULATE_ADAPTATIONS is true, scenario triggers produce predefined
- * prescriptions that override any AI-generated responses (Requirement 11.3, 11.8).
- */
 export function DemoControls({
   currentMode,
   onModeChange,
@@ -105,8 +87,6 @@ export function DemoControls({
 
   const handleScenarioTrigger = useCallback(
     (scenarioId: string) => {
-      // When SIMULATE_ADAPTATIONS is true, predefined prescriptions
-      // override AI (Requirement 11.3, 11.8)
       onTriggerScenario(scenarioId);
     },
     [onTriggerScenario]
@@ -121,18 +101,17 @@ export function DemoControls({
 
   return (
     <div
-      className={cn(
-        "rounded-lg border border-border bg-card p-4 space-y-4",
-        className
-      )}
+      className={cn("space-y-4", className)}
       role="region"
       aria-label="Demo Controls"
     >
-      {/* Mode Indicator */}
+      {/* Panel header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Settings2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-          <span className="text-sm font-medium text-foreground">Demo Controls</span>
+          <Terminal className="h-3.5 w-3.5 text-panel-accent" aria-hidden="true" />
+          <span className="font-mono text-xs font-semibold uppercase tracking-widest text-panel-foreground">
+            AURA Framework
+          </span>
         </div>
         <ModeIndicator mode={currentMode} />
       </div>
@@ -141,19 +120,20 @@ export function DemoControls({
       <div className="space-y-1.5">
         <label
           htmlFor="demo-mode-select"
-          className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-panel-muted"
         >
+          <Settings2 className="h-3 w-3" aria-hidden="true" />
           Mode
         </label>
         <select
           id="demo-mode-select"
           value={currentMode}
           onChange={handleModeChange}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-md border border-panel-border bg-panel-border/60 px-3 py-2 text-sm text-panel-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel-accent"
           aria-label="Select demo mode"
         >
           {ALL_MODES.map((mode) => (
-            <option key={mode} value={mode}>
+            <option key={mode} value={mode} className="bg-panel text-panel-foreground">
               {MODE_LABELS[mode]}
             </option>
           ))}
@@ -162,36 +142,37 @@ export function DemoControls({
 
       {/* Scenario Triggers */}
       <div className="space-y-1.5">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <span className="text-xs font-semibold uppercase tracking-widest text-panel-muted">
           Scenarios
         </span>
         {flags.SIMULATE_ADAPTATIONS && (
-          <p className="text-xs text-amber-600 dark:text-amber-400">
+          <p className="text-xs text-amber-400">
             Simulation active — prescriptions override AI
           </p>
         )}
         <div className="grid grid-cols-2 gap-1.5">
-          {SCENARIO_IDS.map((scenarioId) => (
-            <button
-              key={scenarioId}
-              type="button"
-              onClick={() => handleScenarioTrigger(scenarioId)}
-              className="flex items-center gap-1.5 rounded-md border border-input bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
-              aria-label={`Trigger ${SCENARIO_LABELS[scenarioId] ?? scenarioId} scenario`}
-            >
-              <Play className="h-3 w-3 shrink-0" aria-hidden="true" />
-              <span className="truncate">
-                {SCENARIO_LABELS[scenarioId] ?? scenarioId}
-              </span>
-            </button>
-          ))}
+          {SCENARIO_IDS.map((scenarioId) => {
+            const Icon = SCENARIO_ICONS[scenarioId] ?? Search;
+            return (
+              <button
+                key={scenarioId}
+                type="button"
+                onClick={() => handleScenarioTrigger(scenarioId)}
+                className="flex items-center gap-1.5 rounded-md border border-panel-border bg-panel-border/40 px-2.5 py-1.5 text-xs font-medium text-panel-foreground transition-colors hover:border-panel-accent/50 hover:bg-panel-accent/10 hover:text-panel-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel-accent"
+                aria-label={`Trigger ${SCENARIO_LABELS[scenarioId] ?? scenarioId} scenario`}
+              >
+                <Icon className="h-3 w-3 shrink-0 text-panel-accent" aria-hidden="true" />
+                <span className="truncate">{SCENARIO_LABELS[scenarioId] ?? scenarioId}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Context Switcher */}
       {onContextChange && (
         <div className="space-y-1.5">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <span className="text-xs font-semibold uppercase tracking-widest text-panel-muted">
             Context
           </span>
           <div className="flex gap-1.5">
@@ -200,7 +181,7 @@ export function DemoControls({
                 key={id}
                 type="button"
                 onClick={() => handleContextChange(id)}
-                className="flex flex-1 flex-col items-center gap-0.5 rounded-md border border-input bg-background px-2 py-1.5 text-xs text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+                className="flex flex-1 flex-col items-center gap-0.5 rounded-md border border-panel-border bg-panel-border/40 px-2 py-1.5 text-xs text-panel-foreground transition-colors hover:border-panel-accent/50 hover:bg-panel-accent/10 hover:text-panel-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel-accent"
                 aria-label={`Switch to ${label} context`}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
@@ -215,7 +196,7 @@ export function DemoControls({
       <button
         type="button"
         onClick={onResetProfile}
-        className="flex w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+        className="flex w-full items-center justify-center gap-2 rounded-md border border-panel-border bg-panel-border/40 px-3 py-2 text-sm font-medium text-panel-foreground transition-colors hover:border-red-500/40 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-panel-accent"
         aria-label="Reset user profile"
       >
         <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -227,20 +208,14 @@ export function DemoControls({
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-/**
- * ModeIndicator displays a visual badge showing the currently active demo mode.
- */
 function ModeIndicator({ mode }: { mode: DemoMode }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-foreground"
+      className="inline-flex items-center gap-1.5 rounded-full border border-panel-border px-2.5 py-0.5 text-xs font-medium text-panel-foreground"
       role="status"
       aria-label={`Current mode: ${MODE_LABELS[mode]}`}
     >
-      <span
-        className={cn("h-2 w-2 rounded-full", MODE_COLORS[mode])}
-        aria-hidden="true"
-      />
+      <span className={cn("h-2 w-2 rounded-full", MODE_COLORS[mode])} aria-hidden="true" />
       {MODE_LABELS[mode]}
     </span>
   );

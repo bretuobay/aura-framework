@@ -47,6 +47,7 @@ export function registerAuipRoutes(app: Hono, config: AuraServerConfig): void {
     streamRegistry,
     prescriptionStore: resolved.prescriptionStore,
     explanationStore: resolved.explanationStore,
+    devtools: resolved.devtools,
   });
 
   // Shared dependencies for route handlers
@@ -65,6 +66,7 @@ export function registerAuipRoutes(app: Hono, config: AuraServerConfig): void {
     securityAuditor,
     securityPolicy: resolved.securityPolicy ?? {},
     config: resolved,
+    devtools: resolved.devtools,
   };
 
   // Mount route handlers

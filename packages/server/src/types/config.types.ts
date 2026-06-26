@@ -15,6 +15,7 @@ import type {
   IExplanationStore,
   IPrescriptionStore,
 } from "../storage/interfaces.js";
+import type { IDevtoolsAccumulator } from "../devtools/accumulator.js";
 
 /**
  * Contract for the rules evaluation pipeline.
@@ -71,4 +72,8 @@ export interface AuraServerConfig {
 
   /** Security policy for adversarial hardening */
   securityPolicy?: SecurityPolicyConfig;
+
+  /** Optional devtools accumulator — when provided, events and prescription dispositions
+   *  are recorded for inspection via GET /aura/devtools/state */
+  devtools?: IDevtoolsAccumulator;
 }

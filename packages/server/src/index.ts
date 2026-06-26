@@ -10,6 +10,17 @@
 // Main registration function
 export { registerAuipRoutes } from "./register.js";
 
+// Devtools route and accumulator
+export { registerDevtoolsRoute } from "./devtools/routes.js";
+export type { DevtoolsRouteConfig } from "./devtools/routes.js";
+export { createInMemoryDevtoolsAccumulator } from "./devtools/accumulator.js";
+export type {
+  IDevtoolsAccumulator,
+  DevtoolsPrescriptionEntry,
+  DevtoolsOperationalAuditEntry,
+  DevtoolsSecurityEntry,
+} from "./devtools/accumulator.js";
+
 // Storage interfaces
 export type {
   ISessionStore,

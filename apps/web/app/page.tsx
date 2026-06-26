@@ -1,7 +1,20 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Moon, SlidersHorizontal, Sun } from "lucide-react";
+import {
+  Moon,
+  Sun,
+  Code2,
+  Zap,
+  ShoppingCart,
+  Laptop,
+  Headphones,
+  Smartphone,
+  Watch,
+  Tablet,
+  Monitor,
+  Tag,
+} from "lucide-react";
 import type { UIPrescription, Adaptation } from "@aura/protocol";
 import { useAuraEmit } from "@aura/react";
 import { ConsentControls } from "@/components/consent-controls";
@@ -16,7 +29,6 @@ import { FilterPanel } from "@/components/filter-panel";
 import { ProductGrid, type LayoutDensity } from "@/components/product-grid";
 import { RiskOverlay } from "@/components/risk-overlay";
 import { SearchBar } from "@/components/search-bar";
-import { Button } from "@/components/ui/button";
 import { useDemoMode } from "@/hooks/use-demo-mode";
 import { useProductSearch } from "@/hooks/use-product-search";
 import { getFlags } from "@/lib/config/flags";
@@ -25,7 +37,7 @@ import { applyFilters, clearAll } from "@/lib/filters/engine";
 import type { UIState } from "@/lib/prescriptions/engine";
 import { createDefaultUIState } from "@/lib/prescriptions/engine";
 import type { ConsentState, Explanation } from "@/lib/types/explanation";
-import type { FilterState, Product, SortOption } from "@/lib/types/product";
+import type { FilterState, Product, ProductCategory, SortOption } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 import { manifest } from "@/manifest/aura.manifest";
 import productsJson from "@/data/products.json";
@@ -315,28 +327,96 @@ export default function Home() {
       )}
       style={{ fontSize: `${fontScale}rem` }}
     >
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <div>
-            <h1 className="text-xl font-semibold tracking-normal">AURA Commerce</h1>
-            <p className="text-sm text-muted-foreground">
-              Adaptive product discovery demo
-            </p>
+      <header className="sticky top-0 z-30 border-b border-border bg-card shadow-sm">
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3">
+          {/* Logo */}
+          <div className="flex shrink-0 items-center gap-2">
+            <Zap className="h-5 w-5 text-brand" aria-hidden="true" />
+            <h1 className="text-lg font-bold tracking-tight">
+              <span className="text-brand">AURA</span>
+              <span className="font-light text-foreground"> Commerce</span>
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Button onClick={handleThemeToggle} aria-label="Toggle theme">
+
+          {/* Category nav */}
+          <nav className="hidden items-center gap-0.5 xl:flex" aria-label="Product categories">
+            {(
+              [
+                { label: "Laptops", icon: Laptop, category: "Laptops" },
+                { label: "Headphones", icon: Headphones, category: "Headphones" },
+                { label: "Smartphones", icon: Smartphone, category: "Smartphones" },
+                { label: "Wearables", icon: Watch, category: "Wearables" },
+                { label: "Tablets", icon: Tablet, category: "Tablets" },
+                { label: "Monitors", icon: Monitor, category: "Monitors" },
+                { label: "Accessories", icon: Tag, category: "Accessories" },
+              ] as const
+            ).map(({ label, icon: Icon, category }) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => {
+                  const isActive = filters.categories.includes(category as ProductCategory);
+                  handleFilterChange({
+                    ...filters,
+                    categories: isActive
+                      ? filters.categories.filter((c) => c !== category)
+                      : [category as ProductCategory],
+                  });
+                }}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                  filters.categories.includes(category as ProductCategory)
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                {label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Actions */}
+          <div className="flex shrink-0 items-center gap-2">
+            {/* Cart (cosmetic) */}
+            <div className="relative">
+              <button
+                type="button"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Shopping cart"
+              >
+                <ShoppingCart className="h-4 w-4" />
+              </button>
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+                2
+              </span>
+            </div>
+
+            {/* Theme toggle */}
+            <button
+              onClick={handleThemeToggle}
+              aria-label="Toggle theme"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <Button onClick={() => setDevtoolsOpen((open) => !open)}>
-              <SlidersHorizontal className="mr-2 h-4 w-4" />
-              Devtools
-            </Button>
+            </button>
+
+            {/* Devtools toggle */}
+            <button
+              onClick={() => setDevtoolsOpen((open) => !open)}
+              className="flex h-9 items-center gap-2 rounded-lg border border-border bg-panel px-3 text-sm font-medium text-panel-foreground transition-colors hover:bg-panel-border"
+              aria-label="Open devtools"
+            >
+              <Code2 className="h-4 w-4 text-panel-accent" />
+              <span className="hidden sm:inline font-mono text-xs tracking-wide">DEVTOOLS</span>
+            </button>
           </div>
         </div>
       </header>
 
       <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-4 px-4 py-4 xl:grid-cols-[280px_minmax(780px,1fr)] 2xl:grid-cols-[280px_minmax(860px,1fr)_320px]">
-        <div className="space-y-4">
+        {/* Console panel — always dark */}
+        <div className="rounded-xl bg-panel p-4 space-y-0 self-start sticky top-20">
           <DemoControls
             currentMode={demo.mode}
             onModeChange={demo.setMode}
@@ -350,41 +430,41 @@ export default function Home() {
           />
         </div>
 
-        <section className="min-w-0 space-y-4">
-          <div className="rounded-lg border border-border bg-card p-4">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end">
-              <div className="min-w-0 flex-1">
-                <SearchBar
-                  onSearch={search.setQuery}
-                  isLoading={search.isLoading}
-                  error={search.error ?? undefined}
-                  noResultsQuery={
-                    search.query && filteredProducts.length === 0
-                      ? search.query
-                      : undefined
-                  }
-                />
-              </div>
-              <label className="flex min-w-44 flex-col gap-1 text-sm">
-                <span className="text-xs font-medium uppercase text-muted-foreground">
-                  Sort
-                </span>
-                <select
-                  value={search.sort}
-                  onChange={(event) => search.setSort(event.target.value as SortOption)}
-                  className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-                >
-                  {Object.entries(SORT_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+        <section className="min-w-0 space-y-3">
+          {/* Search + sort bar */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="min-w-0 flex-1">
+              <SearchBar
+                onSearch={search.setQuery}
+                isLoading={search.isLoading}
+                error={search.error ?? undefined}
+                noResultsQuery={
+                  search.query && filteredProducts.length === 0
+                    ? search.query
+                    : undefined
+                }
+              />
             </div>
+            <label className="flex min-w-44 flex-col gap-1 text-sm">
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Sort by
+              </span>
+              <select
+                value={search.sort}
+                onChange={(event) => search.setSort(event.target.value as SortOption)}
+                className="h-12 rounded-xl border border-input bg-card px-3 text-sm shadow-sm"
+              >
+                {Object.entries(SORT_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
-          <div className="flex min-h-[640px] min-w-0 overflow-hidden rounded-lg border border-border bg-background">
+          {/* Filter + product grid */}
+          <div className="flex min-h-[640px] min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             <FilterPanel
               filterState={filters}
               onFilterChange={handleFilterChange}
@@ -397,11 +477,17 @@ export default function Home() {
             <div className="min-w-0 flex-1 p-4">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-muted-foreground">
-                  Showing {filteredProducts.length} of {search.results.length} products
+                  <span className="font-semibold text-foreground">{filteredProducts.length}</span>{" "}
+                  of {search.results.length} products
                 </p>
-                <span className="rounded-full border border-border px-2 py-1 text-xs text-muted-foreground">
-                  {density} layout · {cardVariant} cards
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
+                    {density}
+                  </span>
+                  <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
+                    {cardVariant} cards
+                  </span>
+                </div>
               </div>
               <ProductGrid
                 products={filteredProducts}

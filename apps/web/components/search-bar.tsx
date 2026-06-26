@@ -143,7 +143,7 @@ export function SearchBar({
       <div className="relative">
         {/* Search icon */}
         <Search
-          className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
+          className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground pointer-events-none"
           aria-hidden="true"
         />
 
@@ -159,7 +159,7 @@ export function SearchBar({
           aria-describedby={error ? "search-error" : undefined}
           aria-invalid={error ? true : undefined}
           className={cn(
-            "w-full pl-10 pr-10",
+            "h-12 w-full rounded-xl pl-11 pr-10 text-base",
             error && "border-destructive focus-visible:ring-destructive"
           )}
         />

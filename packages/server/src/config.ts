@@ -14,6 +14,7 @@ import type {
   IExplanationStore,
   IPrescriptionStore,
 } from "./storage/interfaces.js";
+import type { IDevtoolsAccumulator } from "./devtools/accumulator.js";
 import { createInMemorySessionStore } from "./storage/memory/session-store.js";
 import { createInMemoryContextStore } from "./storage/memory/context-store.js";
 import { createInMemoryUserModelStore } from "./storage/memory/user-model-store.js";
@@ -55,6 +56,7 @@ export interface ResolvedConfig {
   latencyBudgets: LatencyBudgetConfig;
   replayWindowMs: number;
   securityPolicy: AuraServerConfig["securityPolicy"];
+  devtools: IDevtoolsAccumulator | undefined;
 }
 
 /**
@@ -74,5 +76,6 @@ export function resolveConfig(config: AuraServerConfig): ResolvedConfig {
     latencyBudgets: config.latencyBudgets ?? DEFAULT_LATENCY_BUDGETS,
     replayWindowMs: config.replayWindowMs ?? DEFAULT_REPLAY_WINDOW_MS,
     securityPolicy: config.securityPolicy,
+    devtools: config.devtools,
   };
 }

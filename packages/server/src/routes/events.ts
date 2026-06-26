@@ -16,6 +16,7 @@ import type { IPrescriptionEmitter, EmissionContext } from "../services/prescrip
 import type { ISecurityAuditor } from "../services/security-auditor.js";
 import type { IRulesPipeline, LatencyBudgetConfig } from "../types/config.types.js";
 import type { RulesPipelineInput } from "../types/internal.types.js";
+import type { IDevtoolsAccumulator } from "../devtools/accumulator.js";
 
 /**
  * Factory that creates the POST /aura/events route handler.
@@ -38,6 +39,7 @@ export function createEventsHandler(deps: {
   prescriptionEmitter: IPrescriptionEmitter;
   securityAuditor: ISecurityAuditor;
   config: { pipelineTimeoutMs: number; latencyBudgets: LatencyBudgetConfig };
+  devtools?: IDevtoolsAccumulator;
 }): (c: Context) => Promise<Response> {
   const {
     sessionStore,
@@ -48,6 +50,7 @@ export function createEventsHandler(deps: {
     prescriptionEmitter,
     securityAuditor,
     config,
+    devtools,
   } = deps;
 
   return async (c: Context): Promise<Response> => {
@@ -79,15 +82,27 @@ export function createEventsHandler(deps: {
     // 3. Filter events through consent enforcer
     const filteredEvents = consentEnforcer.filterEvents(events, session.consentProfile);
 
+    // Record filtered events in devtools accumulator
+    if (devtools && filteredEvents.length > 0) {
+      devtools.recordEvents(sessionId, filteredEvents);
+    }
+
     // 4. Scan filtered events via security auditor — log if not clean but don't block
     const scanResult = securityAuditor.scanForInjection(filteredEvents, sessionId);
     if (!scanResult.clean) {
+      const timestamp = new Date().toISOString();
       securityAuditor.record({
-        timestamp: new Date().toISOString(),
+        timestamp,
         sessionId,
         type: "prompt-injection",
         detail: scanResult.indicators.join("; "),
         severity: "warn",
+      });
+      devtools?.recordSecurityEvent(sessionId, {
+        id: `sec-${Date.now()}`,
+        category: "prompt-injection",
+        reason: scanResult.indicators.join("; "),
+        timestamp,
       });
     }
 

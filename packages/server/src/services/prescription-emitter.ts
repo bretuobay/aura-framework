@@ -17,6 +17,7 @@ import type { IStreamRegistry } from "./stream-registry.js";
 import type { IPrescriptionStore, IExplanationStore } from "../storage/interfaces.js";
 import type { SessionRecord } from "../types/internal.types.js";
 import type { LatencyBudgetConfig } from "../types/config.types.js";
+import type { IDevtoolsAccumulator } from "../devtools/accumulator.js";
 
 // ─── Public Types ────────────────────────────────────────────────────────────
 
@@ -65,6 +66,7 @@ export function createPrescriptionEmitter(deps: {
   streamRegistry: IStreamRegistry;
   prescriptionStore: IPrescriptionStore;
   explanationStore: IExplanationStore;
+  devtools?: IDevtoolsAccumulator;
 }): IPrescriptionEmitter {
   const {
     capabilityRegistry,
@@ -72,6 +74,7 @@ export function createPrescriptionEmitter(deps: {
     streamRegistry,
     prescriptionStore,
     explanationStore,
+    devtools,
   } = deps;
 
   return {
@@ -83,81 +86,67 @@ export function createPrescriptionEmitter(deps: {
       // ─── Gate 1: Schema Validation ───────────────────────────────────────────
       const schemaResult = UIPrescriptionSchema.safeParse(candidate);
       if (!schemaResult.success) {
-        return {
-          emitted: false,
-          reason: "schema-invalid",
-          detail: schemaResult.error.issues
-            .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-            .join("; "),
-        };
+        const detail = schemaResult.error.issues
+          .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+          .join("; ");
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "dropped", detail);
+        return { emitted: false, reason: "schema-invalid", detail };
       }
 
       // ─── Gate 2: Capability Validation ───────────────────────────────────────
       const capResult = capabilityRegistry.validate(session.sessionId, candidate);
       if (!capResult.valid) {
-        // Check if any error is a manifest-version-mismatch
         const hasManifestMismatch = capResult.errors.some(
           (err: CapabilityError) => err.type === "manifest-version-mismatch",
         );
         if (hasManifestMismatch) {
-          return {
-            emitted: false,
-            reason: "manifest-version-mismatch",
-            detail: capResult.errors
-              .filter((err: CapabilityError) => err.type === "manifest-version-mismatch")
-              .map((err: CapabilityError) => err.detail)
-              .join("; "),
-          };
+          const detail = capResult.errors
+            .filter((err: CapabilityError) => err.type === "manifest-version-mismatch")
+            .map((err: CapabilityError) => err.detail)
+            .join("; ");
+          devtools?.recordPrescriptionResult(session.sessionId, candidate, "rejected", detail);
+          return { emitted: false, reason: "manifest-version-mismatch", detail };
         }
-        return {
-          emitted: false,
-          reason: "capability-invalid",
-          detail: capResult.errors
-            .map((err: CapabilityError) => `[${err.type}] ${err.detail}`)
-            .join("; "),
-        };
+        const detail = capResult.errors
+          .map((err: CapabilityError) => `[${err.type}] ${err.detail}`)
+          .join("; ");
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "rejected", detail);
+        return { emitted: false, reason: "capability-invalid", detail };
       }
 
       // ─── Gate 3: Consent Check ───────────────────────────────────────────────
       const permitted = consentEnforcer.isPrescriptionPermitted(candidate, config.consentProfile);
       if (!permitted) {
-        return {
-          emitted: false,
-          reason: "consent-revoked",
-          detail: `Prescription "${candidate.id}" uses data classes revoked in the current consent profile`,
-        };
+        const detail = `Prescription "${candidate.id}" uses data classes revoked in the current consent profile`;
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "dropped", detail);
+        return { emitted: false, reason: "consent-revoked", detail };
       }
 
       // ─── Gate 4: Context-Lock Check ──────────────────────────────────────────
       if (candidate.contextLock.sequenceId !== config.currentContextSequenceId) {
-        return {
-          emitted: false,
-          reason: "context-stale",
-          detail: `Prescription contextLock.sequenceId (${candidate.contextLock.sequenceId}) does not match current context sequence (${config.currentContextSequenceId})`,
-        };
+        const detail = `Prescription contextLock.sequenceId (${candidate.contextLock.sequenceId}) does not match current context sequence (${config.currentContextSequenceId})`;
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "dropped", detail);
+        return { emitted: false, reason: "context-stale", detail };
       }
 
       // ─── Gate 5: Expiry Check ────────────────────────────────────────────────
       if (candidate.constraints.expiresAt <= config.currentServerTime) {
-        return {
-          emitted: false,
-          reason: "expired",
-          detail: `Prescription expiresAt "${candidate.constraints.expiresAt}" is at or before current server time "${config.currentServerTime}"`,
-        };
+        const detail = `Prescription expiresAt "${candidate.constraints.expiresAt}" is at or before current server time "${config.currentServerTime}"`;
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "dropped", detail);
+        return { emitted: false, reason: "expired", detail };
       }
 
       // ─── Gate 6: Latency Budget Check ────────────────────────────────────────
       const elapsed = performance.now() - config.evaluationStartTime;
       const budget = getLatencyBudget(candidate.latencyClass, config.latencyBudgets);
       if (elapsed > budget) {
-        return {
-          emitted: false,
-          reason: "latency-exceeded",
-          detail: `Elapsed ${elapsed.toFixed(1)}ms exceeds ${candidate.latencyClass} budget of ${budget}ms`,
-        };
+        const detail = `Elapsed ${elapsed.toFixed(1)}ms exceeds ${candidate.latencyClass} budget of ${budget}ms`;
+        devtools?.recordPrescriptionResult(session.sessionId, candidate, "dropped", detail, elapsed);
+        return { emitted: false, reason: "latency-exceeded", detail };
       }
 
       // ─── All Gates Passed: Store, Explain, Broadcast ─────────────────────────
+      devtools?.recordPrescriptionResult(session.sessionId, candidate, "accepted", undefined, elapsed);
       await prescriptionStore.store(session.sessionId, candidate);
 
       if (candidate.explanation && candidate.explanation.summary) {

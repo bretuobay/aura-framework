@@ -41,11 +41,12 @@ export interface IUserModelStore {
 
 /**
  * Typed storage interface for persisted FeedbackEvent records.
- * Supports append-only recording and retrieval by prescription ID.
+ * Supports append-only recording and retrieval by prescription ID or full session.
  */
 export interface IFeedbackStore {
   record(sessionId: string, event: FeedbackEvent): Promise<void>;
   getByPrescriptionId(sessionId: string, prescriptionId: string): Promise<FeedbackEvent[]>;
+  listAll(sessionId: string): Promise<FeedbackEvent[]>;
 }
 
 /**
