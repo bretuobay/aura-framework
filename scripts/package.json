@@ -1,0 +1,14 @@
+{
+  "name": "@aura/scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "md-to-pdf": "node md-to-pdf.mjs"
+  },
+  "dependencies": {
+    "marked": "^17.0.0",
+    "mermaid": "^11.0.0",
+    "puppeteer-core": "^23.0.0"
+  }
+}

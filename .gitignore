@@ -50,3 +50,7 @@ vitest-results/
 
 # Research PDFs (large binary assets, not source)
 product-docs/**/*.pdf
+!product-docs/aura-paper/*.pdf
+
+# Reading list / private reference docs
+product-docs/to-read/
