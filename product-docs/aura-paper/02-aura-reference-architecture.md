@@ -1,4 +1,12 @@
+---
+author: "Festus Yeboah"
+date: "2026"
+copyright: "Copyright 2026 Festus Yeboah. Licensed under CC BY 4.0 International."
+---
+
 # AURA: A Reference Architecture for Governed Adaptive User Interface Middleware
+
+**Author:** Festus Yeboah · 2026
 
 ## Abstract
 
