@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "md-to-pdf": "node md-to-pdf.mjs"
+    "md-to-pdf": "node md-to-pdf.mjs",
+    "md-to-docx": "node md-to-docx.mjs"
   },
   "dependencies": {
+    "html-to-docx": "^1.8.0",
     "marked": "^17.0.0",
     "mermaid": "^11.0.0",
     "puppeteer-core": "^23.0.0"
